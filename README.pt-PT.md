@@ -1,10 +1,10 @@
-# Impulso · Motor virtual v2.0
+# Impulso · Motor virtual v3.0
 
 Aplicação original, num único `index.html`, sem bibliotecas, fontes, gravações ou pedidos de rede (exceto o serviço de localização do próprio browser, se autorizado).
 
-Esta pasta é a entrega expandida autónoma (v2.0): quinze assinaturas sintéticas, agrupadas em inspirações de modelos e arquiteturas de motor. Disponível via GitHub Pages: https://necolinhoo.github.io/ev-engine-sound/
+Esta pasta é a entrega autónoma v3.0: vinte e uma assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação: a integração e o eventual GitHub Pages ficam a cargo de quem autorizar o envio.
 
-Repositório público: https://github.com/nEcOLiNhOO/ev-engine-sound
+O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.0 ainda pode não corresponder ao que está online.
 
 A publicação HTTPS permite testar num browser normal, mas não garante que resolva a ausência de áudio numa pré-visualização móvel. Toca em **Iniciar som** na página aberta diretamente no browser.
 
@@ -12,50 +12,63 @@ A publicação HTTPS permite testar num browser normal, mas não garante que res
 1. Abre `index.html` num browser moderno. A simulação não precisa de internet nem de servidor.
 2. Toca em **Iniciar som**. O volume inicial é 15%; começa baixo também no dispositivo.
 3. Aumenta a velocidade alvo: o motor acompanha a aceleração e faz mudanças virtuais. O controlo de resposta altera a rapidez da aceleração. Reduzir o alvo simula desaceleração.
-4. Mantém **REV** premido para acelerar em vazio (não muda a velocidade). Soltar, cancelar o toque ou perder foco liberta o botão. Também aceita Espaço/Enter com foco.
-5. Experimenta as quinze assinaturas (inspirações de modelos e arquiteturas), volume e caráter. Trocar de perfil enquanto o som corre faz um cruzamento suave entre vozes. **Parar som** fecha o contexto de áudio.
+4. Mantém **REV** premido para acelerar em vazio (não muda a velocidade). Soltar de propósito, com rotação alta, pode produzir um estalo se os pops estiverem ligados. Cancelar o toque, perder o foco ou ocultar a página não dispara estalos. Também aceita Espaço/Enter com foco.
+5. Experimenta as vinte e uma assinaturas, volume e caráter. Cada perfil tem uma nota curta de carácter. Trocar de perfil enquanto o som corre faz um cruzamento suave entre vozes e cancela estalos pendentes. **Parar som** fecha o contexto de áudio.
+6. **Estalos e pops** está desligado por omissão. Se o ligares, um cursor controla a intensidade. Não há reprodução automática: o motor só começa depois de tocares em **Iniciar som**.
 
 ## Assinaturas
-O seletor está dividido em dois grupos.
+O seletor está dividido em **Inspirações de modelos** e **Arquiteturas de motor**.
 
-**Inspirações de modelos · síntese não oficial**
-- 911 GT3 RS
-- Nissan GT-R
-- Lexus LFA
-- Audi R8 V10
-- Subaru WRX
-- Mustang GT V8
+**Inspirações (síntese original, não oficial)**
+- 911 GT3 RS, Nissan GT-R, Lexus LFA, Audi R8 V10, Subaru WRX, Mustang GT V8
+- BMW M3 · seis em linha
+- Mercedes-AMG C63 · V8
+- Audi RS3 · cinco cilindros
+- Lamborghini Aventador · V12
+- Ferrari 458 · V8
+- Mazda RX-7 · rotativo (dois rotores; não é um motor de pistões)
 
-**Arquiteturas de motor**
+**Arquiteturas**
 - I3, I4, I5, I6, V6, Flat-6, V8, V10 e V12
 
-As inspirações são sínteses originais não oficiais. **Não são gravações nem reproduções autênticas** dos automóveis referidos, nem modelos físicos fiéis. Os limites de rotação, harmónicos, filtros de escape e admissão, ruído, irregularidade e forma de pulso são escolhas de design sintético para distinguir cada perfil — não fichas técnicas, redlines oficiais ou especificações de fábrica. Cada inspiração está rotulada no seletor como «síntese não oficial».
+As inspirações não são gravações nem cópias autênticas. Limites de rotação, harmónicos, filtros e irregularidade são escolhas de design para distinguir os timbres — não fichas técnicas. O Mazda RX-7 usa uma cadência de ignição de motor rotativo de dois rotores (um pulso por revolução do veio excêntrico, por rotor), sem o rotular como I4 ou como um motor de quatro cilindros.
 
-Dois perfis com o mesmo número de cilindros (por exemplo Flat-6 e a inspiração 911 GT3 RS, ou V8 e Mustang GT V8) usam afinações diferentes de timbre, não apenas o nome ou a contagem de cilindros.
+## Estalos e pops
+Efeito opcional, desligado por defeito, com intensidade ajustável. São ruídos curtos filtrados e um bate-estaca grave suave, sempre a passar pelo volume principal e pelo limitador.
+
+Disparam apenas quando o som já está a correr e numa destas situações:
+- desaceleração simulada com rotação suficientemente alta;
+- largar o REV de propósito, com rotação adequada;
+- desaceleração GPS válida, ou uma subida de marcha virtual enquanto a velocidade GPS também é válida.
+
+Não disparam com perda de sinal, posição antiga, mudança de modo, reinício do áudio, página oculta ou troca de perfil. Há intervalo mínimo entre eventos, no máximo três vozes em simultâneo, e a probabilidade varia com o perfil: alguns desportivos (por exemplo C63, 458, RS3) estalam com mais facilidade do que um I6 ou um V12 suaves. O volume a zero ou o botão desligado impedem novos estalos e cancelam os que estavam a ser preparados.
+
+Isto não reproduz mapas reais de afterfire nem o pedal do acelerador. Em GPS a desaceleração é inferida da velocidade.
 
 ## Modo GPS
 Seleciona **GPS real** e toca em **Autorizar localização**. Requer contexto seguro: HTTPS ou localhost e permissão do browser. Abrir um ficheiro local é recomendado para simulação; não se deve contar com GPS via `file://`.
 
-Para servir localmente, opcionalmente executa `python3 -m http.server 8000` nesta pasta e abre `http://localhost:8000`. Aceder pelo IP local de outro dispositivo em HTTP não equivale a localhost e normalmente não permite GPS. A versão alojada em GitHub Pages usa HTTPS e publica a raiz da branch `main`. O código continua a funcionar offline em modo de simulação.
+Para servir localmente, opcionalmente executa `python3 -m http.server 8000` nesta pasta e abre `http://localhost:8000`. Aceder pelo IP local de outro dispositivo em HTTP não equivale a localhost e normalmente não permite GPS. O código continua a funcionar offline em modo de simulação.
 
 O GPS fornece velocidade em m/s, convertida em km/h. Sem velocidade nativa, duas posições válidas permitem uma estimativa por distância/tempo. Filtra coordenadas inválidas, precisão pior que 80 m, grandes saltos e acelerações implausíveis. Oscilações pequenas são tratadas como ruído. Estes filtros são heurísticos: a velocidade pode atrasar, falhar ou ficar a zero em movimentos lentos. Sem velocidade válida, mostra **—** e mantém apenas o ralenti sintético, não inventa movimento. Uma posição com mais de 10 segundos é rejeitada; 8 segundos sem atualização válida tornam a leitura indisponível. As marchas, RPM e carga são sempre virtuais, mesmo com GPS.
 
 **Não existe acesso ao pedal, CAN, Bluetooth do veículo, telemetria ou aceleração real do motor.** A carga é aproximada pela variação da velocidade. REV está desativado em modo GPS. Desligar a localização, mudar de modo, ocultar ou abandonar a página liberta o acompanhamento; regressar requer nova autorização pelo botão. Nenhuma localização é guardada ou enviada pela aplicação.
 
 ## Som e compatibilidade
-Web Audio gera pulsos harmónicos de combustão de quatro tempos, um subgrave, ruído filtrado de admissão/escape e modulação irregular. Cada perfil altera a forma de onda (decai harmónico, ênfase par/ímpar e presença aguda), a filtragem de escape e de admissão, o ruído, a irregularidade e os ganhos de pulso/subgrave. A troca de perfil usa duas vozes com cruzamento e reduz o ganho da voz de entrada antes de mudar a wavetable, para evitar cliques. RPM/carga são suavizadas. Isto é síntese estilizada, não uma gravação nem um modelo físico fiel de cada motor. As mudanças são simuladas por escalões de relação, não por uma caixa real.
+Web Audio gera pulsos harmónicos, um subgrave, ruído filtrado de admissão/escape e modulação irregular. Cada perfil altera a forma de onda, a filtragem, o ruído e a irregularidade. A troca de perfil usa duas vozes com cruzamento. RPM/carga são suavizadas. Isto é síntese estilizada, não uma gravação nem um modelo físico fiel. As mudanças são simuladas por escalões de relação, não por uma caixa real.
 
-Ganho inicial baixo, alterações suaves e compressor/limitador reduzem picos, mas não garantem um nível acústico seguro: depende do volume do sistema e dos altifalantes. O som vem do browser/dispositivo; saída pelo sistema de som do carro **não garantida**. O browser pode suspender o áudio: toca em **Retomar som**. Ao ocultar a página, o som para; não há reprodução de fundo prometida.
+Ganho inicial baixo, envelopes curtos nos estalos, alterações suaves e compressor/limitador reduzem picos, mas não garantem um nível acústico seguro. O som vem do browser/dispositivo; saída pelo sistema de som do carro **não garantida**. O browser pode suspender o áudio: toca em **Retomar som**. Ao ocultar a página, o som para.
 
-Interface responsiva e tátil pensada para ecrãs largos e telemóveis. **Não houve teste físico num Tesla, nem teste de áudio/GPS num browser real nesta entrega.** Disponibilidade de Web Audio, geolocalização, saída áudio e funcionamento em movimento no Tesla precisam de validação. Não existe qualquer contorno de restrições do veículo. Configura estacionado; em viagem, só um passageiro deve testar a interface.
+Interface pensada para ecrãs largos e telemóveis. **Não houve teste físico num Tesla, nem teste de escuta nesta entrega.** Disponibilidade de Web Audio, geolocalização, estalos, saída áudio e funcionamento em movimento no Tesla precisam de validação. Não existe qualquer contorno de restrições do veículo. Configura estacionado; em viagem, só um passageiro deve testar a interface.
 
 ## Verificações realizadas
 Executar `node test.cjs` (Node.js, sem dependências):
 - análise sintática de todo o JavaScript inline com `vm.Script`;
-- testes determinísticos de GPS: conversão m/s, velocidade ausente/negativa, fallback por posições, ruído, saltos, precisão, coordenadas inválidas, ordem temporal, aceleração implausível e intervalo antigo;
-- mudanças virtuais, limites de RPM/carga para os quinze perfis, resposta de carga e mapeamento seguro de uma chave desconhecida;
-- versão visível 2.0; presença e agrupamento das quinze assinaturas; rótulos de síntese não oficial;
-- unicidade da afinação (harmónicos, escape, admissão, ruído, irregularidade e forma de pulso) e diferenças entre inspirações e arquiteturas com o mesmo número de cilindros;
-- limites conservadores de ganho e ruído.
+- testes determinísticos de GPS (conversão, ausência, ruído, saltos, precisão, ordem temporal, aceleração implausível);
+- limites de RPM/carga para todos os perfis, mudanças virtuais e mapeamento seguro de uma chave desconhecida;
+- versão visível 3.0; pelo menos 21 assinaturas; agrupamento; notas curtas de carácter; honestidade sem repetir o aviso em cada opção;
+- unicidade da afinação, incluindo as novas inspirações face às arquiteturas aparentadas;
+- o RX-7 é tratado como rotativo (2 rotores), não como um I4 de pistões;
+- estalos: desligados/mute/parado não disparam; perda de sinal, modo, reinício, página oculta e troca de perfil são eventos proibidos; desaceleração, largar o REV e mudança virtual têm condições e intervalo; propensão diferente entre perfis; amplitude e duração limitadas.
 
-Os testes não reproduzem o DOM, interações táteis, permissões, som, volume percebido ou compatibilidade Tesla. Sugestão de ensaio manual, parado: iniciar/parar/reiniciar, trocar de perfil em reprodução, manter/libertar/cancelar REV, ocultar/regressar, recusar GPS, cortar sinal e confirmar **—**, verificar saída áudio antes de qualquer teste por passageiro.
+**Estes testes cobrem apenas lógica e sintaxe. Não escutam áudio, não medem o volume percebido e não validam um browser Tesla.** Uma verificação numérica dos envelopes (pico e duração) corre no Core; não houve renderização ouvida nem interação com o browser. Sugestão de ensaio manual, parado: iniciar/parar, ligar pops a volume baixo, desacelerar na simulação, largar o REV, trocar de perfil e confirmar que não há estalos ao ocultar a página.
