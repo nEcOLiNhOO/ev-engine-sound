@@ -1,49 +1,325 @@
 <!doctype html>
-<html lang="pt-PT"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual</title>
+<html lang="pt-PT" data-version="2.0"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual v2.0</title>
 <style>
-:root{color-scheme:dark;--bg:#0c1219;--panel:#141e28;--line:#293744;--text:#eef4f7;--muted:#a2b3c0;--accent:#c4f46c;--blue:#7bd9e7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% 0,#20303b,transparent 65%),var(--bg);font:16px system-ui,sans-serif;color:var(--text)}main{max-width:1220px;margin:auto;padding:28px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.brand{font-size:24px;letter-spacing:.2em;font-weight:800}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin:8px 0}.badge{border:1px solid var(--line);border-radius:30px;padding:10px 15px;font-size:12px;color:var(--accent)}.layout{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}.panel{background:linear-gradient(140deg,#18232e,#101922);border:1px solid var(--line);border-radius:24px;padding:25px}.modes{display:flex;gap:8px}button,select{font:inherit;color:inherit;background:#202d39;border:1px solid #3b4a58;border-radius:12px;min-height:48px;padding:10px 16px;cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:3px}button.active{background:var(--accent);color:#14200a;border-color:var(--accent)}button:disabled{opacity:.4;cursor:not-allowed}.dial{height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin:15px auto 0;max-width:380px}.dial:before{content:"";position:absolute;inset:5px 10px 0;border:12px solid #273641;border-bottom-color:transparent;border-radius:50% 50% 35% 35%;pointer-events:none}.dial:after{content:"";position:absolute;inset:5px 10px 0;border:12px solid transparent;border-left-color:var(--accent);border-radius:50% 50% 35% 35%;opacity:.7;pointer-events:none}.speed{font-size:88px;line-height:1.1;font-weight:250;font-variant-numeric:tabular-nums;z-index:1}.unit{color:var(--muted);font-size:13px}.source{margin-top:16px;font-size:12px;color:var(--blue);text-align:center;z-index:1}.rpmrow{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin:8px 0}.track{height:10px;background:#2b3741;border-radius:8px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ffd170,#fc806d);transition:width .12s}.stats{display:flex;justify-content:space-between;margin:22px 0;font-size:13px;color:var(--muted)}.stats b{display:block;font-size:20px;color:var(--text);margin-top:5px}.actions{display:flex;gap:12px}.actions button{flex:1;min-height:60px;font-weight:700}#start{background:var(--accent);color:#182312;border:0}#rev{touch-action:none;user-select:none;-webkit-user-select:none}#rev.held{background:var(--blue);color:#12212a}.controls h1{font-size:25px;margin:0 0 6px}.subtitle{color:var(--muted);font-size:14px;line-height:1.5}label{display:block;color:var(--muted);font-size:13px;margin-top:23px}.labelrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.labelrow output{color:var(--text)}select{width:100%}input[type=range]{accent-color:var(--accent);width:100%;min-height:32px;margin:0;cursor:pointer}.note{font-size:12px;color:var(--muted);line-height:1.6}.notice{min-height:45px;padding:12px 0 0;color:var(--blue);font-size:13px;line-height:1.5}.gpsbox{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:18px}.gpsbox button{width:100%}.foot{margin:20px 2px;color:var(--muted);font-size:12px;line-height:1.6} [hidden]{display:none!important}@media(max-width:760px){main{padding:16px}.layout{grid-template-columns:1fr}.panel{padding:20px}header{margin-bottom:16px}.brand{font-size:20px}.dial{height:230px}.speed{font-size:76px}.badge{font-size:10px;padding:8px}.controls h1{font-size:23px}}@media(min-width:900px) and (max-height:800px){main{padding-top:18px}.dial{height:225px}label{margin-top:16px}}
+:root{color-scheme:dark;--bg:#0c1219;--panel:#141e28;--line:#293744;--text:#eef4f7;--muted:#a2b3c0;--accent:#c4f46c;--blue:#7bd9e7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% 0,#20303b,transparent 65%),var(--bg);font:16px system-ui,sans-serif;color:var(--text)}main{max-width:1220px;margin:auto;padding:28px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.brand{font-size:24px;letter-spacing:.2em;font-weight:800}.ver{font-size:11px;letter-spacing:.14em;color:var(--muted);font-weight:700;margin-left:8px;vertical-align:middle}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin:8px 0}.badge{border:1px solid var(--line);border-radius:30px;padding:10px 15px;font-size:12px;color:var(--accent)}.layout{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}.panel{background:linear-gradient(140deg,#18232e,#101922);border:1px solid var(--line);border-radius:24px;padding:25px}.modes{display:flex;gap:8px}button,select{font:inherit;color:inherit;background:#202d39;border:1px solid #3b4a58;border-radius:12px;min-height:48px;padding:10px 16px;cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:3px}button.active{background:var(--accent);color:#14200a;border-color:var(--accent)}button:disabled{opacity:.4;cursor:not-allowed}.dial{height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin:15px auto 0;max-width:380px}.dial:before{content:"";position:absolute;inset:5px 10px 0;border:12px solid #273641;border-bottom-color:transparent;border-radius:50% 50% 35% 35%;pointer-events:none}.dial:after{content:"";position:absolute;inset:5px 10px 0;border:12px solid transparent;border-left-color:var(--accent);border-radius:50% 50% 35% 35%;opacity:.7;pointer-events:none}.speed{font-size:88px;line-height:1.1;font-weight:250;font-variant-numeric:tabular-nums;z-index:1}.unit{color:var(--muted);font-size:13px}.source{margin-top:16px;font-size:12px;color:var(--blue);text-align:center;z-index:1}.rpmrow{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin:8px 0}.track{height:10px;background:#2b3741;border-radius:8px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ffd170,#fc806d);transition:width .12s}.stats{display:flex;justify-content:space-between;margin:22px 0;font-size:13px;color:var(--muted)}.stats b{display:block;font-size:20px;color:var(--text);margin-top:5px}.actions{display:flex;gap:12px}.actions button{flex:1;min-height:60px;font-weight:700}#start{background:var(--accent);color:#182312;border:0}#rev{touch-action:none;user-select:none;-webkit-user-select:none}#rev.held{background:var(--blue);color:#12212a}.controls h1{font-size:25px;margin:0 0 6px}.subtitle{color:var(--muted);font-size:14px;line-height:1.5}label{display:block;color:var(--muted);font-size:13px;margin-top:23px}.labelrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.labelrow output{color:var(--text)}select{width:100%}input[type=range]{accent-color:var(--accent);width:100%;min-height:32px;margin:0;cursor:pointer}.note{font-size:12px;color:var(--muted);line-height:1.6}.disclaimer{margin-top:16px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;font-size:12px;line-height:1.55;color:var(--muted)}.disclaimer strong{color:var(--text)}#profileHint{margin-top:10px}.notice{min-height:45px;padding:12px 0 0;color:var(--blue);font-size:13px;line-height:1.5}.gpsbox{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:18px}.gpsbox button{width:100%}.foot{margin:20px 2px;color:var(--muted);font-size:12px;line-height:1.6} [hidden]{display:none!important}@media(max-width:760px){main{padding:16px}.layout{grid-template-columns:1fr}.panel{padding:20px}header{margin-bottom:16px}.brand{font-size:20px}.dial{height:230px}.speed{font-size:76px}.badge{font-size:10px;padding:8px}.controls h1{font-size:23px}}@media(min-width:900px) and (max-height:800px){main{padding-top:18px}.dial{height:225px}label{margin-top:16px}}
 </style></head><body><main>
-<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
+<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v2.0</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
 <div class="layout"><section class="panel" aria-label="Instrumentos e reprodução"><div class="modes" aria-label="Modo"><button id="simMode" class="active" aria-pressed="true">Simulação</button><button id="gpsMode" aria-pressed="false">GPS real</button></div>
 <div class="dial"><div class="speed" id="speed">0</div><div class="unit">km/h</div><div class="source" id="source">Velocidade simulada · sem ligação ao carro</div></div>
 <div class="rpmrow"><span id="rpm">800 rpm</span><span id="redline">6 800 máx.</span></div><div class="track" role="meter" aria-label="Rotações do motor" aria-valuemin="0" aria-valuemax="6800" aria-valuenow="800" id="rpmMeter"><div class="fill" id="rpmFill"></div></div>
 <div class="stats"><div>MARCHA VIRTUAL<b id="gear">N</b></div><div>CARGA SINTÉTICA<b id="load">0%</b></div><div>ÁUDIO<b id="audioState">Desligado</b></div></div>
 <div class="actions"><button id="start">▶ Iniciar som</button><button id="rev" aria-label="Manter premido para acelerar o motor em vazio">REV · manter</button></div><div class="notice" role="status" aria-live="polite" id="status">Começa com volume baixo. O som só é ativado por ti.</div>
-</section><section class="panel controls"><div class="eyebrow">Escolhe a tua assinatura</div><h1>Elétrico no movimento.<br>Combustão no ouvido.</h1><div class="subtitle">Síntese em tempo real, sem gravações nem downloads.</div>
-<label for="engine">Arquitetura do motor</label><select id="engine"><option value="v8">V8 · grave e irregular</option><option value="v6">V6 · compacto e áspero</option><option value="flat6">Flat-6 · metálico e oposto</option><option value="v12">V12 · suave e agudo</option></select>
+</section><section class="panel controls"><div class="eyebrow">Escolhe a tua assinatura</div><h1>Elétrico no movimento.<br>Combustão no ouvido.</h1><div class="subtitle">Síntese em tempo real, sem gravações nem downloads. Quinze assinaturas: inspirações de modelos (não oficiais) e arquiteturas de motor.</div>
+<label for="engine">Assinatura sonora</label><select id="engine">
+<optgroup label="Inspirações de modelos · síntese não oficial">
+<option value="gt3rs">911 GT3 RS · síntese não oficial</option>
+<option value="gtr">Nissan GT-R · síntese não oficial</option>
+<option value="lfa">Lexus LFA · síntese não oficial</option>
+<option value="r8v10">Audi R8 V10 · síntese não oficial</option>
+<option value="wrx">Subaru WRX · síntese não oficial</option>
+<option value="mustang">Mustang GT V8 · síntese não oficial</option>
+</optgroup>
+<optgroup label="Arquiteturas de motor">
+<option value="i3">I3 · três cilindros irregular</option>
+<option value="i4">I4 · quatro cilindros nítido</option>
+<option value="i5">I5 · cinco cilindros cadenciado</option>
+<option value="i6">I6 · seis em linha suave</option>
+<option value="v6">V6 · compacto e áspero</option>
+<option value="flat6">Flat-6 · metálico e oposto</option>
+<option value="v8" selected>V8 · grave e irregular</option>
+<option value="v10">V10 · agudo e intenso</option>
+<option value="v12">V12 · suave e agudo</option>
+</optgroup>
+</select>
+<p class="note" id="profileHint"></p>
+<div class="disclaimer"><strong>Síntese original não oficial.</strong> As inspirações de modelos não são gravações nem reproduções autênticas dos automóveis referidos. Os valores de afinação (harmónicos, filtros, ruído e limites de rotação) são escolhas de design sintético, não fichas técnicas.</div>
 <div id="simControls"><label for="target"><span class="labelrow"><span>Velocidade alvo simulada</span><output id="targetValue">0 km/h</output></span></label><input id="target" type="range" min="0" max="160" value="0" step="1"><label for="throttle"><span class="labelrow"><span>Resposta à aceleração</span><output id="throttleValue">45%</output></span></label><input id="throttle" type="range" min="5" max="100" value="45"><div class="note">Sobe a velocidade alvo para ouvir a aceleração e as mudanças virtuais. REV acelera em vazio; não altera a velocidade.</div></div>
 <div id="gpsControls" class="gpsbox" hidden><button id="gpsEnable">Autorizar localização</button><div class="note" id="gpsInfo">GPS desligado. Sem acesso ao pedal, ao motor ou à telemetria.</div></div>
 <label for="volume"><span class="labelrow"><span>Volume</span><output id="volumeValue">15%</output></span></label><input id="volume" type="range" min="0" max="70" value="15"><label for="character"><span class="labelrow"><span>Caráter · suave → agressivo</span><output id="characterValue">40%</output></span></label><input id="character" type="range" min="0" max="100" value="40">
-</section></div><footer class="foot">Configura com o carro estacionado; testes em viagem apenas por um passageiro. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). O som sai pelo dispositivo/browser; a saída nos altifalantes do carro e o funcionamento do browser Tesla, sobretudo em movimento, não estão validados. Não contorna restrições do veículo.</footer>
+</section></div><footer class="foot">Impulso v2.0. Configura com o carro estacionado; testes em viagem apenas por um passageiro. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). O som sai pelo dispositivo/browser; a saída nos altifalantes do carro e o funcionamento do browser Tesla, sobretudo em movimento, não estão validados. Não contorna restrições do veículo. Inspirações de modelos: síntese não oficial, sem gravações nem reproduções autênticas.</footer>
 </main><script>
 'use strict';
 const Core=(()=>{
+ const VERSION='2.0';
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
- const engines={v8:{cyl:8,idle:750,max:6800,tone:1400,rough:.22},v6:{cyl:6,idle:850,max:7400,tone:1900,rough:.13},flat6:{cyl:6,idle:900,max:8000,tone:2400,rough:.09},v12:{cyl:12,idle:850,max:9000,tone:2900,rough:.035}};
- function mapping(speed,key,accel=0){const e=engines[key],s=clamp(speed,0,250);const thresholds=[0,22,46,74,108,148];let g=s<1?0:1;for(let i=1;i<thresholds.length;i++)if(s>=thresholds[i])g=i+1;const ratio=[0,115,77,56,43,35,29][g];return {gear:g,rpm:clamp(e.idle+s*ratio,e.idle,e.max*.94),load:clamp(.12+s/700+Math.max(0,accel)/3,0,1)};}
- function distance(a,b){const r=Math.PI/180,p=(b.lat-a.lat)*r,l=(b.lon-a.lon)*r;const h=Math.sin(p/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(l/2)**2;return 6371000*2*Math.atan2(Math.sqrt(h),Math.sqrt(Math.max(0,1-h)));}
- function gpsSample(prev,p){if(!Number.isFinite(p.lat)||!Number.isFinite(p.lon)||Math.abs(p.lat)>90||Math.abs(p.lon)>180||!Number.isFinite(p.accuracy)||p.accuracy>80||p.accuracy<0||!Number.isFinite(p.time))return {ok:false,reason:'Precisão GPS insuficiente'};let speed=null,derived=false;const dt=prev?(p.time-prev.time)/1000:0;if(prev&&dt<=0)return {ok:false,reason:'Amostra GPS fora de ordem'};if(prev&&dt<12&&distance(prev,p)>85*dt+Math.max(prev.accuracy,p.accuracy))return {ok:false,reason:'Salto de posição rejeitado'};if(Number.isFinite(p.speed)&&p.speed>=0)speed=p.speed*3.6;else if(prev&&dt>=1&&dt<=12){const d=distance(prev,p);speed=d<Math.max(prev.accuracy,p.accuracy)*.45?0:d/dt*3.6;derived=true;}if(speed!==null&&(speed>250||(prev&&dt<12&&prev.kmh!==null&&Math.abs(speed-prev.kmh)/3.6/dt>12)))return {ok:false,reason:'Variação GPS implausível'};return {ok:true,speed,derived,point:{...p,kmh:speed}};}
- return {clamp,engines,mapping,distance,gpsSample};})();
+ const engines={
+  gt3rs:{group:'inspiration',unofficial:true,cyl:6,idle:980,max:8800,tone:2750,exhaustQ:.98,intakeBase:720,intakeRatio:.38,intakeQ:1.05,noiseIdle:.01,noiseLoad:.068,rough:.065,pulse:.31,harmonicDecay:11,evenMix:1.22,oddMix:.82,rasp:.42,pulseGain:.158,pulseLoad:.128,subGain:.08,subDiv:145,flutterBase:10},
+  gtr:{group:'inspiration',unofficial:true,cyl:6,idle:780,max:7100,tone:1550,exhaustQ:1.15,intakeBase:280,intakeRatio:.18,intakeQ:.45,noiseIdle:.016,noiseLoad:.078,rough:.085,pulse:.45,harmonicDecay:10,evenMix:1.05,oddMix:.92,rasp:.05,pulseGain:.162,pulseLoad:.118,subGain:.145,subDiv:110,flutterBase:7},
+  lfa:{group:'inspiration',unofficial:true,cyl:10,idle:1050,max:9200,tone:3200,exhaustQ:.68,intakeBase:680,intakeRatio:.36,intakeQ:.92,noiseIdle:.007,noiseLoad:.042,rough:.028,pulse:.29,harmonicDecay:17,evenMix:.88,oddMix:1.2,rasp:.55,pulseGain:.148,pulseLoad:.115,subGain:.07,subDiv:160,flutterBase:13},
+  r8v10:{group:'inspiration',unofficial:true,cyl:10,idle:880,max:8500,tone:2350,exhaustQ:.9,intakeBase:510,intakeRatio:.26,intakeQ:.74,noiseIdle:.0085,noiseLoad:.05,rough:.095,pulse:.34,harmonicDecay:12,evenMix:.9,oddMix:1.15,rasp:.38,pulseGain:.16,pulseLoad:.132,subGain:.1,subDiv:128,flutterBase:9},
+  wrx:{group:'inspiration',unofficial:true,cyl:4,idle:760,max:6700,tone:1480,exhaustQ:1.08,intakeBase:390,intakeRatio:.23,intakeQ:.64,noiseIdle:.013,noiseLoad:.064,rough:.26,pulse:.3,harmonicDecay:9,evenMix:1.28,oddMix:.75,rasp:.2,pulseGain:.175,pulseLoad:.138,subGain:.125,subDiv:95,flutterBase:6},
+  mustang:{group:'inspiration',unofficial:true,cyl:8,idle:640,max:6400,tone:1180,exhaustQ:.95,intakeBase:340,intakeRatio:.19,intakeQ:.52,noiseIdle:.009,noiseLoad:.06,rough:.3,pulse:.32,harmonicDecay:8.5,evenMix:1.2,oddMix:.85,rasp:.04,pulseGain:.178,pulseLoad:.142,subGain:.165,subDiv:100,flutterBase:5},
+  i3:{group:'architecture',unofficial:false,cyl:3,idle:880,max:6700,tone:1680,exhaustQ:1.05,intakeBase:480,intakeRatio:.28,intakeQ:.75,noiseIdle:.012,noiseLoad:.062,rough:.34,pulse:.26,harmonicDecay:8,evenMix:.65,oddMix:1.25,rasp:.18,pulseGain:.185,pulseLoad:.135,subGain:.13,subDiv:85,flutterBase:6},
+  i4:{group:'architecture',unofficial:false,cyl:4,idle:820,max:7300,tone:2100,exhaustQ:.7,intakeBase:620,intakeRatio:.34,intakeQ:.85,noiseIdle:.011,noiseLoad:.07,rough:.08,pulse:.42,harmonicDecay:11,evenMix:1.05,oddMix:.9,rasp:.08,pulseGain:.155,pulseLoad:.12,subGain:.09,subDiv:130,flutterBase:9},
+  i5:{group:'architecture',unofficial:false,cyl:5,idle:790,max:7100,tone:1850,exhaustQ:.92,intakeBase:500,intakeRatio:.27,intakeQ:.68,noiseIdle:.009,noiseLoad:.058,rough:.19,pulse:.33,harmonicDecay:10,evenMix:.85,oddMix:1.12,rasp:.22,pulseGain:.17,pulseLoad:.13,subGain:.11,subDiv:105,flutterBase:7},
+  i6:{group:'architecture',unofficial:false,cyl:6,idle:700,max:7200,tone:1750,exhaustQ:.55,intakeBase:380,intakeRatio:.2,intakeQ:.5,noiseIdle:.005,noiseLoad:.035,rough:.04,pulse:.52,harmonicDecay:15,evenMix:1,oddMix:1,rasp:.03,pulseGain:.15,pulseLoad:.1,subGain:.1,subDiv:140,flutterBase:10},
+  v6:{group:'architecture',unofficial:false,cyl:6,idle:850,max:7400,tone:1900,exhaustQ:.82,intakeBase:430,intakeRatio:.24,intakeQ:.62,noiseIdle:.008,noiseLoad:.052,rough:.13,pulse:.38,harmonicDecay:12,evenMix:.92,oddMix:1.08,rasp:.12,pulseGain:.16,pulseLoad:.13,subGain:.13,subDiv:120,flutterBase:8},
+  flat6:{group:'architecture',unofficial:false,cyl:6,idle:900,max:8000,tone:2400,exhaustQ:.88,intakeBase:560,intakeRatio:.3,intakeQ:.78,noiseIdle:.009,noiseLoad:.05,rough:.09,pulse:.4,harmonicDecay:13,evenMix:1.18,oddMix:.88,rasp:.28,pulseGain:.155,pulseLoad:.125,subGain:.1,subDiv:125,flutterBase:9},
+  v8:{group:'architecture',unofficial:false,cyl:8,idle:750,max:6800,tone:1400,exhaustQ:.8,intakeBase:400,intakeRatio:.25,intakeQ:.6,noiseIdle:.008,noiseLoad:.055,rough:.22,pulse:.38,harmonicDecay:12,evenMix:1.1,oddMix:.95,rasp:.06,pulseGain:.16,pulseLoad:.13,subGain:.14,subDiv:120,flutterBase:8},
+  v10:{group:'architecture',unofficial:false,cyl:10,idle:900,max:8700,tone:2600,exhaustQ:.72,intakeBase:540,intakeRatio:.29,intakeQ:.7,noiseIdle:.007,noiseLoad:.048,rough:.07,pulse:.36,harmonicDecay:14,evenMix:.95,oddMix:1.1,rasp:.32,pulseGain:.15,pulseLoad:.12,subGain:.09,subDiv:135,flutterBase:11},
+  v12:{group:'architecture',unofficial:false,cyl:12,idle:850,max:9000,tone:2900,exhaustQ:.6,intakeBase:450,intakeRatio:.22,intakeQ:.55,noiseIdle:.006,noiseLoad:.04,rough:.035,pulse:.48,harmonicDecay:16,evenMix:1,oddMix:1,rasp:.15,pulseGain:.145,pulseLoad:.11,subGain:.085,subDiv:150,flutterBase:12}
+ };
+ function mapping(speed,key,accel=0){
+  const e=engines[key];
+  if(!e) return {gear:0,rpm:800,load:0};
+  const s=clamp(speed,0,250);
+  const thresholds=[0,22,46,74,108,148];
+  let g=s<1?0:1;
+  for(let i=1;i<thresholds.length;i++) if(s>=thresholds[i]) g=i+1;
+  const ratio=[0,115,77,56,43,35,29][g];
+  return {gear:g,rpm:clamp(e.idle+s*ratio,e.idle,e.max*.94),load:clamp(.12+s/700+Math.max(0,accel)/3,0,1)};
+ }
+ function distance(a,b){
+  const r=Math.PI/180,p=(b.lat-a.lat)*r,l=(b.lon-a.lon)*r;
+  const h=Math.sin(p/2)**2+Math.cos(a.lat*r)*Math.cos(b.lat*r)*Math.sin(l/2)**2;
+  return 6371000*2*Math.atan2(Math.sqrt(h),Math.sqrt(Math.max(0,1-h)));
+ }
+ function gpsSample(prev,p){
+  if(!Number.isFinite(p.lat)||!Number.isFinite(p.lon)||Math.abs(p.lat)>90||Math.abs(p.lon)>180||!Number.isFinite(p.accuracy)||p.accuracy>80||p.accuracy<0||!Number.isFinite(p.time)) return {ok:false,reason:'Precisão GPS insuficiente'};
+  let speed=null,derived=false;
+  const dt=prev?(p.time-prev.time)/1000:0;
+  if(prev&&dt<=0) return {ok:false,reason:'Amostra GPS fora de ordem'};
+  if(prev&&dt<12&&distance(prev,p)>85*dt+Math.max(prev.accuracy,p.accuracy)) return {ok:false,reason:'Salto de posição rejeitado'};
+  if(Number.isFinite(p.speed)&&p.speed>=0) speed=p.speed*3.6;
+  else if(prev&&dt>=1&&dt<=12){const d=distance(prev,p);speed=d<Math.max(prev.accuracy,p.accuracy)*.45?0:d/dt*3.6;derived=true;}
+  if(speed!==null&&(speed>250||(prev&&dt<12&&prev.kmh!==null&&Math.abs(speed-prev.kmh)/3.6/dt>12))) return {ok:false,reason:'Variação GPS implausível'};
+  return {ok:true,speed,derived,point:{...p,kmh:speed}};
+ }
+ function harmonicPartial(profile,i){
+  if(!profile||i<1) return 0;
+  let mag=Math.exp(-i/profile.harmonicDecay)/Math.pow(i,profile.pulse);
+  mag*=(i%2===0)?profile.evenMix:profile.oddMix;
+  if(i>12) mag*=(1+profile.rasp);
+  return mag;
+ }
+ function profileFingerprint(e){
+  return ['group','unofficial','cyl','idle','max','tone','exhaustQ','intakeBase','intakeRatio','intakeQ','noiseIdle','noiseLoad','rough','pulse','harmonicDecay','evenMix','oddMix','rasp','pulseGain','pulseLoad','subGain','subDiv','flutterBase'].map(k=>k+'='+e[k]).join(';');
+ }
+ return {VERSION,clamp,engines,mapping,distance,gpsSample,harmonicPartial,profileFingerprint};
+})();
 const $=id=>document.getElementById(id),{clamp,engines,mapping,gpsSample}=Core;
 let mode='sim',speed=0,rpm=800,load=0,gear=0,rev=false,running=false,audio=null,watch=null,previous=null,lastFix=0,gpsSpeed=null,gpsAcceleration=0,lastFrame=performance.now(),frame=0,hiddenPause=false;
 function message(t){$('status').textContent=t;}
 function releaseRev(){rev=false;$('rev').classList.remove('held');}
-// A looped, procedurally generated combustion wavetable: impulse train + harmonics.
-function buildAudio(){const AC=window.AudioContext||window.webkitAudioContext;if(!AC)throw Error('Web Audio indisponível neste browser.');const ctx=new AC();const master=ctx.createGain();master.gain.value=0;const limiter=ctx.createDynamicsCompressor();limiter.threshold.value=-16;limiter.knee.value=8;limiter.ratio.value=12;limiter.attack.value=.003;limiter.release.value=.15;master.connect(limiter).connect(ctx.destination);
- const osc=ctx.createOscillator(),real=new Float32Array(40),imag=new Float32Array(40);for(let i=1;i<40;i++)imag[i]=Math.exp(-i/12)/Math.pow(i,.38);osc.setPeriodicWave(ctx.createPeriodicWave(real,imag));const exhaust=ctx.createBiquadFilter();exhaust.type='lowpass';exhaust.Q.value=.8;const pulseGain=ctx.createGain();pulseGain.gain.value=.27;osc.connect(exhaust).connect(pulseGain).connect(master);
- const sub=ctx.createOscillator(),subGain=ctx.createGain();sub.type='triangle';subGain.gain.value=.14;sub.connect(subGain).connect(master);
- const buffer=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate),data=buffer.getChannelData(0);for(let i=0;i<data.length;i++)data[i]=Math.random()*2-1;const noise=ctx.createBufferSource();noise.buffer=buffer;noise.loop=true;const intake=ctx.createBiquadFilter();intake.type='bandpass';intake.Q.value=.6;const noiseGain=ctx.createGain();noiseGain.gain.value=0;noise.connect(intake).connect(noiseGain).connect(master);
- const flutter=ctx.createOscillator(),flutterGain=ctx.createGain();flutter.type='sine';flutterGain.gain.value=2;flutter.connect(flutterGain).connect(osc.frequency);osc.start();sub.start();noise.start();flutter.start();ctx.onstatechange=()=>{if(!audio||audio.ctx!==ctx)return;$('audioState').textContent=ctx.state==='running'?'Ativo':'Pausado';if(running&&ctx.state==='suspended')message('Áudio suspenso pelo browser. Toca em Retomar som.');if(ctx.state!=='running'&&running)$('start').textContent='↻ Retomar som';};return {ctx,master,osc,exhaust,pulseGain,sub,subGain,noise,intake,noiseGain,flutter,flutterGain};}
-function updateAudio(){if(!audio||!running)return;const a=audio,t=a.ctx.currentTime,e=engines[$('engine').value],c=+$('character').value/100;const set=(p,v)=>p.setTargetAtTime(v,t,.07);set(a.osc.frequency,rpm/60*e.cyl/2);set(a.sub.frequency,rpm/120);set(a.flutter.frequency,Math.max(8,rpm/60));set(a.flutterGain.gain,e.rough*(1+c)*rpm/70);set(a.exhaust.frequency,e.tone*(.4+c*.7+load*.6));set(a.pulseGain.gain,.16+load*.13);set(a.intake.frequency,400+rpm*.25);set(a.noiseGain.gain,.008+load*.055*(.4+c));set(a.master.gain,+$('volume').value/100*.48);}
-async function start(){try{if(audio&&audio.ctx.state==='closed'){audio=null;running=false;}if(running&&audio.ctx.state==='running'){stop();return;}if(!audio)audio=buildAudio();await audio.ctx.resume();running=true;$('start').textContent=audio.ctx.state==='running'?'■ Parar som':'↻ Retomar som';$('audioState').textContent=audio.ctx.state==='running'?'Ativo':'Pausado';message('Som sintetizado no browser. Ajusta o volume com cuidado.');}catch(e){message('Não foi possível iniciar o áudio: '+e.message);stop();}}
-function stop(){running=false;releaseRev();if(audio){const old=audio;audio=null;old.master.gain.setTargetAtTime(0,old.ctx.currentTime,.025);setTimeout(()=>old.ctx.close().catch(()=>{}),160);}$('start').textContent='▶ Iniciar som';$('audioState').textContent='Desligado';}
-function clearGPS(){if(watch!==null)navigator.geolocation.clearWatch(watch);watch=null;previous=null;lastFix=0;gpsSpeed=null;gpsAcceleration=0;$('gpsEnable').textContent='Autorizar localização';}
-function setMode(next){clearGPS();mode=next;speed=0;releaseRev();$('simControls').hidden=mode!=='sim';$('gpsControls').hidden=mode!=='gps';$('simMode').classList.toggle('active',mode==='sim');$('gpsMode').classList.toggle('active',mode==='gps');$('simMode').setAttribute('aria-pressed',mode==='sim');$('gpsMode').setAttribute('aria-pressed',mode==='gps');$('modeBadge').textContent=mode==='sim'?'SIMULAÇÃO · PARADO':'GPS · VELOCIDADE REAL';$('rev').disabled=mode==='gps';$('gpsInfo').textContent='GPS desligado. Autoriza a localização para começar.';message(mode==='sim'?'Modo de teste: velocidade e mudanças simuladas.':'GPS não lê o acelerador. Sem localização válida, não é apresentada velocidade.');}
-function enableGPS(){if(watch!==null){clearGPS();$('gpsInfo').textContent='Localização desligada.';return;}if(!window.isSecureContext){message('O GPS requer HTTPS ou localhost. A simulação funciona neste ficheiro offline.');return;}if(!navigator.geolocation){message('Geolocalização indisponível neste browser.');return;}previous=null;lastFix=0;gpsSpeed=null;$('gpsEnable').textContent='Desligar localização';$('gpsInfo').textContent='A aguardar uma posição válida…';watch=navigator.geolocation.watchPosition(pos=>{if(mode!=='gps')return;const p={lat:pos.coords.latitude,lon:pos.coords.longitude,accuracy:pos.coords.accuracy,speed:pos.coords.speed,time:pos.timestamp};if(Date.now()-p.time>10000||p.time>Date.now()+2000){gpsSpeed=null;$('gpsInfo').textContent='Posição antiga rejeitada.';return;}const result=gpsSample(previous,p);if(!result.ok){gpsSpeed=null;gpsAcceleration=0;$('gpsInfo').textContent=result.reason;return;}const old=previous;previous=result.point;gpsSpeed=result.speed;lastFix=performance.now();gpsAcceleration=old&&old.kmh!==null&&gpsSpeed!==null?clamp((gpsSpeed-old.kmh)/3.6/Math.max(1,(p.time-old.time)/1000),-5,5):0;$('gpsInfo').textContent=`Precisão ±${Math.round(p.accuracy)} m · ${result.speed===null?'A aguardar segunda posição para estimar velocidade':result.derived?'Velocidade estimada por posições':'Velocidade fornecida pelo GPS'}`;},err=>{gpsSpeed=null;gpsAcceleration=0;$('gpsInfo').textContent=({1:'Permissão recusada. Podes usar a simulação.',2:'Localização indisponível. A aguardar sinal.',3:'Tempo de espera excedido. Sem velocidade válida.'})[err.code]||'Erro de localização.';if(err.code===1){clearGPS();$('gpsInfo').textContent='Permissão de localização recusada.';}},{enableHighAccuracy:true,timeout:10000,maximumAge:1000});}
-function tick(now){const dt=Math.min(.1,(now-lastFrame)/1000);lastFrame=now;const e=engines[$('engine').value];let valid=true,accel=0;if(mode==='sim'){const target=+$('target').value;const diff=target-speed;const rate=diff>0?.5+ +$('throttle').value/100*5:5;const change=clamp(diff,-rate*3.6*dt,rate*3.6*dt);speed+=change;accel=change/Math.max(dt,.001)/3.6;}else{valid=gpsSpeed!==null&&lastFix>0&&now-lastFix<8000;if(valid){speed=gpsSpeed;accel=gpsAcceleration;}else{speed=0;gpsAcceleration=0;if(lastFix&&now-lastFix>=8000)$('gpsInfo').textContent='Sinal desatualizado. Velocidade indisponível.';}}
- const m=mapping(speed,$('engine').value,accel);gear=valid?m.gear:0;let targetRPM=valid?m.rpm:e.idle;let targetLoad=valid?m.load:0;if(mode==='sim'&&rev){targetRPM=e.max*.9;targetLoad=.9;}rpm+=(targetRPM-rpm)*(1-Math.exp(-dt*(rev?3:5)));load+=(targetLoad-load)*(1-Math.exp(-dt*4));$('speed').textContent=valid?Math.round(speed):'—';$('source').textContent=mode==='sim'?'Velocidade simulada · sem ligação ao carro':valid?'GPS · não mede o pedal':'GPS · sem velocidade válida';$('rpm').textContent=Math.round(rpm).toLocaleString('pt-PT')+' rpm';$('redline').textContent=e.max.toLocaleString('pt-PT')+' máx.';$('rpmFill').style.width=(rpm/e.max*100)+'%';$('rpmMeter').setAttribute('aria-valuemax',e.max);$('rpmMeter').setAttribute('aria-valuenow',Math.round(rpm));$('gear').textContent=gear||'N';$('load').textContent=Math.round(load*100)+'%';updateAudio();frame=requestAnimationFrame(tick);}
-$('start').onclick=start;$('simMode').onclick=()=>setMode('sim');$('gpsMode').onclick=()=>setMode('gps');$('gpsEnable').onclick=enableGPS;
-$('rev').addEventListener('pointerdown',ev=>{if(mode!=='sim')return;ev.preventDefault();$('rev').setPointerCapture(ev.pointerId);rev=true;$('rev').classList.add('held');});['pointerup','pointercancel','lostpointercapture'].forEach(type=>$('rev').addEventListener(type,releaseRev));$('rev').addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&mode==='sim'){e.preventDefault();rev=true;$('rev').classList.add('held');}});$('rev').addEventListener('keyup',releaseRev);$('rev').addEventListener('blur',releaseRev);window.addEventListener('blur',releaseRev);
+function describeProfile(){
+ const e=engines[$('engine').value];
+ if(!e) return;
+ $('profileHint').textContent=e.unofficial
+  ?'Síntese original não oficial. Não é uma gravação nem uma reprodução autêntica deste modelo; a afinação é uma escolha de design.'
+  :'Arquitetura genérica sintetizada, sem corresponder a um modelo de fábrica.';
+}
+function buildWave(ctx,e){
+ const n=48,real=new Float32Array(n),imag=new Float32Array(n);
+ for(let i=1;i<n;i++) imag[i]=Core.harmonicPartial(e,i);
+ return ctx.createPeriodicWave(real,imag);
+}
+function buildAudio(){
+ const AC=window.AudioContext||window.webkitAudioContext;
+ if(!AC) throw Error('Web Audio indisponível neste browser.');
+ const ctx=new AC();
+ const master=ctx.createGain();
+ master.gain.value=0;
+ const limiter=ctx.createDynamicsCompressor();
+ limiter.threshold.value=-16;limiter.knee.value=8;limiter.ratio.value=12;limiter.attack.value=.003;limiter.release.value=.15;
+ master.connect(limiter).connect(ctx.destination);
+ function voice(){
+  const osc=ctx.createOscillator(),exhaust=ctx.createBiquadFilter(),pulseGain=ctx.createGain();
+  exhaust.type='lowpass';exhaust.frequency.value=1200;exhaust.Q.value=.8;
+  pulseGain.gain.value=0;
+  osc.frequency.value=80;
+  osc.connect(exhaust).connect(pulseGain).connect(master);
+  osc.start();
+  return {osc,exhaust,pulseGain};
+ }
+ const voices=[voice(),voice()];
+ const sub=ctx.createOscillator(),subGain=ctx.createGain();
+ sub.type='triangle';sub.frequency.value=40;subGain.gain.value=0;
+ sub.connect(subGain).connect(master);
+ const buffer=ctx.createBuffer(1,ctx.sampleRate*2,ctx.sampleRate),data=buffer.getChannelData(0);
+ for(let i=0;i<data.length;i++) data[i]=Math.random()*2-1;
+ const noise=ctx.createBufferSource();
+ noise.buffer=buffer;noise.loop=true;
+ const intake=ctx.createBiquadFilter();
+ intake.type='bandpass';intake.frequency.value=400;intake.Q.value=.6;
+ const noiseGain=ctx.createGain();
+ noiseGain.gain.value=0;
+ noise.connect(intake).connect(noiseGain).connect(master);
+ const flutter=ctx.createOscillator(),flutterGain=ctx.createGain();
+ flutter.type='sine';flutter.frequency.value=8;flutterGain.gain.value=0;
+ flutter.connect(flutterGain);
+ flutterGain.connect(voices[0].osc.frequency);
+ flutterGain.connect(voices[1].osc.frequency);
+ sub.start();noise.start();flutter.start();
+ ctx.onstatechange=()=>{
+  if(!audio||audio.ctx!==ctx) return;
+  $('audioState').textContent=ctx.state==='running'?'Ativo':'Pausado';
+  if(running&&ctx.state==='suspended') message('Áudio suspenso pelo browser. Toca em Retomar som.');
+  if(ctx.state!=='running'&&running) $('start').textContent='↻ Retomar som';
+ };
+ return {ctx,master,voices,active:0,lastKey:null,sub,subGain,noise,intake,noiseGain,flutter,flutterGain};
+}
+function updateAudio(){
+ if(!audio||!running) return;
+ const a=audio,t=a.ctx.currentTime,key=$('engine').value,e=engines[key];
+ if(!e) return;
+ const c=+$('character').value/100;
+ const set=(p,v,tc=.07)=>p.setTargetAtTime(v,t,tc);
+ const firing=Math.max(20,rpm/60*e.cyl/2);
+ const pulseTarget=e.pulseGain+load*e.pulseLoad;
+ if(a.lastKey!==key){
+  const next=1-a.active,incoming=a.voices[next],outgoing=a.voices[a.active];
+  incoming.pulseGain.gain.cancelScheduledValues(t);
+  incoming.pulseGain.gain.setValueAtTime(0,t);
+  incoming.osc.setPeriodicWave(buildWave(a.ctx,e));
+  incoming.osc.frequency.setValueAtTime(firing,t);
+  incoming.exhaust.frequency.setValueAtTime(Math.max(80,e.tone*(.4+c*.7+load*.6)),t);
+  incoming.exhaust.Q.setValueAtTime(e.exhaustQ,t);
+  incoming.pulseGain.gain.setTargetAtTime(pulseTarget,t,.06);
+  outgoing.pulseGain.gain.cancelScheduledValues(t);
+  outgoing.pulseGain.gain.setValueAtTime(outgoing.pulseGain.gain.value,t);
+  outgoing.pulseGain.gain.setTargetAtTime(0,t,.05);
+  a.active=next;
+  a.lastKey=key;
+ }
+ const v=a.voices[a.active];
+ set(v.osc.frequency,firing);
+ set(v.exhaust.frequency,e.tone*(.4+c*.7+load*.6));
+ set(v.exhaust.Q,e.exhaustQ);
+ set(v.pulseGain.gain,pulseTarget);
+ set(a.voices[1-a.active].pulseGain.gain,0,.05);
+ set(a.sub.frequency,rpm/e.subDiv);
+ set(a.subGain.gain,e.subGain*(.6+load*.4));
+ set(a.flutter.frequency,Math.max(e.flutterBase,rpm/60));
+ set(a.flutterGain.gain,e.rough*(1+c)*rpm/70);
+ set(a.intake.frequency,e.intakeBase+rpm*e.intakeRatio);
+ set(a.intake.Q,e.intakeQ);
+ set(a.noiseGain.gain,e.noiseIdle+load*e.noiseLoad*(.4+c));
+ set(a.master.gain,+$('volume').value/100*.48);
+}
+async function start(){
+ try{
+  if(audio&&audio.ctx.state==='closed'){audio=null;running=false;}
+  if(running&&audio.ctx.state==='running'){stop();return;}
+  if(!audio) audio=buildAudio();
+  await audio.ctx.resume();
+  running=true;
+  $('start').textContent=audio.ctx.state==='running'?'■ Parar som':'↻ Retomar som';
+  $('audioState').textContent=audio.ctx.state==='running'?'Ativo':'Pausado';
+  message('Som sintetizado no browser. Ajusta o volume com cuidado.');
+ }catch(err){message('Não foi possível iniciar o áudio: '+err.message);stop();}
+}
+function stop(){
+ running=false;releaseRev();
+ if(audio){
+  const old=audio;audio=null;
+  old.master.gain.setTargetAtTime(0,old.ctx.currentTime,.025);
+  setTimeout(()=>old.ctx.close().catch(()=>{}),160);
+ }
+ $('start').textContent='▶ Iniciar som';
+ $('audioState').textContent='Desligado';
+}
+function clearGPS(){
+ if(watch!==null) navigator.geolocation.clearWatch(watch);
+ watch=null;previous=null;lastFix=0;gpsSpeed=null;gpsAcceleration=0;
+ $('gpsEnable').textContent='Autorizar localização';
+}
+function setMode(next){
+ clearGPS();mode=next;speed=0;releaseRev();
+ $('simControls').hidden=mode!=='sim';
+ $('gpsControls').hidden=mode!=='gps';
+ $('simMode').classList.toggle('active',mode==='sim');
+ $('gpsMode').classList.toggle('active',mode==='gps');
+ $('simMode').setAttribute('aria-pressed',mode==='sim');
+ $('gpsMode').setAttribute('aria-pressed',mode==='gps');
+ $('modeBadge').textContent=mode==='sim'?'SIMULAÇÃO · PARADO':'GPS · VELOCIDADE REAL';
+ $('rev').disabled=mode==='gps';
+ $('gpsInfo').textContent='GPS desligado. Autoriza a localização para começar.';
+ message(mode==='sim'?'Modo de teste: velocidade e mudanças simuladas.':'GPS não lê o acelerador. Sem localização válida, não é apresentada velocidade.');
+}
+function enableGPS(){
+ if(watch!==null){clearGPS();$('gpsInfo').textContent='Localização desligada.';return;}
+ if(!window.isSecureContext){message('O GPS requer HTTPS ou localhost. A simulação funciona neste ficheiro offline.');return;}
+ if(!navigator.geolocation){message('Geolocalização indisponível neste browser.');return;}
+ previous=null;lastFix=0;gpsSpeed=null;
+ $('gpsEnable').textContent='Desligar localização';
+ $('gpsInfo').textContent='A aguardar uma posição válida…';
+ watch=navigator.geolocation.watchPosition(pos=>{
+  if(mode!=='gps') return;
+  const p={lat:pos.coords.latitude,lon:pos.coords.longitude,accuracy:pos.coords.accuracy,speed:pos.coords.speed,time:pos.timestamp};
+  if(Date.now()-p.time>10000||p.time>Date.now()+2000){gpsSpeed=null;$('gpsInfo').textContent='Posição antiga rejeitada.';return;}
+  const result=gpsSample(previous,p);
+  if(!result.ok){gpsSpeed=null;gpsAcceleration=0;$('gpsInfo').textContent=result.reason;return;}
+  const old=previous;previous=result.point;gpsSpeed=result.speed;lastFix=performance.now();
+  gpsAcceleration=old&&old.kmh!==null&&gpsSpeed!==null?clamp((gpsSpeed-old.kmh)/3.6/Math.max(1,(p.time-old.time)/1000),-5,5):0;
+  $('gpsInfo').textContent=`Precisão ±${Math.round(p.accuracy)} m · ${result.speed===null?'A aguardar segunda posição para estimar velocidade':result.derived?'Velocidade estimada por posições':'Velocidade fornecida pelo GPS'}`;
+ },err=>{
+  gpsSpeed=null;gpsAcceleration=0;
+  $('gpsInfo').textContent=({1:'Permissão recusada. Podes usar a simulação.',2:'Localização indisponível. A aguardar sinal.',3:'Tempo de espera excedido. Sem velocidade válida.'})[err.code]||'Erro de localização.';
+  if(err.code===1){clearGPS();$('gpsInfo').textContent='Permissão de localização recusada.';}
+ },{enableHighAccuracy:true,timeout:10000,maximumAge:1000});
+}
+function tick(now){
+ const dt=Math.min(.1,(now-lastFrame)/1000);lastFrame=now;
+ const e=engines[$('engine').value]||engines.v8;
+ let valid=true,accel=0;
+ if(mode==='sim'){
+  const target=+$('target').value;
+  const diff=target-speed;
+  const rate=diff>0?.5+$('throttle').value/100*5:5;
+  const change=clamp(diff,-rate*3.6*dt,rate*3.6*dt);
+  speed+=change;accel=change/Math.max(dt,.001)/3.6;
+ }else{
+  valid=gpsSpeed!==null&&lastFix>0&&now-lastFix<8000;
+  if(valid){speed=gpsSpeed;accel=gpsAcceleration;}
+  else{speed=0;gpsAcceleration=0;if(lastFix&&now-lastFix>=8000) $('gpsInfo').textContent='Sinal desatualizado. Velocidade indisponível.';}
+ }
+ const m=mapping(speed,$('engine').value,accel);
+ gear=valid?m.gear:0;
+ let targetRPM=valid?m.rpm:e.idle;
+ let targetLoad=valid?m.load:0;
+ if(mode==='sim'&&rev){targetRPM=e.max*.9;targetLoad=.9;}
+ rpm+=(targetRPM-rpm)*(1-Math.exp(-dt*(rev?3:5)));
+ load+=(targetLoad-load)*(1-Math.exp(-dt*4));
+ $('speed').textContent=valid?Math.round(speed):'—';
+ $('source').textContent=mode==='sim'?'Velocidade simulada · sem ligação ao carro':valid?'GPS · não mede o pedal':'GPS · sem velocidade válida';
+ $('rpm').textContent=Math.round(rpm).toLocaleString('pt-PT')+' rpm';
+ $('redline').textContent=e.max.toLocaleString('pt-PT')+' máx.';
+ $('rpmFill').style.width=(rpm/e.max*100)+'%';
+ $('rpmMeter').setAttribute('aria-valuemax',e.max);
+ $('rpmMeter').setAttribute('aria-valuenow',Math.round(rpm));
+ $('gear').textContent=gear||'N';
+ $('load').textContent=Math.round(load*100)+'%';
+ updateAudio();
+ frame=requestAnimationFrame(tick);
+}
+$('start').onclick=start;
+$('simMode').onclick=()=>setMode('sim');
+$('gpsMode').onclick=()=>setMode('gps');
+$('gpsEnable').onclick=enableGPS;
+$('engine').addEventListener('change',()=>{
+ describeProfile();
+ const e=engines[$('engine').value];
+ if(!e) return;
+ message(e.unofficial
+  ?'Síntese não oficial inspirada no carácter geral, não uma gravação nem uma reprodução autêntica.'
+  :'Arquitetura genérica sintetizada. Não representa um modelo específico.');
+});
+$('rev').addEventListener('pointerdown',ev=>{if(mode!=='sim')return;ev.preventDefault();$('rev').setPointerCapture(ev.pointerId);rev=true;$('rev').classList.add('held');});
+['pointerup','pointercancel','lostpointercapture'].forEach(type=>$('rev').addEventListener(type,releaseRev));
+$('rev').addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&mode==='sim'){e.preventDefault();rev=true;$('rev').classList.add('held');}});
+$('rev').addEventListener('keyup',releaseRev);
+$('rev').addEventListener('blur',releaseRev);
+window.addEventListener('blur',releaseRev);
 ['target','throttle','volume','character'].forEach(id=>$(id).addEventListener('input',()=>{$(id+'Value').textContent=$(id).value+(id==='target'?' km/h':'%');}));
-document.addEventListener('visibilitychange',()=>{releaseRev();if(document.hidden){hiddenPause=running;stop();if(mode==='gps'){clearGPS();$('gpsInfo').textContent='GPS desligado em segundo plano. Volta a autorizar.';}}else if(hiddenPause){message('Som parado ao sair da página. Toca em Iniciar som para retomar.');hiddenPause=false;}});window.addEventListener('pagehide',()=>{clearGPS();stop();cancelAnimationFrame(frame);});window.addEventListener('pageshow',e=>{if(e.persisted){lastFrame=performance.now();frame=requestAnimationFrame(tick);}});frame=requestAnimationFrame(tick);
+document.addEventListener('visibilitychange',()=>{
+ releaseRev();
+ if(document.hidden){
+  hiddenPause=running;stop();
+  if(mode==='gps'){clearGPS();$('gpsInfo').textContent='GPS desligado em segundo plano. Volta a autorizar.';}
+ }else if(hiddenPause){message('Som parado ao sair da página. Toca em Iniciar som para retomar.');hiddenPause=false;}
+});
+window.addEventListener('pagehide',()=>{clearGPS();stop();cancelAnimationFrame(frame);});
+window.addEventListener('pageshow',e=>{if(e.persisted){lastFrame=performance.now();frame=requestAnimationFrame(tick);}});
+describeProfile();
+frame=requestAnimationFrame(tick);
 </script></body></html>
