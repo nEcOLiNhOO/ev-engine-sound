@@ -37,7 +37,7 @@ test('old baseline cannot derive a speed',()=>assert.equal(core.gpsSample(point(
 test('virtual gears upshift and RPM drops',()=>{let a=core.mapping(21.9,'v8'),b=core.mapping(22,'v8');assert.equal(a.gear,1);assert.equal(b.gear,2);assert(b.rpm<a.rpm);});
 test('all engines map finite bounded RPM/load over speed sweep',()=>{for(const key of Object.keys(core.engines))for(let s=-10;s<=300;s++){const m=core.mapping(s,key,4),e=core.engines[key];assert(m.rpm>=e.idle&&m.rpm<=e.max);assert(m.load>=0&&m.load<=1);assert(m.gear>=0&&m.gear<=6);}});
 test('positive acceleration increases synthetic load',()=>assert(core.mapping(40,'v6',2).load>core.mapping(40,'v6',0).load));
-test('visible version 3.0 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.0');assert.match(html,/data-version="3\.0"/);assert.match(html,/>v3\.0</);assert.match(html,/Impulso v3\.0/);});
+test('visible version 3.1 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.1');assert.match(html,/data-version="3\.1"/);assert.match(html,/>v3\.1</);assert.match(html,/Impulso v3\.1/);});
 test('at least 21 presets with expected keys',()=>{
  const keys=Object.keys(core.engines);
  assert(keys.length>=21,keys.length);
@@ -215,5 +215,84 @@ test('pops control defaults to off and intensity is optional',()=>{
  assert.match(html,/id="popsIntensity"/);
  assert.doesNotMatch(html,/id="popsEnable"[^>]*checked/);
  assert.match(html,/Estalos e pops \(opcional\)/);
+});
+
+// ---- v3.1 GPS timing fix: receipt time, never pos.timestamp age ----
+const WALL=1794200000000; // fixed wall clock for determinism
+const mkPos=(lat,offsetMs,speed=null,acc=5,tsStep=0)=>({coords:{latitude:lat,longitude:-9.1,accuracy:acc,speed},timestamp:WALL+offsetMs+tsStep});
+function runFixes(offsetMs,{native,intervalMs,steps}){
+ let track=null,last=null;
+ for(let i=0;i<steps;i++){
+  const received=1000+i*intervalMs;                 // receipt time (performance.now-like)
+  const latStep=native?0:(20*intervalMs/1000)/111195; // ~20 m/s along latitude
+  const pos=mkPos(38.7+i*latStep,offsetMs,native?20:null,5,i*intervalMs);
+  const fix=core.gpsFix(pos,received,WALL+i*intervalMs);
+  const step=core.gpsStep(track,fix);
+  track=step.track;last={fix,result:step.result};
+ }
+ return last;
+}
+test('watch callback no longer rejects by pos.timestamp age',()=>{
+ assert.doesNotMatch(html,/Posição antiga rejeitada/);
+ assert.doesNotMatch(script,/Date\.now\(\)\s*-\s*p\.time/);
+ assert.doesNotMatch(script,/p\.time\s*>\s*Date\.now\(\)/);
+ assert.match(script,/Core\.gpsFix\(pos,performance\.now\(\),Date\.now\(\)\)/);
+ assert.match(script,/maximumAge:0/);
+});
+for(const [label,off] of [['-60 s',-60000],['-1 h',-3600000],['+1 h',3600000]]){
+ test(`timestamp offset ${label}: native speed still valid`,()=>{
+  const {fix,result}=runFixes(off,{native:true,intervalMs:1000,steps:3});
+  assert.equal(result.ok,true);
+  assert.equal(result.speed,72);
+  assert.equal(result.derived,false);
+  assert(Math.abs(fix.offsetSec-off/1000)<1e-9);
+  assert.equal(fix.time,3000);
+ });
+ test(`timestamp offset ${label}: position-derived speed still valid`,()=>{
+  const {fix,result}=runFixes(off,{native:false,intervalMs:1000,steps:4});
+  assert.equal(result.ok,true);
+  assert.equal(result.derived,true);
+  assert(Math.abs(result.speed-72)<1,String(result.speed));
+  assert(Math.abs(fix.offsetSec-off/1000)<1e-9);
+ });
+}
+test('fixes faster than 1 Hz without native speed still derive a speed',()=>{
+ const {result}=runFixes(-3600000,{native:false,intervalMs:400,steps:12});
+ assert.equal(result.ok,true);
+ assert.notEqual(result.speed,null);
+ assert(Math.abs(result.speed-72)<2,String(result.speed));
+});
+test('repeated raw timestamp is ignored as a duplicate, not a rejection that clears speed',()=>{
+ const a=core.gpsFix(mkPos(38.7,-3600000,20),1000,WALL);
+ const s1=core.gpsStep(null,a);
+ assert.equal(s1.result.ok,true);
+ const b=core.gpsFix(mkPos(38.7,-3600000,20),1500,WALL+500);
+ const s2=core.gpsStep(s1.track,b);
+ assert.equal(s2.result.ok,false);
+ assert.equal(s2.result.duplicate,true);
+ assert.equal(s2.track,s1.track);
+});
+test('receipt-time ordering still rejects jumps and implausible changes',()=>{
+ const a=core.gpsFix(mkPos(38.7,-3600000,0),1000,WALL);
+ const s1=core.gpsStep(null,a);
+ const b=core.gpsFix(mkPos(38.7,-3600000,30,5,2000),3000,WALL+2000);
+ assert.equal(core.gpsStep(s1.track,b).result.ok,false);
+ const c=core.gpsFix(mkPos(39.5,-3600000,1,5,2000),3000,WALL+2000);
+ assert.equal(core.gpsStep(s1.track,c).result.ok,false);
+});
+test('poor accuracy is still rejected regardless of timestamp',()=>{
+ const f=core.gpsFix(mkPos(38.7,3600000,10,150),1000,WALL);
+ assert.equal(core.gpsStep(null,f).result.ok,false);
+});
+test('diagnostics panel exposes timestamp offset in seconds',()=>{
+ assert.match(html,/id="gpsDiag"/);
+ assert.match(html,/Desvio do timestamp/);
+ assert.match(html,/id="dgOffset"/);
+ assert.equal(core.formatOffset(-3600),'−3600.0 s');
+ assert.equal(core.formatOffset(3600),'+3600.0 s');
+ assert.equal(core.formatOffset(-60.04),'−60.0 s');
+ assert.equal(core.formatOffset(0),'0.0 s');
+ assert.equal(core.formatOffset(null),'indisponível');
+ assert.equal(core.gpsFix({coords:{latitude:1,longitude:1,accuracy:5,speed:null}},1,WALL).offsetSec,null);
 });
 console.log(`${count} tests passed; full inline JavaScript syntax valid. These tests cover logic and syntax only, not listening.`);

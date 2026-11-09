@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pt-PT" data-version="3.0"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual v3.0</title>
+<html lang="pt-PT" data-version="3.1"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual v3.1</title>
 <style>
-:root{color-scheme:dark;--bg:#0c1219;--panel:#141e28;--line:#293744;--text:#eef4f7;--muted:#a2b3c0;--accent:#c4f46c;--blue:#7bd9e7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% 0,#20303b,transparent 65%),var(--bg);font:16px system-ui,sans-serif;color:var(--text)}main{max-width:1220px;margin:auto;padding:28px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.brand{font-size:24px;letter-spacing:.2em;font-weight:800}.ver{font-size:11px;letter-spacing:.14em;color:var(--muted);font-weight:700;margin-left:8px;vertical-align:middle}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin:8px 0}.badge{border:1px solid var(--line);border-radius:30px;padding:10px 15px;font-size:12px;color:var(--accent)}.layout{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}.panel{background:linear-gradient(140deg,#18232e,#101922);border:1px solid var(--line);border-radius:24px;padding:25px}.modes{display:flex;gap:8px}button,select{font:inherit;color:inherit;background:#202d39;border:1px solid #3b4a58;border-radius:12px;min-height:48px;padding:10px 16px;cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:3px}button.active{background:var(--accent);color:#14200a;border-color:var(--accent)}button:disabled{opacity:.4;cursor:not-allowed}.dial{height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin:15px auto 0;max-width:380px}.dial:before{content:"";position:absolute;inset:5px 10px 0;border:12px solid #273641;border-bottom-color:transparent;border-radius:50% 50% 35% 35%;pointer-events:none}.dial:after{content:"";position:absolute;inset:5px 10px 0;border:12px solid transparent;border-left-color:var(--accent);border-radius:50% 50% 35% 35%;opacity:.7;pointer-events:none}.speed{font-size:88px;line-height:1.1;font-weight:250;font-variant-numeric:tabular-nums;z-index:1}.unit{color:var(--muted);font-size:13px}.source{margin-top:16px;font-size:12px;color:var(--blue);text-align:center;z-index:1}.rpmrow{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin:8px 0}.track{height:10px;background:#2b3741;border-radius:8px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ffd170,#fc806d);transition:width .12s}.stats{display:flex;justify-content:space-between;margin:22px 0;font-size:13px;color:var(--muted)}.stats b{display:block;font-size:20px;color:var(--text);margin-top:5px}.actions{display:flex;gap:12px}.actions button{flex:1;min-height:60px;font-weight:700}#start{background:var(--accent);color:#182312;border:0}#rev{touch-action:none;user-select:none;-webkit-user-select:none}#rev.held{background:var(--blue);color:#12212a}.controls h1{font-size:25px;margin:0 0 6px}.subtitle{color:var(--muted);font-size:14px;line-height:1.5}label{display:block;color:var(--muted);font-size:13px;margin-top:23px}.labelrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.labelrow output{color:var(--text)}select{width:100%}input[type=range]{accent-color:var(--accent);width:100%;min-height:32px;margin:0;cursor:pointer}.note{font-size:12px;color:var(--muted);line-height:1.6}.honesty{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5}#profileHint{margin-top:10px;color:var(--text)}.notice{min-height:45px;padding:12px 0 0;color:var(--blue);font-size:13px;line-height:1.5}.gpsbox{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:18px}.gpsbox button{width:100%}.toggle{display:flex;align-items:center;gap:10px;margin-top:20px;color:var(--text);font-size:14px;cursor:pointer}.toggle input{width:22px;height:22px;accent-color:var(--accent);flex-shrink:0}.popsbox{margin-top:4px}.foot{margin:20px 2px;color:var(--muted);font-size:12px;line-height:1.6} [hidden]{display:none!important}@media(max-width:760px){main{padding:16px}.layout{grid-template-columns:1fr}.panel{padding:20px}header{margin-bottom:16px}.brand{font-size:20px}.dial{height:230px}.speed{font-size:76px}.badge{font-size:10px;padding:8px}.controls h1{font-size:23px}}@media(min-width:900px) and (max-height:800px){main{padding-top:18px}.dial{height:225px}label{margin-top:16px}}
+:root{color-scheme:dark;--bg:#0c1219;--panel:#141e28;--line:#293744;--text:#eef4f7;--muted:#a2b3c0;--accent:#c4f46c;--blue:#7bd9e7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% 0,#20303b,transparent 65%),var(--bg);font:16px system-ui,sans-serif;color:var(--text)}main{max-width:1220px;margin:auto;padding:28px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.brand{font-size:24px;letter-spacing:.2em;font-weight:800}.ver{font-size:11px;letter-spacing:.14em;color:var(--muted);font-weight:700;margin-left:8px;vertical-align:middle}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin:8px 0}.badge{border:1px solid var(--line);border-radius:30px;padding:10px 15px;font-size:12px;color:var(--accent)}.layout{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}.panel{background:linear-gradient(140deg,#18232e,#101922);border:1px solid var(--line);border-radius:24px;padding:25px}.modes{display:flex;gap:8px}button,select{font:inherit;color:inherit;background:#202d39;border:1px solid #3b4a58;border-radius:12px;min-height:48px;padding:10px 16px;cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:3px}button.active{background:var(--accent);color:#14200a;border-color:var(--accent)}button:disabled{opacity:.4;cursor:not-allowed}.dial{height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin:15px auto 0;max-width:380px}.dial:before{content:"";position:absolute;inset:5px 10px 0;border:12px solid #273641;border-bottom-color:transparent;border-radius:50% 50% 35% 35%;pointer-events:none}.dial:after{content:"";position:absolute;inset:5px 10px 0;border:12px solid transparent;border-left-color:var(--accent);border-radius:50% 50% 35% 35%;opacity:.7;pointer-events:none}.speed{font-size:88px;line-height:1.1;font-weight:250;font-variant-numeric:tabular-nums;z-index:1}.unit{color:var(--muted);font-size:13px}.source{margin-top:16px;font-size:12px;color:var(--blue);text-align:center;z-index:1}.rpmrow{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin:8px 0}.track{height:10px;background:#2b3741;border-radius:8px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ffd170,#fc806d);transition:width .12s}.stats{display:flex;justify-content:space-between;margin:22px 0;font-size:13px;color:var(--muted)}.stats b{display:block;font-size:20px;color:var(--text);margin-top:5px}.actions{display:flex;gap:12px}.actions button{flex:1;min-height:60px;font-weight:700}#start{background:var(--accent);color:#182312;border:0}#rev{touch-action:none;user-select:none;-webkit-user-select:none}#rev.held{background:var(--blue);color:#12212a}.controls h1{font-size:25px;margin:0 0 6px}.subtitle{color:var(--muted);font-size:14px;line-height:1.5}label{display:block;color:var(--muted);font-size:13px;margin-top:23px}.labelrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.labelrow output{color:var(--text)}select{width:100%}input[type=range]{accent-color:var(--accent);width:100%;min-height:32px;margin:0;cursor:pointer}.note{font-size:12px;color:var(--muted);line-height:1.6}.honesty{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5}#profileHint{margin-top:10px;color:var(--text)}.notice{min-height:45px;padding:12px 0 0;color:var(--blue);font-size:13px;line-height:1.5}.gpsbox{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:18px}.gpsbox button{width:100%}.diag{margin-top:10px;font-size:12px;color:var(--muted)}.diag summary{cursor:pointer;color:var(--text);min-height:32px;padding-top:6px}.diag dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:8px 0 0}.diag dt{color:var(--muted)}.diag dd{margin:0;color:var(--text);font-variant-numeric:tabular-nums;word-break:break-word}.toggle{display:flex;align-items:center;gap:10px;margin-top:20px;color:var(--text);font-size:14px;cursor:pointer}.toggle input{width:22px;height:22px;accent-color:var(--accent);flex-shrink:0}.popsbox{margin-top:4px}.foot{margin:20px 2px;color:var(--muted);font-size:12px;line-height:1.6} [hidden]{display:none!important}@media(max-width:760px){main{padding:16px}.layout{grid-template-columns:1fr}.panel{padding:20px}header{margin-bottom:16px}.brand{font-size:20px}.dial{height:230px}.speed{font-size:76px}.badge{font-size:10px;padding:8px}.controls h1{font-size:23px}}@media(min-width:900px) and (max-height:800px){main{padding-top:18px}.dial{height:225px}label{margin-top:16px}}
 </style></head><body><main>
-<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.0</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
+<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.1</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
 <div class="layout"><section class="panel" aria-label="Instrumentos e reprodução"><div class="modes" aria-label="Modo"><button id="simMode" class="active" aria-pressed="true">Simulação</button><button id="gpsMode" aria-pressed="false">GPS real</button></div>
 <div class="dial"><div class="speed" id="speed">0</div><div class="unit">km/h</div><div class="source" id="source">Velocidade simulada · sem ligação ao carro</div></div>
 <div class="rpmrow"><span id="rpm">800 rpm</span><span id="redline">6 800 máx.</span></div><div class="track" role="meter" aria-label="Rotações do motor" aria-valuemin="0" aria-valuemax="6800" aria-valuenow="800" id="rpmMeter"><div class="fill" id="rpmFill"></div></div>
@@ -40,7 +40,7 @@
 <p class="note" id="profileHint"></p>
 <p class="honesty">Síntese original, não oficial — não é uma gravação nem uma cópia autêntica. A afinação é uma escolha de design.</p>
 <div id="simControls"><label for="target"><span class="labelrow"><span>Velocidade alvo simulada</span><output id="targetValue">0 km/h</output></span></label><input id="target" type="range" min="0" max="160" value="0" step="1"><label for="throttle"><span class="labelrow"><span>Resposta à aceleração</span><output id="throttleValue">45%</output></span></label><input id="throttle" type="range" min="5" max="100" value="45"><div class="note">Sobe a velocidade alvo para ouvir a aceleração e as mudanças virtuais. REV acelera em vazio; não altera a velocidade.</div></div>
-<div id="gpsControls" class="gpsbox" hidden><button id="gpsEnable">Autorizar localização</button><div class="note" id="gpsInfo">GPS desligado. Sem acesso ao pedal, ao motor ou à telemetria.</div></div>
+<div id="gpsControls" class="gpsbox" hidden><button id="gpsEnable">Autorizar localização</button><div class="note" id="gpsInfo">GPS desligado. Sem acesso ao pedal, ao motor ou à telemetria.</div><details class="diag" id="gpsDiag"><summary>Diagnóstico GPS</summary><dl><dt>Contexto seguro</dt><dd id="dgSecure">—</dd><dt>Permissão</dt><dd id="dgPerm">—</dd><dt>Desvio do timestamp</dt><dd id="dgOffset">—</dd><dt>Precisão</dt><dd id="dgAcc">—</dd><dt>Velocidade nativa</dt><dd id="dgNative">—</dd><dt>Origem</dt><dd id="dgSource">—</dd><dt>Última posição</dt><dd id="dgAge">—</dd><dt>Aceites / rejeitadas / repetidas</dt><dd id="dgCounts">0 / 0 / 0</dd><dt>Último motivo</dt><dd id="dgReason">—</dd><dt>Último erro</dt><dd id="dgError">—</dd></dl><p class="note">O desvio compara o timestamp do browser com o relógio do dispositivo. É só informativo: a idade é medida pela hora de receção.</p></details></div>
 <label for="volume"><span class="labelrow"><span>Volume</span><output id="volumeValue">15%</output></span></label><input id="volume" type="range" min="0" max="70" value="15"><label for="character"><span class="labelrow"><span>Caráter · suave → agressivo</span><output id="characterValue">40%</output></span></label><input id="character" type="range" min="0" max="100" value="40">
 <div class="popsbox">
 <label class="toggle" for="popsEnable"><input id="popsEnable" type="checkbox"> Estalos e pops (opcional)</label>
@@ -50,11 +50,11 @@
 <p class="note">Desligado por omissão. Só em desaceleração, ao largar o REV com rotação alta, ou numa mudança virtual / desaceleração GPS válida. Não lê o pedal e não dispara se o sinal se perder.</p>
 </div>
 </div>
-</section></div><footer class="foot">Impulso v3.0. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Saída pelos altifalantes do carro e o browser Tesla em movimento não estão validados. Síntese original, não oficial.</footer>
+</section></div><footer class="foot">Impulso v3.1. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Saída pelos altifalantes do carro e o browser Tesla em movimento não estão validados. Síntese original, não oficial.</footer>
 </main><script>
 'use strict';
 const Core=(()=>{
- const VERSION='3.0';
+ const VERSION='3.1';
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  const POP_LIMITS={maxGain:.22,maxVoices:3,decelThresh:-.55,maxNodesPerEvent:2,crackleDur:.055,shiftDur:.09};
  const engines={
@@ -162,10 +162,58 @@ const Core=(()=>{
   const nodes=Math.min(decision.count*POP_LIMITS.maxNodesPerEvent,POP_LIMITS.maxVoices*POP_LIMITS.maxNodesPerEvent);
   return {peak,dur,thumpPeak:peak*.45,nodes};
  }
- return {VERSION,clamp,engines,mapping,distance,gpsSample,harmonicPartial,profileFingerprint,firingMul,firingHz,evaluatePop,popEnvelope,POP_LIMITS};
+
+ // pos.timestamp is unreliable on some browsers (clock offsets of minutes or hours).
+ // Use receipt time for all timing; keep the raw timestamp only for duplicate detection and diagnostics.
+ function gpsFix(pos,receivedAt,wallNow){
+  const c=(pos&&pos.coords)||{};
+  const ts=pos?Number(pos.timestamp):NaN;
+  return {lat:c.latitude,lon:c.longitude,accuracy:c.accuracy,speed:c.speed,time:receivedAt,rawTs:Number.isFinite(ts)?ts:null,offsetSec:Number.isFinite(ts)&&Number.isFinite(wallNow)?(ts-wallNow)/1000:null};
+ }
+ function formatOffset(sec){
+  if(sec===null||!Number.isFinite(sec)) return 'indisponível';
+  const r=Math.round(sec*10)/10;
+  return (r>0?'+':r<0?'−':'')+Math.abs(r).toFixed(1)+' s';
+ }
+ // Tracks a derivation baseline that is NOT replaced by sub-second fixes, so position-derived
+ // speed still works when the browser sends fixes faster than 1 Hz without native speed.
+ function gpsStep(track,p){
+  const t=track||{baseline:null,last:null,lastRawTs:null};
+  const keep=(result)=>({track:t,result});
+  if(p.rawTs!==null&&p.rawTs!==undefined&&t.lastRawTs!==null&&p.rawTs===t.lastRawTs) return keep({ok:false,duplicate:true,reason:'Posição repetida ignorada'});
+  const native=Number.isFinite(p.speed)&&p.speed>=0;
+  const accelFrom=(prev,r)=>prev&&prev.kmh!==null&&prev.kmh!==undefined&&r.speed!==null?clamp((r.speed-prev.kmh)/3.6/Math.max(1,(p.time-prev.time)/1000),-5,5):0;
+  if(native){
+   const r=gpsSample(t.last,p);
+   if(!r.ok) return keep(r);
+   r.accel=accelFrom(t.last,r);
+   return {track:{baseline:r.point,last:r.point,lastRawTs:p.rawTs??null},result:r};
+  }
+  let base=t.baseline;
+  if(base&&(p.time-base.time)/1000>12) base=null;
+  if(!base){
+   const r=gpsSample(null,p);
+   if(!r.ok) return keep(r);
+   const held=t.last&&t.last.kmh!==null&&t.last.kmh!==undefined&&(p.time-t.last.time)/1000<=12;
+   const point={...r.point,kmh:null};
+   return {track:{baseline:point,last:t.last,lastRawTs:p.rawTs??null},result:{ok:true,speed:held?t.last.kmh:null,derived:true,held:!!held,accel:0,point}};
+  }
+  const dt=(p.time-base.time)/1000;
+  if(dt<1){
+   const r=gpsSample(null,p);
+   if(!r.ok) return keep(r);
+   const s=t.last&&t.last.kmh!==null&&t.last.kmh!==undefined?t.last.kmh:null;
+   return {track:{...t,lastRawTs:p.rawTs??null},result:{ok:true,speed:s,derived:true,held:true,accel:0,point:r.point}};
+  }
+  const r=gpsSample(base,p);
+  if(!r.ok) return keep(r);
+  r.accel=accelFrom(base,r);
+  return {track:{baseline:r.point,last:r.point,lastRawTs:p.rawTs??null},result:r};
+ }
+ return {VERSION,clamp,engines,mapping,distance,gpsSample,gpsFix,gpsStep,formatOffset,harmonicPartial,profileFingerprint,firingMul,firingHz,evaluatePop,popEnvelope,POP_LIMITS};
 })();
 const $=id=>document.getElementById(id),{clamp,engines,mapping,gpsSample}=Core;
-let mode='sim',speed=0,rpm=800,load=0,gear=0,rev=false,running=false,audio=null,watch=null,previous=null,lastFix=0,gpsSpeed=null,gpsAcceleration=0,lastFrame=performance.now(),frame=0,hiddenPause=false,prevGear=0,prevValid=false,popSuppress=false,lastPopAt=null;
+let gpsTrack=null,gpsStats={ok:0,bad:0,dup:0},gpsLastOffset=null,gpsLastAcc=null,gpsLastNative=null,gpsLastSource='—',gpsLastReason='—',gpsLastError='—',gpsPerm='—',diagTimer=0,mode='sim',speed=0,rpm=800,load=0,gear=0,rev=false,running=false,audio=null,watch=null,previous=null,lastFix=0,gpsSpeed=null,gpsAcceleration=0,lastFrame=performance.now(),frame=0,hiddenPause=false,prevGear=0,prevValid=false,popSuppress=false,lastPopAt=null;
 function message(t){$('status').textContent=t;}
 function describeProfile(){
  const e=engines[$('engine').value];
@@ -355,8 +403,26 @@ function stop(){
 }
 function clearGPS(){
  if(watch!==null) navigator.geolocation.clearWatch(watch);
- watch=null;previous=null;lastFix=0;gpsSpeed=null;gpsAcceleration=0;
+ watch=null;previous=null;lastFix=0;gpsSpeed=null;gpsAcceleration=0;gpsTrack=null;
  $('gpsEnable').textContent='Autorizar localização';
+ renderDiag();
+}
+function resetDiag(){gpsStats={ok:0,bad:0,dup:0};gpsLastOffset=null;gpsLastAcc=null;gpsLastNative=null;gpsLastSource='—';gpsLastReason='—';gpsLastError='—';}
+function renderDiag(){
+ if(!$('gpsDiag')) return;
+ $('dgSecure').textContent=window.isSecureContext?'Sim':'Não (HTTPS necessário)';
+ $('dgPerm').textContent=gpsPerm;
+ $('dgOffset').textContent=Core.formatOffset(gpsLastOffset);
+ $('dgAcc').textContent=Number.isFinite(gpsLastAcc)?'±'+Math.round(gpsLastAcc)+' m':'—';
+ $('dgNative').textContent=gpsLastNative===null?'nula (não fornecida)':Number.isFinite(gpsLastNative)?gpsLastNative.toFixed(2)+' m/s':'—';
+ $('dgSource').textContent=gpsLastSource;
+ $('dgAge').textContent=lastFix?((performance.now()-lastFix)/1000).toFixed(1)+' s atrás (hora de receção)':'—';
+ $('dgCounts').textContent=gpsStats.ok+' / '+gpsStats.bad+' / '+gpsStats.dup;
+ $('dgReason').textContent=gpsLastReason;
+ $('dgError').textContent=gpsLastError;
+}
+function readPermission(){
+ try{if(navigator.permissions&&navigator.permissions.query){navigator.permissions.query({name:'geolocation'}).then(s=>{gpsPerm=s.state;renderDiag();s.onchange=()=>{gpsPerm=s.state;renderDiag();};}).catch(()=>{gpsPerm='não disponível';renderDiag();});}else gpsPerm='não disponível';}catch(e){gpsPerm='não disponível';}
 }
 function setMode(next){
  cancelPops(audio);popSuppress=true;lastPopAt=null;
@@ -377,23 +443,39 @@ function enableGPS(){
  if(watch!==null){clearGPS();$('gpsInfo').textContent='Localização desligada.';return;}
  if(!window.isSecureContext){message('O GPS requer HTTPS ou localhost. A simulação funciona neste ficheiro offline.');return;}
  if(!navigator.geolocation){message('Geolocalização indisponível neste browser.');return;}
- previous=null;lastFix=0;gpsSpeed=null;prevValid=false;
+ previous=null;lastFix=0;gpsSpeed=null;prevValid=false;gpsTrack=null;resetDiag();readPermission();
  $('gpsEnable').textContent='Desligar localização';
  $('gpsInfo').textContent='A aguardar uma posição válida…';
+ renderDiag();
  watch=navigator.geolocation.watchPosition(pos=>{
   if(mode!=='gps') return;
-  const p={lat:pos.coords.latitude,lon:pos.coords.longitude,accuracy:pos.coords.accuracy,speed:pos.coords.speed,time:pos.timestamp};
-  if(Date.now()-p.time>10000||p.time>Date.now()+2000){gpsSpeed=null;$('gpsInfo').textContent='Posição antiga rejeitada.';return;}
-  const result=gpsSample(previous,p);
-  if(!result.ok){gpsSpeed=null;gpsAcceleration=0;$('gpsInfo').textContent=result.reason;return;}
-  const old=previous;previous=result.point;gpsSpeed=result.speed;lastFix=performance.now();
-  gpsAcceleration=old&&old.kmh!==null&&gpsSpeed!==null?clamp((gpsSpeed-old.kmh)/3.6/Math.max(1,(p.time-old.time)/1000),-5,5):0;
+  // Timing uses receipt time; pos.timestamp age is never used to reject a fix.
+  const p=Core.gpsFix(pos,performance.now(),Date.now());
+  gpsLastOffset=p.offsetSec;gpsLastAcc=p.accuracy;gpsLastNative=p.speed===null||p.speed===undefined?null:p.speed;gpsLastError='—';
+  const step=Core.gpsStep(gpsTrack,p);
+  gpsTrack=step.track;
+  const result=step.result;
+  if(!result.ok){
+   if(result.duplicate) gpsStats.dup++; else gpsStats.bad++;
+   gpsLastReason=result.reason;
+   // Keep the last valid speed; the 8 s staleness check in tick() expires it.
+   if(!result.duplicate) $('gpsInfo').textContent=result.reason;
+   renderDiag();
+   return;
+  }
+  gpsStats.ok++;gpsLastReason='—';
+  previous=result.point;lastFix=performance.now();
+  gpsSpeed=result.speed;
+  gpsAcceleration=result.held?0:(result.accel||0);
+  gpsLastSource=result.speed===null?'A aguardar segunda posição':result.held?'Estimada · a manter última':result.derived?'Estimada por posições':'Fornecida pelo GPS';
   $('gpsInfo').textContent=`Precisão ±${Math.round(p.accuracy)} m · ${result.speed===null?'A aguardar segunda posição para estimar velocidade':result.derived?'Velocidade estimada por posições':'Velocidade fornecida pelo GPS'}`;
+  renderDiag();
  },err=>{
-  gpsSpeed=null;gpsAcceleration=0;
-  $('gpsInfo').textContent=({1:'Permissão recusada. Podes usar a simulação.',2:'Localização indisponível. A aguardar sinal.',3:'Tempo de espera excedido. Sem velocidade válida.'})[err.code]||'Erro de localização.';
-  if(err.code===1){clearGPS();$('gpsInfo').textContent='Permissão de localização recusada.';}
- },{enableHighAccuracy:true,timeout:10000,maximumAge:1000});
+  gpsLastError=(err&&err.code?err.code+' · ':'')+((err&&err.message)||'erro');
+  $('gpsInfo').textContent=({1:'Permissão recusada. Podes usar a simulação.',2:'Localização indisponível. A aguardar sinal.',3:'Tempo de espera excedido. A aguardar sinal.'})[err.code]||'Erro de localização.';
+  if(err.code===1){clearGPS();gpsPerm='denied';$('gpsInfo').textContent='Permissão de localização recusada.';}
+  renderDiag();
+ },{enableHighAccuracy:true,timeout:15000,maximumAge:0});
 }
 function tick(now){
  const dt=Math.min(.1,(now-lastFrame)/1000);lastFrame=now;
@@ -432,6 +514,7 @@ function tick(now){
  $('rpmMeter').setAttribute('aria-valuenow',Math.round(rpm));
  $('gear').textContent=gear||'N';
  $('load').textContent=Math.round(load*100)+'%';
+ if(mode==='gps'&&now-diagTimer>500){diagTimer=now;renderDiag();}
  updateAudio();
  frame=requestAnimationFrame(tick);
 }

@@ -1,10 +1,10 @@
-# Impulso · Motor virtual v3.0
+# Impulso · Motor virtual v3.1
 
 Aplicação original, num único `index.html`, sem bibliotecas, fontes, gravações ou pedidos de rede (exceto o serviço de localização do próprio browser, se autorizado).
 
-Esta pasta é a entrega autónoma v3.0: vinte e uma assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação: a integração e o eventual GitHub Pages ficam a cargo de quem autorizar o envio.
+Esta pasta é a entrega autónoma v3.1 (correção do GPS sobre a v3.0): vinte e uma assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação: a integração e o eventual GitHub Pages ficam a cargo de quem autorizar o envio.
 
-O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.0 ainda pode não corresponder ao que está online.
+O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.1 ainda pode não corresponder ao que está online.
 
 A publicação HTTPS permite testar num browser normal, mas não garante que resolva a ausência de áudio numa pré-visualização móvel. Toca em **Iniciar som** na página aberta diretamente no browser.
 
@@ -50,9 +50,14 @@ Seleciona **GPS real** e toca em **Autorizar localização**. Requer contexto se
 
 Para servir localmente, opcionalmente executa `python3 -m http.server 8000` nesta pasta e abre `http://localhost:8000`. Aceder pelo IP local de outro dispositivo em HTTP não equivale a localhost e normalmente não permite GPS. O código continua a funcionar offline em modo de simulação.
 
-O GPS fornece velocidade em m/s, convertida em km/h. Sem velocidade nativa, duas posições válidas permitem uma estimativa por distância/tempo. Filtra coordenadas inválidas, precisão pior que 80 m, grandes saltos e acelerações implausíveis. Oscilações pequenas são tratadas como ruído. Estes filtros são heurísticos: a velocidade pode atrasar, falhar ou ficar a zero em movimentos lentos. Sem velocidade válida, mostra **—** e mantém apenas o ralenti sintético, não inventa movimento. Uma posição com mais de 10 segundos é rejeitada; 8 segundos sem atualização válida tornam a leitura indisponível. As marchas, RPM e carga são sempre virtuais, mesmo com GPS.
+O GPS fornece velocidade em m/s, convertida em km/h. Sem velocidade nativa, duas posições válidas permitem uma estimativa por distância/tempo. Filtra coordenadas inválidas, precisão pior que 80 m, grandes saltos e acelerações implausíveis. Oscilações pequenas são tratadas como ruído. Estes filtros são heurísticos: a velocidade pode atrasar, falhar ou ficar a zero em movimentos lentos. Sem velocidade válida, mostra **—** e mantém apenas o ralenti sintético, não inventa movimento. A idade de cada posição é medida pela **hora de receção** no dispositivo, nunca pelo `timestamp` do browser: alguns browsers (incluindo o observado no Tesla) entregam timestamps com desvios de minutos ou horas, o que na v3.0 rejeitava todas as posições («Posição antiga rejeitada») e deixava a velocidade em **—**. Um timestamp repetido é ignorado como duplicado. 8 segundos sem atualização válida tornam a leitura indisponível; rejeições pontuais (por exemplo, precisão fraca) já não apagam de imediato a última velocidade válida. As marchas, RPM e carga são sempre virtuais, mesmo com GPS.
 
 **Não existe acesso ao pedal, CAN, Bluetooth do veículo, telemetria ou aceleração real do motor.** A carga é aproximada pela variação da velocidade. REV está desativado em modo GPS. Desligar a localização, mudar de modo, ocultar ou abandonar a página liberta o acompanhamento; regressar requer nova autorização pelo botão. Nenhuma localização é guardada ou enviada pela aplicação.
+
+### Diagnóstico GPS (v3.1)
+No modo GPS, abre **Diagnóstico GPS** para ver: contexto seguro, permissão, **desvio do timestamp em segundos** (timestamp do browser − relógio do dispositivo; só informativo), precisão, velocidade nativa (ou «nula»), origem da velocidade, idade da última posição pela hora de receção, contagem de posições aceites/rejeitadas/repetidas, último motivo e último erro.
+
+Outras correções: `maximumAge:0` (sem posições em cache), tempo de espera de 15 s, e a estimativa por posições usa uma referência estável, por isso funciona mesmo quando o browser envia posições mais de uma vez por segundo sem velocidade nativa.
 
 ## Som e compatibilidade
 Web Audio gera pulsos harmónicos, um subgrave, ruído filtrado de admissão/escape e modulação irregular. Cada perfil altera a forma de onda, a filtragem, o ruído e a irregularidade. A troca de perfil usa duas vozes com cruzamento. RPM/carga são suavizadas. Isto é síntese estilizada, não uma gravação nem um modelo físico fiel. As mudanças são simuladas por escalões de relação, não por uma caixa real.
@@ -65,8 +70,9 @@ Interface pensada para ecrãs largos e telemóveis. **Não houve teste físico n
 Executar `node test.cjs` (Node.js, sem dependências):
 - análise sintática de todo o JavaScript inline com `vm.Script`;
 - testes determinísticos de GPS (conversão, ausência, ruído, saltos, precisão, ordem temporal, aceleração implausível);
+- v3.1: timestamps desviados −60 s, −1 h e +1 h continuam a dar velocidade válida (nativa e estimada); posições a mais de 1 Hz sem velocidade nativa; timestamps repetidos; formatação do desvio no diagnóstico; ausência da rejeição por idade do timestamp.
 - limites de RPM/carga para todos os perfis, mudanças virtuais e mapeamento seguro de uma chave desconhecida;
-- versão visível 3.0; pelo menos 21 assinaturas; agrupamento; notas curtas de carácter; honestidade sem repetir o aviso em cada opção;
+- versão visível 3.1; pelo menos 21 assinaturas; agrupamento; notas curtas de carácter; honestidade sem repetir o aviso em cada opção;
 - unicidade da afinação, incluindo as novas inspirações face às arquiteturas aparentadas;
 - o RX-7 é tratado como rotativo (2 rotores), não como um I4 de pistões;
 - estalos: desligados/mute/parado não disparam; perda de sinal, modo, reinício, página oculta e troca de perfil são eventos proibidos; desaceleração, largar o REV e mudança virtual têm condições e intervalo; propensão diferente entre perfis; amplitude e duração limitadas.
