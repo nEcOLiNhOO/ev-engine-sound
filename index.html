@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pt-PT" data-version="3.10"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual v3.10</title>
+<html lang="pt-PT" data-version="3.11"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual v3.11</title>
 <style>
 :root{color-scheme:dark;--bg:#0c1219;--panel:#141e28;--line:#293744;--text:#eef4f7;--muted:#a2b3c0;--accent:#c4f46c;--blue:#7bd9e7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% 0,#20303b,transparent 65%),var(--bg);font:16px system-ui,sans-serif;color:var(--text)}main{max-width:1220px;margin:auto;padding:28px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.brand{font-size:24px;letter-spacing:.2em;font-weight:800}.ver{font-size:11px;letter-spacing:.14em;color:var(--muted);font-weight:700;margin-left:8px;vertical-align:middle}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin:8px 0}.badge{border:1px solid var(--line);border-radius:30px;padding:10px 15px;font-size:12px;color:var(--accent)}.layout{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}.panel{background:linear-gradient(140deg,#18232e,#101922);border:1px solid var(--line);border-radius:24px;padding:25px}.modes{display:flex;gap:8px}button,select{font:inherit;color:inherit;background:#202d39;border:1px solid #3b4a58;border-radius:12px;min-height:48px;padding:10px 16px;cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:3px}button.active{background:var(--accent);color:#14200a;border-color:var(--accent)}button:disabled{opacity:.4;cursor:not-allowed}.dial{height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin:15px auto 0;max-width:380px}.dial:before{content:"";position:absolute;inset:5px 10px 0;border:12px solid #273641;border-bottom-color:transparent;border-radius:50% 50% 35% 35%;pointer-events:none}.dial:after{content:"";position:absolute;inset:5px 10px 0;border:12px solid transparent;border-left-color:var(--accent);border-radius:50% 50% 35% 35%;opacity:.7;pointer-events:none}.speed{font-size:88px;line-height:1.1;font-weight:250;font-variant-numeric:tabular-nums;z-index:1}.unit{color:var(--muted);font-size:13px}.source{margin-top:16px;font-size:12px;color:var(--blue);text-align:center;z-index:1}.rpmrow{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin:8px 0}.track{height:10px;background:#2b3741;border-radius:8px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ffd170,#fc806d);transition:width .12s}.stats{display:flex;justify-content:space-between;margin:22px 0;font-size:13px;color:var(--muted)}.stats b{display:block;font-size:20px;color:var(--text);margin-top:5px}.actions{display:flex;gap:12px}.actions button{flex:1;min-height:60px;font-weight:700}#start{background:var(--accent);color:#182312;border:0}#rev{touch-action:none;user-select:none;-webkit-user-select:none}#rev.held{background:var(--blue);color:#12212a}.controls h1{font-size:25px;margin:0 0 6px}.subtitle{color:var(--muted);font-size:14px;line-height:1.5}label{display:block;color:var(--muted);font-size:13px;margin-top:23px}.labelrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.labelrow output{color:var(--text)}select{width:100%}input[type=range]{accent-color:var(--accent);width:100%;min-height:32px;margin:0;cursor:pointer}.note{font-size:12px;color:var(--muted);line-height:1.6}.honesty{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5}#profileHint{margin-top:10px;color:var(--text)}.notice{min-height:45px;padding:12px 0 0;color:var(--blue);font-size:13px;line-height:1.5}.gpsbox{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:18px}.gpsbox button{width:100%}.diag{margin-top:10px;font-size:12px;color:var(--muted)}.diag summary{cursor:pointer;color:var(--text);min-height:32px;padding-top:6px}.diag dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:8px 0 0}.diag dt{color:var(--muted)}.diag dd{margin:0;color:var(--text);font-variant-numeric:tabular-nums;word-break:break-word}.toggle{display:flex;align-items:center;gap:10px;margin-top:20px;color:var(--text);font-size:14px;cursor:pointer}.toggle input{width:22px;height:22px;accent-color:var(--accent);flex-shrink:0}.popsbox{margin-top:4px}.foot{margin:20px 2px;color:var(--muted);font-size:12px;line-height:1.6} [hidden]{display:none!important}@media(max-width:760px){main{padding:16px}.layout{grid-template-columns:1fr}.panel{padding:20px}header{margin-bottom:16px}.brand{font-size:20px}.dial{height:230px}.speed{font-size:76px}.badge{font-size:10px;padding:8px}.controls h1{font-size:23px}}@media(min-width:900px) and (max-height:800px){main{padding-top:18px}.dial{height:225px}label{margin-top:16px}}
 </style></head><body><main>
-<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.10</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
+<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.11</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
 <div class="layout"><section class="panel" aria-label="Instrumentos e reprodução"><div class="modes" aria-label="Modo"><button id="simMode" class="active" aria-pressed="true">Simulação</button><button id="gpsMode" aria-pressed="false">GPS real</button></div>
 <div class="dial"><div class="speed" id="speed">0</div><div class="unit">km/h</div><div class="source" id="source">Velocidade simulada · sem ligação ao carro</div></div>
 <div class="rpmrow"><span id="rpm">800 rpm</span><span id="redline">6 800 máx.</span></div><div class="track" role="meter" aria-label="Rotações do motor" aria-valuemin="0" aria-valuemax="6800" aria-valuenow="800" id="rpmMeter"><div class="fill" id="rpmFill"></div></div>
@@ -46,19 +46,19 @@
 <div class="popsbox">
 <label class="toggle" for="popsEnable"><input id="popsEnable" type="checkbox"> Estalos e pops (opcional)</label>
 <div id="popsControls" hidden>
-<label for="popsIntensity"><span class="labelrow"><span>Intensidade dos estalos</span><output id="popsIntensityValue">55%</output></span></label>
-<input id="popsIntensity" type="range" min="5" max="100" value="55">
+<label for="popsIntensity"><span class="labelrow"><span>Intensidade dos estalos</span><output id="popsIntensityValue">50%</output></span></label>
+<input id="popsIntensity" type="range" min="5" max="100" value="50">
 <p class="note">Desligado por omissão. Só em desaceleração, ao largar o REV com rotação alta, ou numa mudança virtual / desaceleração GPS válida. Não lê o pedal e não dispara se o sinal se perder.</p>
 </div>
 </div>
-</section></div><footer class="foot">Impulso v3.10. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Saída pelos altifalantes do carro e o browser Tesla em movimento não estão validados. Síntese original, não oficial.</footer>
+</section></div><footer class="foot">Impulso v3.11. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Saída pelos altifalantes do carro e o browser Tesla em movimento não estão validados. Síntese original, não oficial.</footer>
 </main><script>
 'use strict';
 const Core=(()=>{
- const VERSION='3.10';
+ const VERSION='3.11';
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
- const POP_LIMITS={maxGain:.85,maxVoices:8,decelThresh:-.28,maxNodesPerEvent:3,crackleDur:.09,shiftDur:.14,burstCooldown:4,liftDv:2,liftWindow:2.5,minSpeed:28,popBus:.95,popCeil:-1};
- // Per-profile pop & bang character (v3.10). Distinct from engine tone. Fallback via popProfileOf().
+ const POP_LIMITS={maxGain:.38,maxVoices:8,decelThresh:-.28,maxNodesPerEvent:3,crackleDur:.09,shiftDur:.14,burstCooldown:4,liftDv:2,liftWindow:2.5,minSpeed:28,popBus:.65,popCeil:-3,duckDepth:.22,duckMs:.028};
+ // Per-profile pop & bang character (v3.10+). bodyHz is a bias; v3.11 blends it with firingHz so pops sit in the engine.
  // bodyHz/bodyDrop: thump pitch + short drop; body/crack/tail mixes; crackHz/Q/LP band; decay s;
  // bangRatio 0=popcorn … 1=single bang; burstMin/Max + burstSpan s; loud scale; overrunP propensity;
  // upBang/upStr: upshift bang; rpmGate fraction of max (cruise lift-offs); feel label.
@@ -551,9 +551,10 @@ const Core=(()=>{
    count=clamp(span,pp.burstMin,pp.burstMax);
   } else count=1;
   const inten=intensity/100;
-  const base=.22+pp.loud*.55*inten+(kind==='shift-pop'?pp.upStr*.18:0)+(kind==='bang'?.08:0);
+  // v3.11: quieter — aim ≈+3…+8 dB vs engine RMS at intensity 100 (was +13…+22).
+  const base=.055+pp.loud*.13*inten+(kind==='shift-pop'?pp.upStr*.055:0)+(kind==='bang'?.03:0);
   const gain=Math.min(POP_LIMITS.maxGain,base);
-  return {allow:true,kind,gain,count,minGap,reason:null,propensity,pp,intensity:inten};
+  return {allow:true,kind,gain,count,minGap,reason:null,propensity,pp,intensity:inten,rpm,profile,event:s.event};
  }
  function popEnvelope(decision){
   if(!decision||!decision.allow) return {peak:0,dur:0,thumpPeak:0,crackPeak:0,tailPeak:0,nodes:0,spacing:0,burstSpan:0};
@@ -561,15 +562,28 @@ const Core=(()=>{
   const peak=Math.min(POP_LIMITS.maxGain,decision.gain);
   const isShift=decision.kind==='shift-pop';
   const isBang=decision.kind==='bang'||isShift;
-  const dur=isBang?Math.max(pp.decay,POP_LIMITS.shiftDur)* (isShift?1.15:1.25) : Math.max(pp.decay*.9,POP_LIMITS.crackleDur);
-  const thumpPeak=peak*clamp(pp.body*(isBang?.95:.7),0,1);
-  const crackPeak=peak*clamp(pp.crack*(isBang?.75:1),0,1);
-  const tailPeak=isBang?peak*clamp(pp.tail,0,.7):peak*clamp(pp.tail*.45,0,.35);
+  const dur=isBang?Math.max(pp.decay,POP_LIMITS.shiftDur)* (isShift?1.1:1.2) : Math.max(pp.decay*.9,POP_LIMITS.crackleDur);
+  const thumpPeak=peak*clamp(pp.body*(isBang?.92:.72),0,1);
+  const crackPeak=peak*clamp(pp.crack*(isBang?.78:1),0,1);
+  const tailPeak=isBang?peak*clamp(pp.tail,0,.65):peak*clamp(pp.tail*.4,0,.3);
   const count=Math.max(1,decision.count||1);
   const burstSpan=count>1?pp.burstSpan:dur;
   const spacing=count>1?burstSpan/Math.max(1,count-1):0;
   const nodes=Math.min(count*POP_LIMITS.maxNodesPerEvent,POP_LIMITS.maxVoices*POP_LIMITS.maxNodesPerEvent);
-  return {peak,dur,thumpPeak,crackPeak,tailPeak,nodes,spacing,burstSpan,bodyHz:pp.bodyHz,bodyDrop:pp.bodyDrop,crackHz:pp.crackHz,crackQ:pp.crackQ,crackLp:pp.crackLp,count};
+  const e=decision.profile||null;
+  const rpm=decision.rpm||3000;
+  const fire=e?firingHz(e,rpm):Math.max(40,pp.bodyHz);
+  // Body harmonically related to firing (blend profile bias with 0.5–1× fundamental).
+  const bodyHz=clamp(fire*.55+pp.bodyHz*.45,55,200);
+  const bodyDrop=clamp(pp.bodyDrop*.55+fire*.1,18,90);
+  // Crack pulled toward exhaust tone; less HF than v3.10.
+  const exhTone=e?e.tone:pp.crackHz;
+  const crackHz=clamp(pp.crackHz*.55+exhTone*.35,700,2600);
+  const crackLp=Math.min(pp.crackLp,exhTone*1.05+700,2800);
+  const tubeMs=clamp(3+(180-pp.bodyHz)*.03,3,8);
+  const exhaustQ=e?e.exhaustQ:.8;
+  const exhaustTone=e?Math.max(80,e.tone*(.45+.55*.4)):1200;
+  return {peak,dur,thumpPeak,crackPeak,tailPeak,nodes,spacing,burstSpan,bodyHz,bodyDrop,crackHz,crackQ:pp.crackQ,crackLp,count,firingHz:fire,tubeMs,exhaustTone,exhaustQ,rpm,rpmEnd:rpm*(decision.event==='upshift'?1:.88)};
  }
 
  // pos.timestamp is unreliable on some browsers (clock offsets of minutes or hours).
@@ -638,6 +652,7 @@ function cancelPops(a){
   }catch(ex){}
  }
  a.popNodes=[];
+ a.popDuckUntil=0;
 }
 function releaseRev(origin='cancel'){
  const was=rev,rpmNow=rpm;
@@ -653,53 +668,101 @@ function spawnPop(a,decision){
  const count=Math.min(env.count||decision.count||1,Math.max(0,Core.POP_LIMITS.maxVoices-events));
  if(count<=0) return;
  const isBang=decision.kind==='bang'||decision.kind==='shift-pop';
+ // Match exhaust colour to the live engine voice so pops share the same space.
+ if(a.popExhaust){
+  a.popExhaust.frequency.setValueAtTime(env.exhaustTone,t0);
+  a.popExhaust.Q.setValueAtTime(env.exhaustQ,t0);
+ }
+ if(a.popDelay) a.popDelay.delayTime.setValueAtTime(env.tubeMs/1000,t0);
+ // Quantise onsets to firing periods (irregular 1–3 cycle gaps); rpm falls across overrun bursts.
+ const fire0=Math.max(30,env.firingHz||100);
+ const fire1=Math.max(30,Core.firingHz(decision.profile||{},env.rpmEnd||env.rpm||3000));
+ let cursor=t0+(Math.random()*0.4+0.1)/fire0; // sit just after a pulse
+ const starts=[];
  for(let i=0;i<count;i++){
-  // Irregular crackle spacing across the burst window; single bangs fire immediately.
-  const jitter=(Math.random()-.5)*Math.min(.04, (env.spacing||0)*.25);
-  const start=t0+(count===1?0:i*(env.spacing||.08)+jitter);
-  const hitScale=count===1?1:(1-.18*i/count); // later pops in a burst a touch quieter
-  const dur=env.dur*(isBang?1:.75+Math.random()*.35);
-  const tailDur=isBang?Math.max(dur*1.4,.12+Math.random()*.05):dur*.6;
-  // --- mid crack: band-limited noise (no hiss above crackLp) ---
+  const frac=count===1?0:i/(count-1);
+  const fire=fire0+(fire1-fire0)*frac;
+  const period=1/Math.max(30,fire);
+  if(i>0) cursor+=period*(1+Math.floor(Math.random()*3));
+  const start=cursor+(Math.random()-0.5)*period*0.12;
+  starts.push({start,period,fire,frac});
+ }
+ const burstEnd=starts[starts.length-1].start+env.dur+.08;
+ a.popDuckUntil=burstEnd;
+ // Engine misfire feel: brief amplitude dips + roughness on each pop, then restore.
+ const voice=a.voices[a.active];
+ const duck=Core.POP_LIMITS.duckDepth, duckMs=Core.POP_LIMITS.duckMs;
+ for(const {start} of starts){
+  try{
+   const pg=voice.pulseGain.gain, cur=Math.max(.001,pg.value);
+   pg.cancelScheduledValues(start);
+   pg.setValueAtTime(cur,start);
+   pg.linearRampToValueAtTime(cur*duck,start+.006);
+   pg.linearRampToValueAtTime(cur,start+duckMs);
+   if(a.subGain){
+    const sg=a.subGain.gain, sc=Math.max(.0001,sg.value);
+    sg.cancelScheduledValues(start);
+    sg.setValueAtTime(sc,start);
+    sg.linearRampToValueAtTime(sc*Math.max(.35,duck+.15),start+.005);
+    sg.linearRampToValueAtTime(sc,start+duckMs);
+   }
+   if(a.flutterGain){
+    const fg=a.flutterGain.gain, fc=Math.max(.0001,fg.value), rough=fc*2.1;
+    fg.cancelScheduledValues(start);
+    fg.setValueAtTime(fc,start);
+    fg.linearRampToValueAtTime(rough,start+.008);
+    fg.linearRampToValueAtTime(fc,start+duckMs+.01);
+   }
+  }catch(ex){}
+ }
+ for(let i=0;i<starts.length;i++){
+  const {start,fire}=starts[i];
+  const hitScale=(count===1?1:(1-.16*i/count))*(.88+Math.random()*.24); // ±~12% level
+  const bright=.85+Math.random()*.3; // ±~15% brightness
+  const attack=.0015+Math.random()*.0015; // 1.5–3 ms, no click
+  const dur=env.dur*(isBang?1:.78+Math.random()*.3);
+  const tailDur=isBang?Math.max(dur*1.35,.11+Math.random()*.04):dur*.55;
+  // Body from live firing (harmonic), with profile drop
+  const f0=Core.clamp(fire*.55+env.bodyHz*.45,55,200)*(0.92+Math.random()*.16);
+  const f1=Math.max(45,f0-env.bodyDrop*(0.85+Math.random()*.3));
+  // --- crack: noise shaped toward exhaust, less HF ---
   const src=a.ctx.createBufferSource();
   src.buffer=a.noiseBuffer;
-  const bp=a.ctx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=env.crackHz;bp.Q.value=env.crackQ;
-  const lp=a.ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=env.crackLp;lp.Q.value=.7;
-  const hp=a.ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=550;hp.Q.value=.7;
+  const bp=a.ctx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=env.crackHz*bright;bp.Q.value=env.crackQ;
+  const hp=a.ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=480;hp.Q.value=.7;
+  const lp=a.ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=Math.min(env.crackLp,env.exhaustTone*1.2+600)*bright;lp.Q.value=.7;
   const gN=a.ctx.createGain();
   const crackPk=Math.max(.0001,env.crackPeak*hitScale);
   gN.gain.setValueAtTime(0,start);
-  gN.gain.linearRampToValueAtTime(crackPk,start+.003);
+  gN.gain.linearRampToValueAtTime(crackPk,start+attack);
   gN.gain.exponentialRampToValueAtTime(.0001,start+dur);
   src.connect(bp).connect(hp).connect(lp).connect(gN).connect(a.popsInput);
   src.start(start);src.stop(start+dur+.04);
-  // --- low body thump with short pitch drop ---
+  // --- body thump ---
   const th=a.ctx.createOscillator();
   th.type='sine';
-  const f0=env.bodyHz, f1=Math.max(45,env.bodyHz-env.bodyDrop);
   th.frequency.setValueAtTime(f0,start);
-  th.frequency.exponentialRampToValueAtTime(f1,start+Math.min(.08,dur*.7));
+  th.frequency.exponentialRampToValueAtTime(f1,start+Math.min(.09,dur*.7));
   const gT=a.ctx.createGain();
   const thumpPk=Math.max(.0001,env.thumpPeak*hitScale);
   gT.gain.setValueAtTime(0,start);
-  gT.gain.linearRampToValueAtTime(thumpPk,start+.004);
+  gT.gain.linearRampToValueAtTime(thumpPk,start+attack*1.2);
   gT.gain.exponentialRampToValueAtTime(.0001,start+dur*.9);
   th.connect(gT).connect(a.popsInput);
   th.start(start);th.stop(start+dur+.05);
-  a.popNodes.push({role:'event',gain:gN,src,stopAt:start+dur+.06});
+  a.popNodes.push({role:'event',gain:gN,src,stopAt:start+dur+.06,start});
   a.popNodes.push({role:'node',gain:gT,src:th,stopAt:start+dur+.06});
-  // --- bang tail: quieter longer body + soft crack ---
   if(env.tailPeak>0.01&&(isBang||i===0)){
    const tail=a.ctx.createOscillator();
    tail.type='triangle';
-   tail.frequency.setValueAtTime(Math.max(50,f1*.85),start+dur*.15);
+   tail.frequency.setValueAtTime(Math.max(50,f1*.85),start+dur*.12);
    const gTail=a.ctx.createGain();
-   const tPk=Math.max(.0001,env.tailPeak*hitScale*.7);
-   gTail.gain.setValueAtTime(0,start+dur*.1);
-   gTail.gain.linearRampToValueAtTime(tPk,start+dur*.2);
+   const tPk=Math.max(.0001,env.tailPeak*hitScale*.65);
+   gTail.gain.setValueAtTime(0,start+dur*.08);
+   gTail.gain.linearRampToValueAtTime(tPk,start+dur*.18);
    gTail.gain.exponentialRampToValueAtTime(.0001,start+tailDur);
    tail.connect(gTail).connect(a.popsInput);
-   tail.start(start+dur*.1);tail.stop(start+tailDur+.05);
+   tail.start(start+dur*.08);tail.stop(start+tailDur+.05);
    a.popNodes.push({role:'node',gain:gTail,src:tail,stopAt:start+tailDur+.06});
   }
  }
@@ -735,13 +798,22 @@ function buildAudio(){
  const limiter=ctx.createDynamicsCompressor();
  limiter.threshold.value=-16;limiter.knee.value=8;limiter.ratio.value=12;limiter.attack.value=.003;limiter.release.value=.15;
  master.connect(limiter).connect(ctx.destination);
- // Engine chain: master → 12:1 limiter → destination (unchanged).
- // Pop bus (v3.10): popsInput → popsGain → soft ceiling → destination — bypasses the engine limiter so bangs punch through.
+ // Engine chain: master → 12:1 limiter → destination (unchanged when pops off).
+ // Pop bus (v3.11): pops → matched exhaust colour → short tube comb → popsGain → soft ceiling → destination.
+ // Shares exhaust timbre/space with the engine without altering the engine graph.
  const popsInput=ctx.createGain();popsInput.gain.value=1;
+ const popExhaust=ctx.createBiquadFilter();popExhaust.type='lowpass';popExhaust.frequency.value=1200;popExhaust.Q.value=.8;
+ const popDelay=ctx.createDelay(0.05);popDelay.delayTime.value=.005;
+ const popFb=ctx.createGain();popFb.gain.value=.28;
+ const popDry=ctx.createGain();popDry.gain.value=.72;
+ const popWet=ctx.createGain();popWet.gain.value=.38;
  const popsGain=ctx.createGain();popsGain.gain.value=0;
  const popsLim=ctx.createDynamicsCompressor();
- popsLim.threshold.value=-1;popsLim.knee.value=6;popsLim.ratio.value=3.5;popsLim.attack.value=.002;popsLim.release.value=.12;
- popsInput.connect(popsGain).connect(popsLim).connect(ctx.destination);
+ popsLim.threshold.value=-3;popsLim.knee.value=8;popsLim.ratio.value=2.8;popsLim.attack.value=.003;popsLim.release.value=.14;
+ popsInput.connect(popExhaust);
+ popExhaust.connect(popDry).connect(popsGain);
+ popExhaust.connect(popDelay);popDelay.connect(popFb).connect(popDelay);popDelay.connect(popWet).connect(popsGain);
+ popsGain.connect(popsLim).connect(ctx.destination);
  function voice(){
   const osc=ctx.createOscillator(),exhaust=ctx.createBiquadFilter(),pulseGain=ctx.createGain();
   exhaust.type='lowpass';exhaust.frequency.value=1200;exhaust.Q.value=.8;
@@ -777,7 +849,7 @@ function buildAudio(){
   if(running&&ctx.state==='suspended') message('Áudio suspenso pelo browser. Toca em Retomar som.');
   if(ctx.state!=='running'&&running) $('start').textContent='↻ Retomar som';
  };
- return {ctx,master,voices,active:0,lastKey:null,sub,subGain,noise,noiseHP,intake,noiseLP,noiseGain,flutter,flutterGain,popsInput,popsGain,popsLim,popNodes:[],noiseBuffer:buffer};
+ return {ctx,master,voices,active:0,lastKey:null,sub,subGain,noise,noiseHP,intake,noiseLP,noiseGain,flutter,flutterGain,popsInput,popExhaust,popDelay,popFb,popDry,popWet,popsGain,popsLim,popNodes:[],popDuckUntil:0,noiseBuffer:buffer};
 }
 function updateAudio(){
  if(!audio||!running) return;
@@ -807,14 +879,23 @@ function updateAudio(){
  set(v.osc.frequency,firing);
  set(v.exhaust.frequency,e.tone*(.4+c*.7+load*.6));
  set(v.exhaust.Q,e.exhaustQ);
- set(v.pulseGain.gain,pulseTarget);
  set(a.voices[1-a.active].pulseGain.gain,0,.05);
  set(a.sub.frequency,rpm/e.subDiv);
- set(a.subGain.gain,e.subGain*(.6+load*.4));
  set(a.flutter.frequency,Math.max(e.flutterBase,rpm/60));
- set(a.flutterGain.gain,e.rough*(1+c)*rpm/70);
  set(a.intake.frequency,e.intakeBase+rpm*e.intakeRatio);
  set(a.intake.Q,e.intakeQ);
+ // During a pop burst, leave pulse/sub/flutter envelopes alone so misfire dips stay audible; restore after.
+ const ducking=a.popDuckUntil&&t<a.popDuckUntil;
+ if(!ducking){
+  set(v.pulseGain.gain,pulseTarget);
+  set(a.subGain.gain,e.subGain*(.6+load*.4));
+  set(a.flutterGain.gain,e.rough*(1+c)*rpm/70);
+ }
+ // Keep pop exhaust colour tracking the live engine exhaust.
+ if(a.popExhaust){
+  set(a.popExhaust.frequency,e.tone*(.4+c*.7+load*.6));
+  set(a.popExhaust.Q,e.exhaustQ);
+ }
  // v3.9: intake noise only under real drive (throttle/accel demand). Idle/cruise → ~0; full drive peak ≤ v3.4.
  // Attack ≈80 ms, release ≈300 ms (setTargetAtTime τ ≈ T/3). Oscillators / sub / flutter / master untouched.
  const noisePeak=e.noiseIdle+e.noiseLoad*(.4+c);
