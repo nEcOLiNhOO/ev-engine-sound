@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pt-PT" data-version="3.8"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual v3.8</title>
+<html lang="pt-PT" data-version="3.9"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual v3.9</title>
 <style>
 :root{color-scheme:dark;--bg:#0c1219;--panel:#141e28;--line:#293744;--text:#eef4f7;--muted:#a2b3c0;--accent:#c4f46c;--blue:#7bd9e7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% 0,#20303b,transparent 65%),var(--bg);font:16px system-ui,sans-serif;color:var(--text)}main{max-width:1220px;margin:auto;padding:28px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.brand{font-size:24px;letter-spacing:.2em;font-weight:800}.ver{font-size:11px;letter-spacing:.14em;color:var(--muted);font-weight:700;margin-left:8px;vertical-align:middle}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin:8px 0}.badge{border:1px solid var(--line);border-radius:30px;padding:10px 15px;font-size:12px;color:var(--accent)}.layout{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}.panel{background:linear-gradient(140deg,#18232e,#101922);border:1px solid var(--line);border-radius:24px;padding:25px}.modes{display:flex;gap:8px}button,select{font:inherit;color:inherit;background:#202d39;border:1px solid #3b4a58;border-radius:12px;min-height:48px;padding:10px 16px;cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:3px}button.active{background:var(--accent);color:#14200a;border-color:var(--accent)}button:disabled{opacity:.4;cursor:not-allowed}.dial{height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin:15px auto 0;max-width:380px}.dial:before{content:"";position:absolute;inset:5px 10px 0;border:12px solid #273641;border-bottom-color:transparent;border-radius:50% 50% 35% 35%;pointer-events:none}.dial:after{content:"";position:absolute;inset:5px 10px 0;border:12px solid transparent;border-left-color:var(--accent);border-radius:50% 50% 35% 35%;opacity:.7;pointer-events:none}.speed{font-size:88px;line-height:1.1;font-weight:250;font-variant-numeric:tabular-nums;z-index:1}.unit{color:var(--muted);font-size:13px}.source{margin-top:16px;font-size:12px;color:var(--blue);text-align:center;z-index:1}.rpmrow{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin:8px 0}.track{height:10px;background:#2b3741;border-radius:8px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ffd170,#fc806d);transition:width .12s}.stats{display:flex;justify-content:space-between;margin:22px 0;font-size:13px;color:var(--muted)}.stats b{display:block;font-size:20px;color:var(--text);margin-top:5px}.actions{display:flex;gap:12px}.actions button{flex:1;min-height:60px;font-weight:700}#start{background:var(--accent);color:#182312;border:0}#rev{touch-action:none;user-select:none;-webkit-user-select:none}#rev.held{background:var(--blue);color:#12212a}.controls h1{font-size:25px;margin:0 0 6px}.subtitle{color:var(--muted);font-size:14px;line-height:1.5}label{display:block;color:var(--muted);font-size:13px;margin-top:23px}.labelrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.labelrow output{color:var(--text)}select{width:100%}input[type=range]{accent-color:var(--accent);width:100%;min-height:32px;margin:0;cursor:pointer}.note{font-size:12px;color:var(--muted);line-height:1.6}.honesty{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5}#profileHint{margin-top:10px;color:var(--text)}.notice{min-height:45px;padding:12px 0 0;color:var(--blue);font-size:13px;line-height:1.5}.gpsbox{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:18px}.gpsbox button{width:100%}.diag{margin-top:10px;font-size:12px;color:var(--muted)}.diag summary{cursor:pointer;color:var(--text);min-height:32px;padding-top:6px}.diag dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:8px 0 0}.diag dt{color:var(--muted)}.diag dd{margin:0;color:var(--text);font-variant-numeric:tabular-nums;word-break:break-word}.toggle{display:flex;align-items:center;gap:10px;margin-top:20px;color:var(--text);font-size:14px;cursor:pointer}.toggle input{width:22px;height:22px;accent-color:var(--accent);flex-shrink:0}.popsbox{margin-top:4px}.foot{margin:20px 2px;color:var(--muted);font-size:12px;line-height:1.6} [hidden]{display:none!important}@media(max-width:760px){main{padding:16px}.layout{grid-template-columns:1fr}.panel{padding:20px}header{margin-bottom:16px}.brand{font-size:20px}.dial{height:230px}.speed{font-size:76px}.badge{font-size:10px;padding:8px}.controls h1{font-size:23px}}@media(min-width:900px) and (max-height:800px){main{padding-top:18px}.dial{height:225px}label{margin-top:16px}}
 </style></head><body><main>
-<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.8</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
+<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.9</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
 <div class="layout"><section class="panel" aria-label="Instrumentos e reprodução"><div class="modes" aria-label="Modo"><button id="simMode" class="active" aria-pressed="true">Simulação</button><button id="gpsMode" aria-pressed="false">GPS real</button></div>
 <div class="dial"><div class="speed" id="speed">0</div><div class="unit">km/h</div><div class="source" id="source">Velocidade simulada · sem ligação ao carro</div></div>
 <div class="rpmrow"><span id="rpm">800 rpm</span><span id="redline">6 800 máx.</span></div><div class="track" role="meter" aria-label="Rotações do motor" aria-valuemin="0" aria-valuemax="6800" aria-valuenow="800" id="rpmMeter"><div class="fill" id="rpmFill"></div></div>
@@ -51,11 +51,11 @@
 <p class="note">Desligado por omissão. Só em desaceleração, ao largar o REV com rotação alta, ou numa mudança virtual / desaceleração GPS válida. Não lê o pedal e não dispara se o sinal se perder.</p>
 </div>
 </div>
-</section></div><footer class="foot">Impulso v3.8. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Saída pelos altifalantes do carro e o browser Tesla em movimento não estão validados. Síntese original, não oficial.</footer>
+</section></div><footer class="foot">Impulso v3.9. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Saída pelos altifalantes do carro e o browser Tesla em movimento não estão validados. Síntese original, não oficial.</footer>
 </main><script>
 'use strict';
 const Core=(()=>{
- const VERSION='3.8';
+ const VERSION='3.9';
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  const POP_LIMITS={maxGain:.22,maxVoices:3,decelThresh:-.55,maxNodesPerEvent:2,crackleDur:.055,shiftDur:.09};
  const engines={
@@ -539,7 +539,7 @@ const Core=(()=>{
  return {VERSION,CF,lsTrend,comfortKickDv,comfortDecelRpm,gearboxComfort,gearboxV36,clamp,engines,mapping,gearbox,gearRpm,cruiseGear,demandFromAccel,popTriggers,kickThresholds,GEAR_PERSONA,KICK_LEVELS,GEAR_RATIOS,GEARBOX_STYLES,distance,gpsSample,gpsFix,gpsStep,formatOffset,harmonicPartial,profileFingerprint,firingMul,firingHz,evaluatePop,popEnvelope,POP_LIMITS};
 })();
 const $=id=>document.getElementById(id),{clamp,engines,mapping,gpsSample}=Core;
-let gbState=null,sinceDecelPop=9,gpsTrack=null,gpsStats={ok:0,bad:0,dup:0},gpsLastOffset=null,gpsLastAcc=null,gpsLastNative=null,gpsLastSource='—',gpsLastReason='—',gpsLastError='—',gpsPerm='—',diagTimer=0,mode='sim',speed=0,rpm=800,load=0,gear=0,rev=false,running=false,audio=null,watch=null,previous=null,lastFix=0,gpsSpeed=null,gpsAcceleration=0,lastFrame=performance.now(),frame=0,hiddenPause=false,prevGear=0,prevValid=false,popSuppress=false,lastPopAt=null;
+let gbState=null,sinceDecelPop=9,gpsTrack=null,gpsStats={ok:0,bad:0,dup:0},gpsLastOffset=null,gpsLastAcc=null,gpsLastNative=null,gpsLastSource='—',gpsLastReason='—',gpsLastError='—',gpsPerm='—',diagTimer=0,mode='sim',speed=0,rpm=800,load=0,drive=0,gear=0,rev=false,running=false,audio=null,watch=null,previous=null,lastFix=0,gpsSpeed=null,gpsAcceleration=0,lastFrame=performance.now(),frame=0,hiddenPause=false,prevGear=0,prevValid=false,popSuppress=false,lastPopAt=null;
 function message(t){$('status').textContent=t;}
 function describeProfile(){
  const e=engines[$('engine').value];
@@ -645,10 +645,13 @@ function buildAudio(){
  for(let i=0;i<data.length;i++) data[i]=Math.random()*2-1;
  const noise=ctx.createBufferSource();
  noise.buffer=buffer;noise.loop=true;
+ // v3.9: band-limit intake noise only (HP 150 Hz / LP 2.5 kHz) so the idle hiss cannot reach the master.
+ const noiseHP=ctx.createBiquadFilter();noiseHP.type='highpass';noiseHP.frequency.value=150;noiseHP.Q.value=.707;
  const intake=ctx.createBiquadFilter();
  intake.type='bandpass';intake.frequency.value=400;intake.Q.value=.6;
+ const noiseLP=ctx.createBiquadFilter();noiseLP.type='lowpass';noiseLP.frequency.value=2500;noiseLP.Q.value=.707;
  const noiseGain=ctx.createGain();noiseGain.gain.value=0;
- noise.connect(intake).connect(noiseGain).connect(master);
+ noise.connect(noiseHP).connect(intake).connect(noiseLP).connect(noiseGain).connect(master);
  const flutter=ctx.createOscillator(),flutterGain=ctx.createGain();
  flutter.type='sine';flutter.frequency.value=8;flutterGain.gain.value=0;
  flutter.connect(flutterGain);
@@ -661,7 +664,7 @@ function buildAudio(){
   if(running&&ctx.state==='suspended') message('Áudio suspenso pelo browser. Toca em Retomar som.');
   if(ctx.state!=='running'&&running) $('start').textContent='↻ Retomar som';
  };
- return {ctx,master,voices,active:0,lastKey:null,sub,subGain,noise,intake,noiseGain,flutter,flutterGain,popsInput,popNodes:[],noiseBuffer:buffer};
+ return {ctx,master,voices,active:0,lastKey:null,sub,subGain,noise,noiseHP,intake,noiseLP,noiseGain,flutter,flutterGain,popsInput,popNodes:[],noiseBuffer:buffer};
 }
 function updateAudio(){
  if(!audio||!running) return;
@@ -699,7 +702,12 @@ function updateAudio(){
  set(a.flutterGain.gain,e.rough*(1+c)*rpm/70);
  set(a.intake.frequency,e.intakeBase+rpm*e.intakeRatio);
  set(a.intake.Q,e.intakeQ);
- set(a.noiseGain.gain,e.noiseIdle+load*e.noiseLoad*(.4+c));
+ // v3.9: intake noise only under real drive (throttle/accel demand). Idle/cruise → ~0; full drive peak ≤ v3.4.
+ // Attack ≈80 ms, release ≈300 ms (setTargetAtTime τ ≈ T/3). Oscillators / sub / flutter / master untouched.
+ const noisePeak=e.noiseIdle+e.noiseLoad*(.4+c);
+ const noiseTarget=Math.max(0,Math.min(1,drive))*noisePeak;
+ const rising=noiseTarget>a.noiseGain.gain.value;
+ a.noiseGain.gain.setTargetAtTime(noiseTarget,t,rising?.027:.1);
  set(a.master.gain,+$('volume').value/100*.48);
 }
 async function start(){
@@ -829,6 +837,8 @@ function tick(now){
  let targetRPM=gb?gb.rpm:e.idle;
  let targetLoad=gb?gb.load:0;
  if(mode==='sim'&&rev){targetRPM=e.max*.9;targetLoad=.9;}
+ // Intake-noise drive only (does not feed oscillators): zero in cruise/idle, follows demand; REV uses high drive.
+ drive=mode==='sim'&&rev?.9:(gb?clamp(gb.demand,0,1):0);
  rpm+=(targetRPM-rpm)*(1-Math.exp(-dt*(rev?3:gb&&gb.blipping?16:5))); // faster follow so rev-match blips are audible
  load+=(targetLoad-load)*(1-Math.exp(-dt*4));
  const suppress=popSuppress;popSuppress=false;

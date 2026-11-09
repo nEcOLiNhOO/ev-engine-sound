@@ -38,8 +38,8 @@ test('old baseline cannot derive a speed',()=>assert.equal(core.gpsSample(point(
 test('stateless cruise mapping: gear never decreases with speed and RPM drops at a shift',()=>{let prev=core.mapping(1,'v8'),sawDrop=false;for(let s=2;s<=200;s++){const m=core.mapping(s,'v8');assert(m.gear>=prev.gear,String(s));if(m.gear>prev.gear&&m.rpm<prev.rpm)sawDrop=true;prev=m;}assert(sawDrop);assert.equal(core.mapping(0,'v8').gear,0);});
 test('all engines map finite bounded RPM/load over speed sweep',()=>{for(const key of Object.keys(core.engines))for(let s=-10;s<=300;s++){const m=core.mapping(s,key,4),e=core.engines[key];assert(m.rpm>=e.idle&&m.rpm<=e.max);assert(m.load>=0&&m.load<=1);assert(m.gear>=0&&m.gear<=7);}});
 test('positive acceleration increases synthetic load',()=>assert(core.mapping(40,'v6',2).load>core.mapping(40,'v6',0).load));
-// v3.8: version 3.7 → 3.8.
-test('visible version 3.8 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.8');assert.match(html,/data-version="3\.8"/);assert.match(html,/>v3\.8</);assert.match(html,/Impulso v3\.8/);});
+// v3.9: version 3.8 → 3.9.
+test('visible version 3.9 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.9');assert.match(html,/data-version="3\.9"/);assert.match(html,/>v3\.9</);assert.match(html,/Impulso v3\.9/);});
 // v3.4: 21 → 22 profiles (SupraMotor 2JZ added).
 test('at least 22 presets with expected keys',()=>{
  const keys=Object.keys(core.engines);
@@ -459,8 +459,8 @@ const CRUISE={name:'cruise',dur:25,a:0};
 function firstDown(log){const acc=log.filter(x=>x.ph==='acc'),t0=acc[0].t-.05,fd=acc.find(x=>x.shift==='down');return fd?fd.t-t0:Infinity;}
 const gearDrop=log=>log.filter(x=>x.ph==='cruise').pop().gear-Math.min(...log.filter(x=>x.ph==='acc').map(x=>x.gear));
 // v3.4: version 3.4 and 22 profiles (was 3.3 / 21).
-test('per-profile gearbox personality covers all 22 profiles (version now 3.8)',()=>{
- assert.equal(core.VERSION,'3.8');assert.equal(KEYS.length,22);
+test('per-profile gearbox personality covers all 22 profiles (version now 3.9)',()=>{
+ assert.equal(core.VERSION,'3.9');assert.equal(KEYS.length,22);
  assert.deepEqual(Object.keys(core.GEAR_PERSONA).sort(),KEYS.slice().sort());
  for(const k of KEYS){const p=core.GEAR_PERSONA[k];
   assert.equal(core.engines[k].persona,p,k);
@@ -687,11 +687,9 @@ test('Conforto sim mode uses the same windowed logic: gentle target ramp keeps 7
   return {g0,drop:g0-minG};};
  for(const k of KEYS){assert.equal(run(k,0,125).drop,0,k+' 0 % throttle, +5 km/h at 0.5 m/s²');assert(run(k,60,135).drop>=1,k+' quick +15 km/h');}
 });
-// ---- v3.8: audio synthesis and output chain restored exactly to v3.4 ----
+// ---- v3.9: tonal audio stays byte-identical to v3.4; only the intake-noise path changes ----
 const V34_AUDIO_SHA256={
  'function buildWave(':'68f508dcc6a4fc3f596c5245386f404db572cb0226e165b6339ca53e15f952c9',
- 'function buildAudio(':'0cba61e512ed62d98a2e733dd73ae156282332452f080bc0b84eae53ad078e17',
- 'function updateAudio(':'591fbefddd279ea3237d48ac7d2951d496d374cd32993939fda1eab1273e00d9',
  'function cancelPops(':'8b9a25a47c9a16529538e0c53fdcf952508cefb053a5161bb552006da55eae21',
  'function spawnPop(':'2b3567bcb9faa94c037e15eec22476f7cb7b75c7037677df52761bd0e818bca6',
  'function evaluatePop(':'dfef8946a295eb7afaa57ed5460c090ef51e3c65144b323f028719df827531c9',
@@ -700,19 +698,62 @@ const V34_AUDIO_SHA256={
  'function firingMul(':'3acd583266933dd73a3bdf0e20ad7d6fa85585030f2238610303f12767c5912d'
 };
 const fnText=(src,a,b)=>{const i=src.indexOf(a);assert(i>=0,'missing '+a);return src.slice(i,src.indexOf(b,i));};
-test('audio code is byte-identical to v3.4 (waves, graph, live parameters, pops, harmonics, firing)',()=>{
+test('tonal audio code is byte-identical to v3.4 (waves, pops, harmonics, firing; noise path excluded)',()=>{
  const crypto=require('node:crypto');
- const pairs=[['function buildWave(','function buildAudio('],['function buildAudio(','function updateAudio('],['function updateAudio(','async function start('],['function cancelPops(','function spawnPop('],['function spawnPop(','function maybePop('],[' function evaluatePop(',' function popEnvelope('],[' function popEnvelope(',' function gpsFix('],[' function harmonicPartial(',' function profileFingerprint('],[' function firingMul(',' function evaluatePop(']];
+ const pairs=[['function buildWave(','function buildAudio('],['function cancelPops(','function spawnPop('],['function spawnPop(','function maybePop('],[' function evaluatePop(',' function popEnvelope('],[' function popEnvelope(',' function gpsFix('],[' function harmonicPartial(',' function profileFingerprint('],[' function firingMul(',' function evaluatePop(']];
  for(const [a,b] of pairs) assert.equal(crypto.createHash('sha256').update(fnText(script,a,b)).digest('hex'),V34_AUDIO_SHA256[a.trim()],a.trim()+' differs from v3.4');
- // no v3.5/v3.6 audio pieces left
+ // buildAudio: everything before the noise buffer and the flutter→start block stay byte-identical to v3.4
+ const b=fnText(script,'function buildAudio(','function updateAudio(');
+ const noiseAt=b.indexOf(' const buffer=ctx.createBuffer');
+ const flutterAt=b.indexOf(' const flutter=ctx.createOscillator()');
+ const retAt=b.indexOf('return {ctx,master,voices');
+ assert(noiseAt>0&&flutterAt>noiseAt&&retAt>flutterAt);
+ const prefix=b.slice(0,noiseAt),flutter=b.slice(flutterAt,retAt);
+ // Prefix (master/limiter/voices/sub) unchanged from v3.4; flutter LFO wiring unchanged.
+ assert.match(prefix,/limiter\.threshold\.value=-16;limiter\.knee\.value=8;limiter\.ratio\.value=12/);
+ assert.match(prefix,/exhaust\.type='lowpass';exhaust\.frequency\.value=1200/);
+ assert.match(prefix,/sub\.type='triangle'/);
+ assert.match(flutter,/flutter\.type='sine'/);
+ assert.match(flutter,/flutterGain\.connect\(voices\[0\]\.osc\.frequency\)/);
+ assert.match(flutter,/sub\.start\(\);noise\.start\(\);flutter\.start\(\)/);
+ // Byte-identical tonal halves vs v3.8 reference
+ const v38=require('node:fs').readFileSync(__dirname+'/../ev-engine-sound-v3.8/index.html','utf8');
+ const s38=v38.match(/<script>([\s\S]*?)<\/script>/)[1];
+ const b38=fnText(s38,'function buildAudio(','function updateAudio(');
+ assert.equal(prefix,b38.slice(0,b38.indexOf(' const buffer=ctx.createBuffer')),'buildAudio tonal prefix ≠ v3.8');
+ assert.equal(flutter,b38.slice(b38.indexOf(' const flutter=ctx.createOscillator()'),b38.indexOf('return {ctx,master,voices')),'buildAudio flutter block ≠ v3.8');
+ // no v3.5/v3.6 master-chain pieces
  assert.doesNotMatch(html,/intakeNoise|Ruído de admissão/);
  assert.doesNotMatch(script,/createWaveShaper|Core\.AUDIO|audioParams|softClip/);
  assert.equal(core.AUDIO,undefined);
  assert.match(html,/<input id="volume" type="range" min="0" max="70" value="15">/);
 });
+test('updateAudio tonal formulas match v3.4; only noise gain formula changed',()=>{
+ const u=fnText(script,'function updateAudio(','async function start(');
+ // tonal lines still present with v3.4 formulas
+ assert.match(u,/set\(v\.osc\.frequency,firing\)/);
+ assert.match(u,/set\(v\.exhaust\.frequency,e\.tone\*\(\.4\+c\*\.7\+load\*\.6\)\)/);
+ assert.match(u,/set\(v\.pulseGain\.gain,pulseTarget\)/);
+ assert.match(u,/set\(a\.sub\.frequency,rpm\/e\.subDiv\)/);
+ assert.match(u,/set\(a\.subGain\.gain,e\.subGain\*\(\.6\+load\*\.4\)\)/);
+ assert.match(u,/set\(a\.flutter\.frequency,Math\.max\(e\.flutterBase,rpm\/60\)\)/);
+ assert.match(u,/set\(a\.flutterGain\.gain,e\.rough\*\(1\+c\)\*rpm\/70\)/);
+ assert.match(u,/set\(a\.master\.gain,\+\$\('volume'\)\.value\/100\*\.48\)/);
+ // v3.4 always-on noise formula is gone; v3.9 drive-scaled target with attack/release is present
+ assert.doesNotMatch(u,/set\(a\.noiseGain\.gain,e\.noiseIdle\+load\*e\.noiseLoad\*\(\.4\+c\)\)/);
+ assert.match(u,/noiseTarget=Math\.max\(0,Math\.min\(1,drive\)\)\*noisePeak/);
+ assert.match(u,/setTargetAtTime\(noiseTarget,t,rising\?\.027:\.1\)/);
+});
+test('intake noise path is band-limited HP150→bandpass→LP2500 and gated by drive',()=>{
+ const b=fnText(script,'function buildAudio(','function updateAudio(');
+ assert.match(b,/noiseHP\.type='highpass';noiseHP\.frequency\.value=150/);
+ assert.match(b,/noiseLP\.type='lowpass';noiseLP\.frequency\.value=2500/);
+ assert.match(b,/noise\.connect\(noiseHP\)\.connect\(intake\)\.connect\(noiseLP\)\.connect\(noiseGain\)\.connect\(master\)/);
+ assert.match(script,/\bdrive=mode==='sim'&&rev\?\.9:\(gb\?clamp\(gb\.demand,0,1\):0\)/);
+});
 async function pageAudioTest(){
  const nodes=[],waves=[];let sr=44100;
- const param=v=>({value:v,targets:[],setTargetAtTime(x){this.targets.push(x);this.value=x;},setValueAtTime(x){this.value=x;},cancelScheduledValues(){},linearRampToValueAtTime(){},exponentialRampToValueAtTime(){}});
+ const param=v=>({value:v,targets:[],setTargetAtTime(x,t,tc){this.targets.push({x,t,tc});this.value=x;},setValueAtTime(x){this.value=x;},cancelScheduledValues(){},linearRampToValueAtTime(){},exponentialRampToValueAtTime(){}});
  function node(kind,extra={}){const n={kind,out:[],connect(d){this.out.push(d);return d;},start(){},stop(){},...extra};nodes.push(n);return n;}
  class FakeAC{constructor(){this.sampleRate=sr;this.currentTime=0;this.state='running';this.destination=node('destination');}
   createGain(){return node('gain',{gain:param(1)});}
@@ -736,37 +777,55 @@ async function pageAudioTest(){
  els.start.onclick();await new Promise(r=>setTimeout(r,0));
  const frames=n=>{for(let i=0;i<n;i++){perf+=50;raf(perf);}};
  frames(80);
- // v3.4 output chain: master gain → DynamicsCompressor(−16 dB, knee 8, 12:1, 3 ms, 150 ms) → destination; no shaper, no master filters
+ // output chain unchanged from v3.4: master → DynamicsCompressor → destination; no shaper, no master filters
  const comps=nodes.filter(n=>n.kind==='comp');assert.equal(comps.length,1);const lim=comps[0];
  assert.deepEqual([lim.threshold.value,lim.knee.value,lim.ratio.value,lim.attack.value,lim.release.value],[-16,8,12,.003,.15]);
  assert.deepEqual(lim.out.map(n=>n.kind),['destination']);
- assert.equal(nodes.filter(n=>n.kind==='shaper').length,0,'no WaveShaper (v3.4 had none)');
+ assert.equal(nodes.filter(n=>n.kind==='shaper').length,0,'no WaveShaper');
  assert.equal(nodes.filter(n=>n.out.some(d=>d.kind==='destination')).length,1);
  const master=nodes.find(n=>n.out.includes(lim));assert.equal(master.kind,'gain');
- // intake noise: buffer → bandpass (Q 0.6) → gain → master; nothing else in the noise path
- const buf=nodes.find(n=>n.kind==='buffer'&&n.loop);const intake=buf.out[0];
- assert.equal(intake.type,'bandpass');assert.equal(intake.out[0].kind,'gain');assert.equal(intake.out[0].out[0],master);
- const noiseGain=intake.out[0];
+ // v3.9 noise path: buffer → HP150 → bandpass → LP2500 → gain → master
+ const buf=nodes.find(n=>n.kind==='buffer'&&n.loop);const hp=buf.out[0];
+ assert.equal(hp.type,'highpass');assert.equal(hp.frequency.value,150);
+ const intake=hp.out[0];assert.equal(intake.type,'bandpass');
+ const lp=intake.out[0];assert.equal(lp.type,'lowpass');assert.equal(lp.frequency.value,2500);
+ const noiseGain=lp.out[0];assert.equal(noiseGain.kind,'gain');assert.equal(noiseGain.out[0],master);
  // voices: osc → lowpass → gain → master; 48-term PeriodicWave with v3.4 partials
  const e=core.engines[KEY];
  assert(waves.length>=1);for(const w of waves){assert.equal(w.n,48);for(let i=1;i<48;i++) assert.equal(w.im[i],Math.fround(core.harmonicPartial(e,i)));}
- const oscs=nodes.filter(n=>n.kind==='osc'),sub=oscs.find(o=>o.type==='triangle'),flutter=oscs.find(o=>o.type==='sine'&&o.out[0]&&o.out[0].out.some(d=>d.kind!=='gain'));
+ const oscs=nodes.filter(n=>n.kind==='osc'),sub=oscs.find(o=>o.type==='triangle');
  assert(sub,'triangle sub');
- // live parameters follow the v3.4 formulas (rpm/load recovered from the sub path)
  const c=.4,subGain=sub.out[0].gain.value,load=(subGain/e.subGain-.6)/.4,rpm=sub.frequency.value*e.subDiv;
  assert(load>=-1e-9&&load<=1+1e-9,'load '+load);
- assert(Math.abs(noiseGain.gain.value-(e.noiseIdle+load*e.noiseLoad*(.4+c)))<1e-9,'noise gain = noiseIdle + load·noiseLoad·(0.4+c)');
+ // parked / zero demand → noise essentially off (drive=0)
+ assert(Math.abs(noiseGain.gain.value)<1e-12,'cruise/idle noise gain ≈ 0, got '+noiseGain.gain.value);
  assert(Math.abs(master.gain.value-50/100*.48)<1e-12,'master = volume/100 × 0.48');
  assert(Math.abs(intake.frequency.value-(e.intakeBase+rpm*e.intakeRatio))<1e-6&&intake.Q.value===e.intakeQ);
  const fg=nodes.find(n=>n.kind==='gain'&&n.out.length===2&&n.out.every(d=>d.value!==undefined));
  assert(fg,'flutter gain drives both voice frequencies');
  assert(Math.abs(fg.gain.value-e.rough*(1+c)*rpm/70)<1e-6,'flutter depth = rough·(1+c)·rpm/70');
- // accelerate: noise follows load exactly like v3.4 (always on, rises with load)
+ // tonal params must match the v3.4 formulas at this load/rpm (noise muted does not alter them)
+ const active=nodes.filter(n=>n.kind==='osc'&&n.wave);
+ assert(active.length>=1);
+ // accelerate hard: noise rises with drive, peak ≤ v3.4 full-load peak, attack τ≈0.027
+ noiseGain.gain.targets.length=0;
  els.target.value='200';els.throttle.value='100';frames(200);
- assert(Math.max(...noiseGain.gain.targets)>e.noiseIdle,'noise rises with load');
- assert(Math.min(...noiseGain.gain.targets)>=e.noiseIdle-1e-12,'v3.4 noise floor (noiseIdle) is always present');
+ const peak=e.noiseIdle+e.noiseLoad*(.4+c);
+ const xs=noiseGain.gain.targets.map(t=>t.x);
+ assert(Math.max(...xs)>0.02,'noise rises under load');
+ assert(Math.max(...xs)<=peak+1e-12,'noise peak ≤ v3.4 full-load peak');
+ const last=noiseGain.gain.targets.at(-1);
+ assert(last.tc===.027||last.tc===.1,'attack/release time constants');
+ // return to steady cruise: noise releases toward 0
+ noiseGain.gain.targets.length=0;
+ els.target.value=String(Math.round(parseFloat(els.speed?.textContent)||120));
+ // hold target at current speed with zero throttle so demand→0
+ const spd=parseFloat(els.speed.textContent)||120;
+ els.target.value=String(spd);els.throttle.value='0';frames(120);
+ assert(noiseGain.gain.targets.some(t=>t.x===0),'noise target returns to 0 in cruise');
+ assert(noiseGain.gain.targets.filter(t=>t.x===0).every(t=>t.tc===.1),'release τ = 0.1 s');
 }
 (async()=>{
- await pageAudioTest();count++;console.log('PASS page audio graph (fake AudioContext) matches v3.4: master → 12:1 limiter, intake bandpass, 48-term waves, v3.4 parameter formulas');
+ await pageAudioTest();count++;console.log('PASS page audio graph (fake AudioContext): v3.4 tonal chain + v3.9 gated/band-limited intake noise');
  console.log(`${count} tests passed; full inline JavaScript syntax valid. These tests cover logic and syntax only, not listening.`);
 })().catch(err=>{console.error(err);process.exit(1);});
