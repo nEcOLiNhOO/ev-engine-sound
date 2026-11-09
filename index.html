@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pt-PT" data-version="3.7"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual v3.7</title>
+<html lang="pt-PT" data-version="3.8"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual v3.8</title>
 <style>
 :root{color-scheme:dark;--bg:#0c1219;--panel:#141e28;--line:#293744;--text:#eef4f7;--muted:#a2b3c0;--accent:#c4f46c;--blue:#7bd9e7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% 0,#20303b,transparent 65%),var(--bg);font:16px system-ui,sans-serif;color:var(--text)}main{max-width:1220px;margin:auto;padding:28px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.brand{font-size:24px;letter-spacing:.2em;font-weight:800}.ver{font-size:11px;letter-spacing:.14em;color:var(--muted);font-weight:700;margin-left:8px;vertical-align:middle}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin:8px 0}.badge{border:1px solid var(--line);border-radius:30px;padding:10px 15px;font-size:12px;color:var(--accent)}.layout{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}.panel{background:linear-gradient(140deg,#18232e,#101922);border:1px solid var(--line);border-radius:24px;padding:25px}.modes{display:flex;gap:8px}button,select{font:inherit;color:inherit;background:#202d39;border:1px solid #3b4a58;border-radius:12px;min-height:48px;padding:10px 16px;cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:3px}button.active{background:var(--accent);color:#14200a;border-color:var(--accent)}button:disabled{opacity:.4;cursor:not-allowed}.dial{height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin:15px auto 0;max-width:380px}.dial:before{content:"";position:absolute;inset:5px 10px 0;border:12px solid #273641;border-bottom-color:transparent;border-radius:50% 50% 35% 35%;pointer-events:none}.dial:after{content:"";position:absolute;inset:5px 10px 0;border:12px solid transparent;border-left-color:var(--accent);border-radius:50% 50% 35% 35%;opacity:.7;pointer-events:none}.speed{font-size:88px;line-height:1.1;font-weight:250;font-variant-numeric:tabular-nums;z-index:1}.unit{color:var(--muted);font-size:13px}.source{margin-top:16px;font-size:12px;color:var(--blue);text-align:center;z-index:1}.rpmrow{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin:8px 0}.track{height:10px;background:#2b3741;border-radius:8px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ffd170,#fc806d);transition:width .12s}.stats{display:flex;justify-content:space-between;margin:22px 0;font-size:13px;color:var(--muted)}.stats b{display:block;font-size:20px;color:var(--text);margin-top:5px}.actions{display:flex;gap:12px}.actions button{flex:1;min-height:60px;font-weight:700}#start{background:var(--accent);color:#182312;border:0}#rev{touch-action:none;user-select:none;-webkit-user-select:none}#rev.held{background:var(--blue);color:#12212a}.controls h1{font-size:25px;margin:0 0 6px}.subtitle{color:var(--muted);font-size:14px;line-height:1.5}label{display:block;color:var(--muted);font-size:13px;margin-top:23px}.labelrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.labelrow output{color:var(--text)}select{width:100%}input[type=range]{accent-color:var(--accent);width:100%;min-height:32px;margin:0;cursor:pointer}.note{font-size:12px;color:var(--muted);line-height:1.6}.honesty{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5}#profileHint{margin-top:10px;color:var(--text)}.notice{min-height:45px;padding:12px 0 0;color:var(--blue);font-size:13px;line-height:1.5}.gpsbox{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:18px}.gpsbox button{width:100%}.diag{margin-top:10px;font-size:12px;color:var(--muted)}.diag summary{cursor:pointer;color:var(--text);min-height:32px;padding-top:6px}.diag dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:8px 0 0}.diag dt{color:var(--muted)}.diag dd{margin:0;color:var(--text);font-variant-numeric:tabular-nums;word-break:break-word}.toggle{display:flex;align-items:center;gap:10px;margin-top:20px;color:var(--text);font-size:14px;cursor:pointer}.toggle input{width:22px;height:22px;accent-color:var(--accent);flex-shrink:0}.popsbox{margin-top:4px}.foot{margin:20px 2px;color:var(--muted);font-size:12px;line-height:1.6} [hidden]{display:none!important}@media(max-width:760px){main{padding:16px}.layout{grid-template-columns:1fr}.panel{padding:20px}header{margin-bottom:16px}.brand{font-size:20px}.dial{height:230px}.speed{font-size:76px}.badge{font-size:10px;padding:8px}.controls h1{font-size:23px}}@media(min-width:900px) and (max-height:800px){main{padding-top:18px}.dial{height:225px}label{margin-top:16px}}
 </style></head><body><main>
-<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.7</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
+<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.8</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
 <div class="layout"><section class="panel" aria-label="Instrumentos e reprodução"><div class="modes" aria-label="Modo"><button id="simMode" class="active" aria-pressed="true">Simulação</button><button id="gpsMode" aria-pressed="false">GPS real</button></div>
 <div class="dial"><div class="speed" id="speed">0</div><div class="unit">km/h</div><div class="source" id="source">Velocidade simulada · sem ligação ao carro</div></div>
 <div class="rpmrow"><span id="rpm">800 rpm</span><span id="redline">6 800 máx.</span></div><div class="track" role="meter" aria-label="Rotações do motor" aria-valuemin="0" aria-valuemax="6800" aria-valuenow="800" id="rpmMeter"><div class="fill" id="rpmFill"></div></div>
@@ -42,7 +42,7 @@
 <p class="honesty">Síntese original, não oficial — não é uma gravação nem uma cópia autêntica. A afinação é uma escolha de design.</p>
 <div id="simControls"><label for="target"><span class="labelrow"><span>Velocidade alvo simulada</span><output id="targetValue">0 km/h</output></span></label><input id="target" type="range" min="0" max="160" value="0" step="1"><label for="throttle"><span class="labelrow"><span>Resposta à aceleração</span><output id="throttleValue">45%</output></span></label><input id="throttle" type="range" min="5" max="100" value="45"><div class="note">Sobe a velocidade alvo para ouvir a aceleração e as mudanças virtuais. REV acelera em vazio; não altera a velocidade.</div></div>
 <div id="gpsControls" class="gpsbox" hidden><button id="gpsEnable">Autorizar localização</button><div class="note" id="gpsInfo">GPS desligado. Sem acesso ao pedal, ao motor ou à telemetria.</div><details class="diag" id="gpsDiag"><summary>Diagnóstico GPS</summary><dl><dt>Contexto seguro</dt><dd id="dgSecure">—</dd><dt>Permissão</dt><dd id="dgPerm">—</dd><dt>Desvio do timestamp</dt><dd id="dgOffset">—</dd><dt>Precisão</dt><dd id="dgAcc">—</dd><dt>Velocidade nativa</dt><dd id="dgNative">—</dd><dt>Origem</dt><dd id="dgSource">—</dd><dt>Última posição</dt><dd id="dgAge">—</dd><dt>Aceites / rejeitadas / repetidas</dt><dd id="dgCounts">0 / 0 / 0</dd><dt>Último motivo</dt><dd id="dgReason">—</dd><dt>Último erro</dt><dd id="dgError">—</dd></dl><p class="note">O desvio compara o timestamp do browser com o relógio do dispositivo. É só informativo: a idade é medida pela hora de receção.</p></details></div>
-<label for="volume"><span class="labelrow"><span>Volume</span><output id="volumeValue">15%</output></span></label><input id="volume" type="range" min="0" max="70" value="15"><label for="character"><span class="labelrow"><span>Caráter · suave → agressivo</span><output id="characterValue">40%</output></span></label><input id="character" type="range" min="0" max="100" value="40"><label for="intakeNoise"><span class="labelrow"><span>Ruído de admissão · só em carga</span><output id="intakeNoiseValue">25%</output></span></label><input id="intakeNoise" type="range" min="0" max="100" value="25"><label for="gearStyle">Caixa virtual</label><select id="gearStyle"><option value="comfort" selected>Conforto · cruzeiro calmo</option><option value="sport">Desportiva · mantém rotação</option></select>
+<label for="volume"><span class="labelrow"><span>Volume</span><output id="volumeValue">15%</output></span></label><input id="volume" type="range" min="0" max="70" value="15"><label for="character"><span class="labelrow"><span>Caráter · suave → agressivo</span><output id="characterValue">40%</output></span></label><input id="character" type="range" min="0" max="100" value="40"><label for="gearStyle">Caixa virtual</label><select id="gearStyle"><option value="comfort" selected>Conforto · cruzeiro calmo</option><option value="sport">Desportiva · mantém rotação</option></select>
 <div class="popsbox">
 <label class="toggle" for="popsEnable"><input id="popsEnable" type="checkbox"> Estalos e pops (opcional)</label>
 <div id="popsControls" hidden>
@@ -51,11 +51,11 @@
 <p class="note">Desligado por omissão. Só em desaceleração, ao largar o REV com rotação alta, ou numa mudança virtual / desaceleração GPS válida. Não lê o pedal e não dispara se o sinal se perder.</p>
 </div>
 </div>
-</section></div><footer class="foot">Impulso v3.7. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Saída pelos altifalantes do carro e o browser Tesla em movimento não estão validados. Síntese original, não oficial.</footer>
+</section></div><footer class="foot">Impulso v3.8. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Saída pelos altifalantes do carro e o browser Tesla em movimento não estão validados. Síntese original, não oficial.</footer>
 </main><script>
 'use strict';
 const Core=(()=>{
- const VERSION='3.7';
+ const VERSION='3.8';
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  const POP_LIMITS={maxGain:.22,maxVoices:3,decelThresh:-.55,maxNodesPerEvent:2,crackleDur:.055,shiftDur:.09};
  const engines={
@@ -536,45 +536,7 @@ const Core=(()=>{
   r.accel=accelFrom(base,r);
   return {track:{baseline:r.point,last:r.point,lastRawTs:p.rawTs??null},result:r};
  }
- // ---- v3.5 audio chain tuned for car speakers (pure parameters; the page builds the Web Audio graph from them) ----
- // Master: gain → highpass 25 Hz → lowpass 11.5 kHz (both Butterworth, Q in dB) → 6:1 compressor → peak-safety soft clip (4x).
- // v3.6: timbre midway between v3.4 and v3.5 (brighter top end, lighter sub, firmer but transparent dynamics, clipper only near 0 dBFS).
- const AUDIO={hpHz:25,hpQ:-3,lpHz:11500,lpQ:-3,noiseHpHz:150,noiseLpHz:2500,noiseBpQ:1.1,intakeMin:250,intakeMax:2000,
-  partialLimitHz:16000,partialNyquistFrac:.72,flutterFrac:.07,masterScale:1.0,volumeMax:70,noiseDefault:25,noiseLoadGate:.3,
-  subMix:.55,subMinHz:30,
-  comp:{threshold:-12,knee:8,ratio:6,attack:.01,release:.2},clip:{knee:.85,ceiling:.98,oversample:'4x'}};
- const WAVE_BANDS=[.4,.6,.8,1];
- function noiseGate(load){const x=clamp(((Number(load)||0)-AUDIO.noiseLoadGate)/(1-AUDIO.noiseLoadGate),0,1);return x*x*(3-2*x);}
- function partialLimit(sampleRate){return Math.min((Number(sampleRate)||44100)/2*AUDIO.partialNyquistFrac,AUDIO.partialLimitHz);}
- function flutterDepth(e,rpm,c=.4){return Math.min(e.rough*(1+c)*rpm/70,firingHz(e,rpm)*AUDIO.flutterFrac);}
- // Highest harmonic index so that (firing + FM deviation) × n stays below min(0.72 × Nyquist, 16 kHz).
- function harmonicCount(e,rpm,sampleRate,c=.4){return clamp(Math.floor(partialLimit(sampleRate)/(firingHz(e,rpm)+flutterDepth(e,rpm,c))),4,47);}
- // Per-rpm band-limiting: one PeriodicWave per band; going up switches immediately, coming down waits 8 % below the band edge.
- function waveBand(e,rpm,prev){
-  let b=WAVE_BANDS.findIndex(f=>rpm<=f*e.max);if(b<0)b=WAVE_BANDS.length-1;
-  if(Number.isInteger(prev)&&prev>b&&rpm>WAVE_BANDS[b]*e.max*.92) b=b+1;
-  return b;
- }
- function bandHarmonics(e,band,sampleRate,c=.4){return harmonicCount(e,WAVE_BANDS[clamp(band,0,WAVE_BANDS.length-1)]*e.max,sampleRate,c);}
- function audioParams(e,rpm,load,o={}){
-  const c=clamp(o.character??.4,0,1),noise=clamp(o.noise??AUDIO.noiseDefault,0,100)/100,sr=o.sampleRate||48000;
-  const firing=firingHz(e,rpm),band=waveBand(e,rpm,o.prevBand);
-  return {firing,band,harmonics:bandHarmonics(e,band,sr,c),
-   flutterF:Math.max(e.flutterBase,rpm/60),flutterDepth:flutterDepth(e,rpm,c),
-   exhaustF:clamp(e.tone*(.4+c*.7+load*.6),80,AUDIO.lpHz),exhaustQ:e.exhaustQ,
-   pulseGain:e.pulseGain+load*e.pulseLoad,
-   // sub one octave under the firing frequency (was rpm/subDiv ≈ 6–20 Hz: inaudible on car speakers, wasted headroom)
-   subF:clamp(firing*.5*(110/(e.subDiv||110))**.25,AUDIO.subMinHz,160),subGain:e.subGain*(.45+load*.35)*AUDIO.subMix,
-   intakeF:clamp(e.intakeBase+rpm*e.intakeRatio,AUDIO.intakeMin,AUDIO.intakeMax),intakeQ:Math.max(AUDIO.noiseBpQ,e.intakeQ),
-   // intake/turbo noise only under real load; idle/steady cruise ≈ silent. Slider 0–100 scales it.
-   noiseGain:noise*(e.noiseIdle*.06+e.noiseLoad*1.6*noiseGate(load)*(.5+c*.5)),
-   master:clamp(o.volume??15,0,AUDIO.volumeMax)/100*AUDIO.masterScale};
- }
- // Soft clip: linear up to the knee, then a tanh shoulder to the ceiling (no hard limiter, no pumping).
- function softClip(x){const {knee:k,ceiling:cl}=AUDIO.clip,a=Math.abs(x);return a<=k?x:Math.sign(x)*(k+(cl-k)*Math.tanh((a-k)/(cl-k)));}
- function softClipCurve(n=2049){const out=new Float32Array(n);for(let i=0;i<n;i++)out[i]=softClip(i/(n-1)*2-1);return out;}
- function readNoisePref(storage){try{const v=storage&&storage.getItem('impulso.intakeNoise');const n=v===null||v===undefined||v===''?NaN:Number(v);return Number.isFinite(n)?clamp(Math.round(n),0,100):AUDIO.noiseDefault;}catch(err){return AUDIO.noiseDefault;}}
- return {VERSION,CF,lsTrend,comfortKickDv,comfortDecelRpm,gearboxComfort,gearboxV36,AUDIO,WAVE_BANDS,noiseGate,partialLimit,flutterDepth,harmonicCount,waveBand,bandHarmonics,audioParams,softClip,softClipCurve,readNoisePref,clamp,engines,mapping,gearbox,gearRpm,cruiseGear,demandFromAccel,popTriggers,kickThresholds,GEAR_PERSONA,KICK_LEVELS,GEAR_RATIOS,GEARBOX_STYLES,distance,gpsSample,gpsFix,gpsStep,formatOffset,harmonicPartial,profileFingerprint,firingMul,firingHz,evaluatePop,popEnvelope,POP_LIMITS};
+ return {VERSION,CF,lsTrend,comfortKickDv,comfortDecelRpm,gearboxComfort,gearboxV36,clamp,engines,mapping,gearbox,gearRpm,cruiseGear,demandFromAccel,popTriggers,kickThresholds,GEAR_PERSONA,KICK_LEVELS,GEAR_RATIOS,GEARBOX_STYLES,distance,gpsSample,gpsFix,gpsStep,formatOffset,harmonicPartial,profileFingerprint,firingMul,firingHz,evaluatePop,popEnvelope,POP_LIMITS};
 })();
 const $=id=>document.getElementById(id),{clamp,engines,mapping,gpsSample}=Core;
 let gbState=null,sinceDecelPop=9,gpsTrack=null,gpsStats={ok:0,bad:0,dup:0},gpsLastOffset=null,gpsLastAcc=null,gpsLastNative=null,gpsLastSource='—',gpsLastReason='—',gpsLastError='—',gpsPerm='—',diagTimer=0,mode='sim',speed=0,rpm=800,load=0,gear=0,rev=false,running=false,audio=null,watch=null,previous=null,lastFix=0,gpsSpeed=null,gpsAcceleration=0,lastFrame=performance.now(),frame=0,hiddenPause=false,prevGear=0,prevValid=false,popSuppress=false,lastPopAt=null;
@@ -652,9 +614,8 @@ function maybePop(event,extra){
  lastPopAt=now;
  spawnPop(audio,decision);
 }
-function buildWave(ctx,e,harmonics=47){
- // v3.5: band-limited per rpm band (Core.bandHarmonics) so no partial reaches the top octave / Nyquist.
- const n=Math.min(48,harmonics+1),real=new Float32Array(n),imag=new Float32Array(n);
+function buildWave(ctx,e){
+ const n=48,real=new Float32Array(n),imag=new Float32Array(n);
  for(let i=1;i<n;i++) imag[i]=Core.harmonicPartial(e,i);
  return ctx.createPeriodicWave(real,imag);
 }
@@ -664,14 +625,9 @@ function buildAudio(){
  const ctx=new AC();
  const master=ctx.createGain();
  master.gain.value=0;
- // v3.6 master chain for car speakers: rumble/DC highpass, gentle 11.5 kHz lowpass, 6:1 compressor, peak-safety soft clip.
- const A=Core.AUDIO;
- const hp=ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=A.hpHz;hp.Q.value=A.hpQ;
- const lp=ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=A.lpHz;lp.Q.value=A.lpQ;
- const comp=ctx.createDynamicsCompressor();
- comp.threshold.value=A.comp.threshold;comp.knee.value=A.comp.knee;comp.ratio.value=A.comp.ratio;comp.attack.value=A.comp.attack;comp.release.value=A.comp.release;
- const clip=ctx.createWaveShaper();clip.curve=Core.softClipCurve();clip.oversample=A.clip.oversample;
- master.connect(hp).connect(lp).connect(comp).connect(clip).connect(ctx.destination);
+ const limiter=ctx.createDynamicsCompressor();
+ limiter.threshold.value=-16;limiter.knee.value=8;limiter.ratio.value=12;limiter.attack.value=.003;limiter.release.value=.15;
+ master.connect(limiter).connect(ctx.destination);
  const popsInput=ctx.createGain();popsInput.gain.value=1;popsInput.connect(master);
  function voice(){
   const osc=ctx.createOscillator(),exhaust=ctx.createBiquadFilter(),pulseGain=ctx.createGain();
@@ -689,13 +645,10 @@ function buildAudio(){
  for(let i=0;i<data.length;i++) data[i]=Math.random()*2-1;
  const noise=ctx.createBufferSource();
  noise.buffer=buffer;noise.loop=true;
- // v3.5: band-limited intake noise (150 Hz – 2.5 kHz), no broadband hiss.
- const noiseHp=ctx.createBiquadFilter();noiseHp.type='highpass';noiseHp.frequency.value=Core.AUDIO.noiseHpHz;noiseHp.Q.value=-3;
  const intake=ctx.createBiquadFilter();
- intake.type='bandpass';intake.frequency.value=400;intake.Q.value=Core.AUDIO.noiseBpQ;
- const noiseLp=ctx.createBiquadFilter();noiseLp.type='lowpass';noiseLp.frequency.value=Core.AUDIO.noiseLpHz;noiseLp.Q.value=-3;
+ intake.type='bandpass';intake.frequency.value=400;intake.Q.value=.6;
  const noiseGain=ctx.createGain();noiseGain.gain.value=0;
- noise.connect(noiseHp).connect(intake).connect(noiseLp).connect(noiseGain).connect(master);
+ noise.connect(intake).connect(noiseGain).connect(master);
  const flutter=ctx.createOscillator(),flutterGain=ctx.createGain();
  flutter.type='sine';flutter.frequency.value=8;flutterGain.gain.value=0;
  flutter.connect(flutterGain);
@@ -708,7 +661,7 @@ function buildAudio(){
   if(running&&ctx.state==='suspended') message('Áudio suspenso pelo browser. Toca em Retomar som.');
   if(ctx.state!=='running'&&running) $('start').textContent='↻ Retomar som';
  };
- return {ctx,master,hp,lp,comp,clip,waves:{},waveKey:null,band:null,voices,active:0,lastKey:null,sub,subGain,noise,intake,noiseGain,flutter,flutterGain,popsInput,popNodes:[],noiseBuffer:buffer};
+ return {ctx,master,voices,active:0,lastKey:null,sub,subGain,noise,intake,noiseGain,flutter,flutterGain,popsInput,popNodes:[],noiseBuffer:buffer};
 }
 function updateAudio(){
  if(!audio||!running) return;
@@ -716,43 +669,38 @@ function updateAudio(){
  if(!e) return;
  const c=+$('character').value/100;
  const set=(p,v,tc=.07)=>p.setTargetAtTime(v,t,tc);
- const P=Core.audioParams(e,rpm,load,{character:c,noise:+$('intakeNoise').value,volume:+$('volume').value,sampleRate:a.ctx.sampleRate,prevBand:a.lastKey===key?a.band:null});
+ const firing=Core.firingHz(e,rpm);
+ const pulseTarget=e.pulseGain+load*e.pulseLoad;
  if(a.lastKey!==key){
   if(a.lastKey!==null){cancelPops(a);popSuppress=true;lastPopAt=null;}
-  a.lastKey=key;
- }
- const waveKey=key+'|'+P.band;
- if(a.waveKey!==waveKey){
-  // profile or rpm band changed: crossfade to the other voice with the matching band-limited wave
   const next=1-a.active,incoming=a.voices[next],outgoing=a.voices[a.active];
-  if(!a.waves[waveKey]) a.waves[waveKey]=buildWave(a.ctx,e,P.harmonics);
   incoming.pulseGain.gain.cancelScheduledValues(t);
   incoming.pulseGain.gain.setValueAtTime(0,t);
-  incoming.osc.setPeriodicWave(a.waves[waveKey]);
-  incoming.osc.frequency.setValueAtTime(P.firing,t);
-  incoming.exhaust.frequency.setValueAtTime(P.exhaustF,t);
-  incoming.exhaust.Q.setValueAtTime(P.exhaustQ,t);
-  incoming.pulseGain.gain.setTargetAtTime(P.pulseGain,t,.06);
+  incoming.osc.setPeriodicWave(buildWave(a.ctx,e));
+  incoming.osc.frequency.setValueAtTime(firing,t);
+  incoming.exhaust.frequency.setValueAtTime(Math.max(80,e.tone*(.4+c*.7+load*.6)),t);
+  incoming.exhaust.Q.setValueAtTime(e.exhaustQ,t);
+  incoming.pulseGain.gain.setTargetAtTime(pulseTarget,t,.06);
   outgoing.pulseGain.gain.cancelScheduledValues(t);
   outgoing.pulseGain.gain.setValueAtTime(outgoing.pulseGain.gain.value,t);
   outgoing.pulseGain.gain.setTargetAtTime(0,t,.05);
-  a.active=next;a.waveKey=waveKey;
+  a.active=next;
+  a.lastKey=key;
  }
- a.band=P.band;
  const v=a.voices[a.active];
- set(v.osc.frequency,P.firing);
- set(v.exhaust.frequency,P.exhaustF);
- set(v.exhaust.Q,P.exhaustQ);
- set(v.pulseGain.gain,P.pulseGain);
+ set(v.osc.frequency,firing);
+ set(v.exhaust.frequency,e.tone*(.4+c*.7+load*.6));
+ set(v.exhaust.Q,e.exhaustQ);
+ set(v.pulseGain.gain,pulseTarget);
  set(a.voices[1-a.active].pulseGain.gain,0,.05);
- set(a.sub.frequency,P.subF);
- set(a.subGain.gain,P.subGain);
- set(a.flutter.frequency,P.flutterF);
- set(a.flutterGain.gain,P.flutterDepth);
- set(a.intake.frequency,P.intakeF);
- set(a.intake.Q,P.intakeQ);
- set(a.noiseGain.gain,P.noiseGain,.12);
- set(a.master.gain,P.master);
+ set(a.sub.frequency,rpm/e.subDiv);
+ set(a.subGain.gain,e.subGain*(.6+load*.4));
+ set(a.flutter.frequency,Math.max(e.flutterBase,rpm/60));
+ set(a.flutterGain.gain,e.rough*(1+c)*rpm/70);
+ set(a.intake.frequency,e.intakeBase+rpm*e.intakeRatio);
+ set(a.intake.Q,e.intakeQ);
+ set(a.noiseGain.gain,e.noiseIdle+load*e.noiseLoad*(.4+c));
+ set(a.master.gain,+$('volume').value/100*.48);
 }
 async function start(){
  try{
@@ -907,11 +855,6 @@ function tick(now){
  updateAudio();
  frame=requestAnimationFrame(tick);
 }
-// v3.5: intake-noise preference persists on this device (default 25 %).
-(()=>{let store=null;try{store=window.localStorage;}catch(err){}
- const v=Core.readNoisePref(store);$('intakeNoise').value=v;$('intakeNoiseValue').textContent=v+'%';
- $('intakeNoise').addEventListener('change',()=>{try{store&&store.setItem('impulso.intakeNoise',String($('intakeNoise').value));}catch(err){}});
-})();
 $('start').onclick=start;
 $('simMode').onclick=()=>setMode('sim');
 $('gpsMode').onclick=()=>setMode('gps');
@@ -931,7 +874,7 @@ $('rev').addEventListener('keydown',e=>{if((e.key===' '||e.key==='Enter')&&mode=
 $('rev').addEventListener('keyup',()=>releaseRev('user'));
 $('rev').addEventListener('blur',()=>releaseRev('cancel'));
 window.addEventListener('blur',()=>releaseRev('cancel'));
-['target','throttle','volume','character','intakeNoise','popsIntensity'].forEach(id=>$(id).addEventListener('input',()=>{
+['target','throttle','volume','character','popsIntensity'].forEach(id=>$(id).addEventListener('input',()=>{
  $(id+'Value').textContent=$(id).value+(id==='target'?' km/h':'%');
  if(id==='volume'&&+$(id).value<=0) cancelPops(audio);
 }));
