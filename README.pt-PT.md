@@ -1,12 +1,17 @@
-# Impulso · Motor virtual v3.15
+# Impulso · Motor virtual v3.16
 
 Aplicação original, num único `index.html`, sem bibliotecas, fontes, gravações ou pedidos de rede (exceto o serviço de localização do próprio browser, se autorizado).
 
-Esta pasta é a entrega autónoma v3.15 (som/Core idênticos à v3.14; motores organizados por marca): trinta assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação.
+Esta pasta é a entrega autónoma v3.16 (+20 motores famosos pelo som; 30 anteriores intactos): cinquenta assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação.
 
-O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.15 ainda pode não corresponder ao que está online.
+O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.16 ainda pode não corresponder ao que está online.
 
 A publicação HTTPS permite testar num browser normal, mas não garante que resolva a ausência de áudio numa pré-visualização móvel. Toca em **Iniciar som** na página aberta diretamente no browser.
+
+## Alterações na v3.16
+- **+20 perfis** inspirados em motores citados em listas de «best sounding engines» (Pagani Zonda, McLaren F1, Aston Vantage, Alfa Giulia QV, Maserati MC12, Corvette Z06 LT6, Jaguar F-Type R, Lancia Integrale, Bugatti Chiron W16, Koenigsegg Jesko; e ícones de marcas já presentes: Ferrari 812/F40, Carrera GT, M5 E60 V10, M3 E92 V8, Huracán, 370Z, GT350 Voodoo, SLR, GR Yaris).
+- Marcas novas nos chips: Pagani, McLaren, Aston Martin, Alfa Romeo, Maserati, Chevrolet, Jaguar, Lancia, Bugatti, Koenigsegg.
+- Os **30 perfis anteriores** mantêm fingerprint/síntese/caixa idênticos à v3.15. Síntese original, não oficial.
 
 ## Alterações na v3.15
 - **Motores por marca.** O seletor agrupa e filtra por marca (BMW, Porsche, Ferrari, Lamborghini, …); arquiteturas genéricas em «Genéricos». Em «Todos»: ★ Favoritos primeiro, depois marcas A–Z, Genéricos no fim. Chips com scroll horizontal. Etiqueta pequena de tipo (V8, I6…) em cada mosaico.
@@ -51,7 +56,7 @@ A publicação HTTPS permite testar num browser normal, mas não garante que res
 2. Toca em **Iniciar som**. O volume inicial é 15%; começa baixo também no dispositivo.
 3. Aumenta a velocidade alvo: o motor acompanha a aceleração e faz mudanças virtuais. O controlo de resposta altera a rapidez da aceleração. Reduzir o alvo simula desaceleração.
 4. Mantém **REV** premido para acelerar em vazio (não muda a velocidade). Soltar de propósito, com rotação alta, pode produzir um estalo se os pops estiverem ligados. Cancelar o toque, perder o foco ou ocultar a página não dispara estalos. Também aceita Espaço/Enter com foco.
-5. Experimenta as trinta assinaturas (mosaicos no seletor de motores), volume e caráter. Cada perfil tem uma nota curta de carácter. Trocar de perfil enquanto o som corre faz um cruzamento suave entre vozes e cancela estalos pendentes. **Parar som** fecha o contexto de áudio.
+5. Experimenta as cinquenta assinaturas (mosaicos no seletor de motores), volume e caráter. Cada perfil tem uma nota curta de carácter. Trocar de perfil enquanto o som corre faz um cruzamento suave entre vozes e cancela estalos pendentes. **Parar som** fecha o contexto de áudio.
 6. **Estalos e pops** está desligado por omissão. Se o ligares, um cursor controla a intensidade. Não há reprodução automática: o motor só começa depois de tocares em **Iniciar som**.
 
 ## Assinaturas

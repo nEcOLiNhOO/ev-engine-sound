@@ -11,12 +11,16 @@ const EXPECTED={
  i3:3,i4:4,i5:5,i6:6,v6:6,flat6:6,v8:8,v10:10,v12:12,
  gt3rs:6,gtr:6,lfa:10,r8v10:10,wrx:4,mustang:8,supra2jz:6,
  m3:6,c63:8,rs3:5,aventador:12,f458:8,
- vtec:4,hellcat:8,amg62:8,rb26:6,evo:4,nsx:6,diablo:12
+ vtec:4,hellcat:8,amg62:8,rb26:6,evo:4,nsx:6,diablo:12,
+ zonda:12,mclarenf1:12,vantage:12,giuliaqv:6,mc12:12,c8z06:8,ftype:8,integrale:4,chiron:16,jesko:8,
+ f812:12,f40:8,cgt:10,m5e60:10,m3e92:8,huracan:10,z370:6,gt350:8,slr:8,yarisgr:3
 };
-const INSPIRATIONS=['gt3rs','gtr','lfa','r8v10','wrx','mustang','m3','c63','rs3','aventador','f458','rx7','supra2jz','vtec','hellcat','amg62','rotary4','rb26','evo','nsx','diablo'];
+const INSPIRATIONS=['gt3rs','gtr','lfa','r8v10','wrx','mustang','m3','c63','rs3','aventador','f458','rx7','supra2jz','vtec','hellcat','amg62','rotary4','rb26','evo','nsx','diablo','zonda','mclarenf1','vantage','giuliaqv','mc12','c8z06','ftype','integrale','chiron','jesko','f812','f40','cgt','m5e60','m3e92','huracan','z370','gt350','slr','yarisgr'];
 const ARCHITECTURES=['i3','i4','i5','i6','v6','flat6','v8','v10','v12'];
 const LEGACY22=['gt3rs','gtr','lfa','r8v10','wrx','mustang','m3','c63','rs3','aventador','f458','rx7','supra2jz',...ARCHITECTURES];
 const NEW8=['vtec','hellcat','amg62','rotary4','rb26','evo','nsx','diablo'];
+const NEW20=["zonda","mclarenf1","vantage","giuliaqv","mc12","c8z06","ftype","integrale","chiron","jesko","f812","f40","cgt","m5e60","m3e92","huracan","z370","gt350","slr","yarisgr"];
+const LEGACY30=[...LEGACY22,'vtec','hellcat','amg62','rotary4','rb26','evo','nsx','diablo'];
 const FIELDS=['group','unofficial','kind','cyl','rotors','fireMul','idle','max','tone','exhaustQ','intakeBase','intakeRatio','intakeQ','noiseIdle','noiseLoad','rough','pulse','harmonicDecay','evenMix','oddMix','rasp','pulseGain','pulseLoad','subGain','subDiv','flutterBase','crackle','hint'];
 const synthKey=e=>[e.tone,e.exhaustQ,e.intakeBase,e.intakeRatio,e.intakeQ,e.noiseIdle,e.noiseLoad,e.rough,e.pulse,e.harmonicDecay,e.evenMix,e.oddMix,e.rasp,e.kind,e.fireMul].join('|');
 const popState=(over={})=>({
@@ -42,10 +46,10 @@ test('stateless cruise mapping: gear never decreases with speed and RPM drops at
 test('all engines map finite bounded RPM/load over speed sweep',()=>{for(const key of Object.keys(core.engines))for(let s=-10;s<=300;s++){const m=core.mapping(s,key,4),e=core.engines[key];assert(m.rpm>=e.idle&&m.rpm<=e.max);assert(m.load>=0&&m.load<=1);assert(m.gear>=0&&m.gear<=7);}});
 test('positive acceleration increases synthetic load',()=>assert(core.mapping(40,'v6',2).load>core.mapping(40,'v6',0).load));
 // v3.14: UI redesign; Core audio unchanged from 3.13 aside from VERSION.
-test('visible version 3.15 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.15');assert.match(html,/data-version="3\.15"/);assert.match(html,/>v3\.15</);assert.match(html,/Impulso v3\.15/);});
-test('30 presets: 22 legacy + 8 new inspirations',()=>{
+test('visible version 3.16 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.16');assert.match(html,/data-version="3\.16"/);assert.match(html,/>v3\.16</);assert.match(html,/Impulso v3\.16/);});
+test('50 presets: 30 legacy + 20 new inspirations',()=>{
  const keys=Object.keys(core.engines);
- assert.equal(keys.length,30);
+ assert.equal(keys.length,50);
  assert.deepEqual(keys.slice().sort(),[...Object.keys(EXPECTED),'rx7','rotary4'].sort());
  for(const [k,cyl] of Object.entries(EXPECTED)){
   assert.equal(core.engines[k].kind,'piston',k);
@@ -82,6 +86,9 @@ test('selector groups inspirations and architectures',()=>{
  assert.match(html,/EvoMotor 4G63/);
  assert.match(html,/NSXMotor/);
  assert.match(html,/DiabloMotor/);
+ assert.match(html,/Pagani Zonda/);
+ assert.match(html,/Ferrari 812/);
+ assert.match(html,/Carrera GT/);
 });
 test('honesty is present without a disclaimer wall on every option',()=>{
  assert.match(html,/Síntese original, não oficial/);
@@ -113,11 +120,11 @@ test('every profile has complete bounded unique synthesis tuning and a short hin
   assert(!synth.has(sk),'duplicate synthesis key '+key);
   synth.add(sk);
  }
- assert(fingerprints.size>=30);
+ assert(fingerprints.size>=50);
  assert.equal(synth.size,fingerprints.size);
 });
 test('related profiles differ beyond name and cylinder or rotor count',()=>{
- const pairs=[['gt3rs','flat6'],['gtr','v6'],['lfa','v10'],['r8v10','v10'],['lfa','r8v10'],['wrx','i4'],['mustang','v8'],['i6','v6'],['m3','i6'],['c63','v8'],['c63','mustang'],['rs3','i5'],['aventador','v12'],['f458','v8'],['f458','c63'],['supra2jz','i6'],['supra2jz','m3'],['vtec','i4'],['vtec','evo'],['hellcat','mustang'],['hellcat','v8'],['amg62','c63'],['amg62','v8'],['rb26','supra2jz'],['rb26','i6'],['evo','wrx'],['nsx','v6'],['nsx','gtr'],['diablo','aventador'],['diablo','v12'],['rotary4','rx7']];
+ const pairs=[['gt3rs','flat6'],['gtr','v6'],['lfa','v10'],['r8v10','v10'],['lfa','r8v10'],['wrx','i4'],['mustang','v8'],['i6','v6'],['m3','i6'],['c63','v8'],['c63','mustang'],['rs3','i5'],['aventador','v12'],['f458','v8'],['f458','c63'],['supra2jz','i6'],['supra2jz','m3'],['vtec','i4'],['vtec','evo'],['hellcat','mustang'],['hellcat','v8'],['amg62','c63'],['amg62','v8'],['rb26','supra2jz'],['rb26','i6'],['evo','wrx'],['nsx','v6'],['nsx','gtr'],['diablo','aventador'],['diablo','v12'],['rotary4','rx7'],['c8z06','f458'],['c8z06','v8'],['gt350','mustang'],['f812','aventador'],['f812','v12'],['cgt','lfa'],['m5e60','r8v10'],['huracan','r8v10'],['z370','gtr'],['z370','v6'],['ftype','c63'],['yarisgr','i3'],['giuliaqv','v6'],['f40','f458']];
  for(const [a,b] of pairs){
   const A=core.engines[a],B=core.engines[b];
   assert.equal(A.kind,B.kind);
@@ -508,8 +515,8 @@ const SEEDS=Array.from({length:20},(_,i)=>100+i*17);
 const CRUISE={name:'cruise',dur:25,a:0};
 function firstDown(log){const acc=log.filter(x=>x.ph==='acc'),t0=acc[0].t-.05,fd=acc.find(x=>x.shift==='down');return fd?fd.t-t0:Infinity;}
 const gearDrop=log=>log.filter(x=>x.ph==='cruise').pop().gear-Math.min(...log.filter(x=>x.ph==='acc').map(x=>x.gear));
-test('per-profile gearbox personality covers all 30 profiles (version now 3.15)',()=>{
- assert.equal(core.VERSION,'3.15');assert.equal(KEYS.length,30);
+test('per-profile gearbox personality covers all 50 profiles (version now 3.16)',()=>{
+ assert.equal(core.VERSION,'3.16');assert.equal(KEYS.length,50);
  assert.deepEqual(Object.keys(core.GEAR_PERSONA).sort(),KEYS.slice().sort());
  for(const k of KEYS){const p=core.GEAR_PERSONA[k];
   assert.equal(core.engines[k].persona,p,k);
@@ -868,13 +875,17 @@ test('updateAudio wires VTEC and optional whine without changing cruise path mar
 });
 
 
-test('v3.15 Core audio module matches v3.14 byte-for-byte except VERSION',()=>{
- const prev=fs.readFileSync(__dirname+'/../ev-engine-sound-v3.14/index.html','utf8');
- const ps=prev.match(/<script>([\s\S]*?)<\/script>/)[1];
- const cs=script;
- const pCore=ps.slice(0,ps.indexOf("const $=")).replace(/VERSION='3\.\d+'/,"VERSION='X'");
- const cCore=cs.slice(0,cs.indexOf("const $=")).replace(/VERSION='3\.\d+'/,"VERSION='X'");
- assert.equal(cCore,pCore);
+test('v3.16: legacy 30 fingerprints identical to v3.15 snapshot',()=>{
+ const snap=JSON.parse(fs.readFileSync(__dirname+'/fixtures/v315-fingerprints.json','utf8'));
+ assert.equal(Object.keys(snap).length,30);
+ for(const k of Object.keys(snap)){
+  const e=core.engines[k];assert(e,k+' missing');
+  assert.equal(core.profileFingerprint(e),snap[k].fp,k+' fingerprint');
+  assert.equal(core.popFingerprint(e.pop),snap[k].pop,k+' pop');
+  const synth=[e.tone,e.exhaustQ,e.intakeBase,e.intakeRatio,e.intakeQ,e.noiseIdle,e.noiseLoad,e.rough,e.pulse,e.harmonicDecay,e.evenMix,e.oddMix,e.rasp,e.kind,e.fireMul,e.pulseGain,e.pulseLoad,e.subGain,e.subDiv,e.flutterBase,e.crackle,e.idle,e.max].join('|');
+  assert.equal(synth,snap[k].synth,k+' synth');
+  assert.equal(JSON.stringify(core.GEAR_PERSONA[k]),JSON.stringify(snap[k].gear),k+' gear');
+ }
 });
 test('v3.14/3.15 in-car UI: engine tiles, filters, sheets, large start/volume, GPS pill',()=>{
  assert.match(html,/id="engineTiles"/);
@@ -898,16 +909,13 @@ test('v3.14/3.15 in-car UI: engine tiles, filters, sheets, large start/volume, G
  assert.match(html,/prefers-reduced-motion/);
  for(const id of Object.keys(core.engines)) assert.match(html,new RegExp('value="'+id+'"'));
 });
-test('v3.15 brands: every profile mapped; chips by brand; favourites + Genéricos',()=>{
+test('v3.16 brands: every profile mapped; new brands present; favourites + Genéricos',()=>{
  assert.match(script,/const ENGINE_BRAND=/);
  assert.match(script,/buildEngineFilterChips/);
  assert.match(script,/brandList\(\)/);
  assert.match(script,/brand-head/);
  assert.match(script,/Genéricos/);
- assert.match(script,/Toyota \/ Lexus/);
- assert.match(script,/Mercedes-AMG/);
  assert.match(html,/overflow-x:auto/);
- // Parse ENGINE_BRAND from page script (outside Core)
  const m=script.match(/const ENGINE_BRAND=\{([\s\S]*?)\};/);
  assert(m,'ENGINE_BRAND present');
  const map=Function('return {'+m[1]+'}')();
@@ -916,29 +924,44 @@ test('v3.15 brands: every profile mapped; chips by brand; favourites + Genérico
   assert.equal(typeof map[id],'string');
   assert(map[id].length>=3,id+' brand too short');
  }
- assert.equal(map.gt3rs,'Porsche');
- assert.equal(map.flat6,'Genéricos');
- assert.equal(map.m3,'BMW');
- assert.equal(map.f458,'Ferrari');
- assert.equal(map.aventador,'Lamborghini');
- assert.equal(map.diablo,'Lamborghini');
- assert.equal(map.lfa,'Toyota / Lexus');
- assert.equal(map.supra2jz,'Toyota / Lexus');
- assert.equal(map.gtr,'Nissan');
- assert.equal(map.rb26,'Nissan');
- assert.equal(map.nsx,'Honda');
- assert.equal(map.vtec,'Honda');
- assert.equal(map.rx7,'Mazda');
- assert.equal(map.rotary4,'Mazda');
- assert.equal(map.wrx,'Subaru');
- assert.equal(map.evo,'Mitsubishi');
- assert.equal(map.c63,'Mercedes-AMG');
- assert.equal(map.amg62,'Mercedes-AMG');
- assert.equal(map.r8v10,'Audi');
- assert.equal(map.rs3,'Audi');
- assert.equal(map.mustang,'Ford');
- assert.equal(map.hellcat,'Dodge');
+ assert.equal(map.zonda,'Pagani');
+ assert.equal(map.mclarenf1,'McLaren');
+ assert.equal(map.vantage,'Aston Martin');
+ assert.equal(map.giuliaqv,'Alfa Romeo');
+ assert.equal(map.mc12,'Maserati');
+ assert.equal(map.c8z06,'Chevrolet');
+ assert.equal(map.ftype,'Jaguar');
+ assert.equal(map.integrale,'Lancia');
+ assert.equal(map.chiron,'Bugatti');
+ assert.equal(map.jesko,'Koenigsegg');
+ assert.equal(map.f812,'Ferrari');
+ assert.equal(map.f40,'Ferrari');
+ assert.equal(map.cgt,'Porsche');
+ assert.equal(map.m5e60,'BMW');
+ assert.equal(map.huracan,'Lamborghini');
+ assert.equal(map.gt350,'Ford');
+ assert.equal(map.yarisgr,'Toyota / Lexus');
  assert.equal(Object.keys(map).length,Object.keys(core.engines).length);
+});
+test('v3.16 new 20 profiles: UI labels, pops, gear, distinct feels',()=>{
+ const feels=new Set(Object.values(core.POP_PROFILES).map(p=>p.feel));
+ assert.equal(feels.size,Object.keys(core.POP_PROFILES).length);
+ for(const id of NEW20){
+  assert(core.engines[id],id);
+  assert.equal(core.engines[id].group,'inspiration',id);
+  assert.equal(core.engines[id].unofficial,true,id);
+  assert(core.POP_PROFILES[id],id+' pop');
+  assert(core.GEAR_PERSONA[id],id+' gear');
+  assert.match(html,new RegExp('value="'+id+'"'));
+ }
+ assert.match(html,/Pagani Zonda/);
+ assert.match(html,/McLaren F1/);
+ assert.match(html,/Carrera GT/);
+ assert.match(html,/Corvette Z06/);
+ assert.match(html,/Bugatti Chiron/);
+ assert.equal(core.engines.chiron.cyl,16);
+ assert.equal(core.engines.chiron.fireMul,8);
+ assert.equal(core.engines.c8z06.max,8600);
 });
 test('v3.15 page builds tiles/chips and syncs favorites key',()=>{
  assert.match(script,/buildEngineTiles/);

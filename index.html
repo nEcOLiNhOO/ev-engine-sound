@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-PT" data-version="3.15"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b10"><title>Impulso · Motor virtual v3.15</title>
+<html lang="pt-PT" data-version="3.16"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b10"><title>Impulso · Motor virtual v3.16</title>
 <style>
 
 :root{color-scheme:dark;--bg:#070b10;--panel:#121a22;--panel2:#18232e;--line:#2c3a48;--text:#f2f6f8;--muted:#9aafbf;--accent:#c4f46c;--blue:#7bd9e7;--warn:#ffd170;--bad:#fc806d;--ok:#6fe3a1;--touch:64px;--tile:76px;--gap:12px;--radius:18px}
@@ -110,7 +110,7 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
 </style></head><body>
 <div class="app" role="application" aria-label="Impulso condução">
 <header class="topbar">
- <div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.15</span></div>
+ <div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.16</span></div>
  <div class="pill off" id="gpsPill" role="status" aria-live="polite" aria-label="Estado GPS: Simulação"><span class="dot" aria-hidden="true"></span><span id="gpsPillText">Simulação</span></div>
  <button type="button" class="iconbtn" id="openSettings" aria-label="Abrir definições e avançado">⚙</button>
 </header>
@@ -191,6 +191,26 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
 <option value="evo">EvoMotor 4G63</option>
 <option value="nsx">NSXMotor · V6</option>
 <option value="diablo">DiabloMotor · V12</option>
+<option value="zonda">Pagani Zonda · V12</option>
+<option value="mclarenf1">McLaren F1 · V12</option>
+<option value="vantage">Aston Vantage · V12</option>
+<option value="giuliaqv">Alfa Giulia QV · V6</option>
+<option value="mc12">Maserati MC12 · V12</option>
+<option value="c8z06">Corvette Z06 · V8 FP</option>
+<option value="ftype">Jaguar F-Type R · V8</option>
+<option value="integrale">Lancia Integrale · I4</option>
+<option value="chiron">Bugatti Chiron · W16</option>
+<option value="jesko">Koenigsegg Jesko · V8</option>
+<option value="f812">Ferrari 812 · V12</option>
+<option value="f40">Ferrari F40 · V8 TT</option>
+<option value="cgt">Carrera GT · V10</option>
+<option value="m5e60">BMW M5 E60 · V10</option>
+<option value="m3e92">BMW M3 E92 · V8</option>
+<option value="huracan">Lamborghini Huracán · V10</option>
+<option value="z370">Nissan 370Z · V6</option>
+<option value="gt350">Shelby GT350 · V8 FP</option>
+<option value="slr">Mercedes SLR · V8</option>
+<option value="yarisgr">GR Yaris · I3</option>
 </optgroup>
 <optgroup label="Arquiteturas de motor">
 <option value="i3">I3 · três cilindros irregular</option>
@@ -245,7 +265,7 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
    <input id="character" type="range" min="0" max="100" value="40" aria-label="Caráter do som">
 
    <p class="honesty">Síntese original, não oficial — não é uma gravação nem uma cópia autêntica.</p>
-   <p class="footnote">Impulso v3.15. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Interface pensada para o browser do Tesla em landscape. Síntese original, não oficial.</p>
+   <p class="footnote">Impulso v3.16. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Interface pensada para o browser do Tesla em landscape. Síntese original, não oficial.</p>
   </div>
  </div>
 </div>
@@ -253,7 +273,7 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
 <script>
 'use strict';
 const Core=(()=>{
- const VERSION='3.15';
+ const VERSION='3.16';
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  const POP_LIMITS={maxGain:.38,maxVoices:8,decelThresh:-.28,maxNodesPerEvent:3,crackleDur:.09,shiftDur:.14,burstCooldown:4,liftDv:2,liftWindow:2.5,minSpeed:28,popBus:.65,popCeil:-3,duckDepth:.22,duckMs:.028};
  // Per-profile pop & bang character (v3.10+). bodyHz is a bias; v3.11 blends it with firingHz so pops sit in the engine.
@@ -294,6 +314,26 @@ const Core=(()=>{
   evo:      PP(100,46,.65,.82,.34,1350,.9,2550,.115,.58,4,7,1.0,1.18,1.32,true,.9,.28,'evo-pop'),
   nsx:      PP(145,52,.38,.7,.2,2100,1.2,3200,.07,.32,2,5,.55,1.0,1.05,true,.6,.30,'nsx-v6'),
   diablo:   PP(125,46,.45,.72,.28,1800,1.05,2800,.09,.48,3,6,.7,1.12,1.3,true,.75,.27,'v12-classico'),
+  zonda:    PP(118,48,.52,.7,.32,1650,1.05,2750,.1,.55,3,6,.8,1.18,1.25,true,.88,.25,'zonda-teatro'),
+  mclarenf1:PP(122,42,.45,.62,.22,1750,1.1,2900,.08,.4,2,5,.6,1.05,1.1,true,.7,.28,'f1-gutsy'),
+  vantage:  PP(110,40,.55,.65,.3,1500,.95,2600,.1,.5,2,5,.7,1.12,1.15,true,.75,.27,'aston-rico'),
+  giuliaqv: PP(128,46,.42,.78,.22,1900,1.15,3000,.075,.42,3,6,.7,1.08,1.2,true,.8,.28,'qv-ferrari'),
+  mc12:     PP(150,52,.32,.75,.18,2300,1.35,3400,.06,.28,2,5,.55,1.05,1.15,true,.78,.26,'mc12-f1'),
+  c8z06:    PP(148,50,.34,.82,.2,2250,1.3,3350,.065,.32,3,6,.65,1.1,1.22,true,.8,.26,'lt6-plano'),
+  ftype:    PP(85,36,.8,.78,.42,1050,.78,2200,.14,.78,3,6,.95,1.28,1.4,true,.95,.23,'jag-crackle'),
+  integrale:PP(102,45,.6,.85,.3,1400,.92,2500,.11,.55,4,7,1.0,1.15,1.3,true,.88,.28,'rally-i4'),
+  chiron:   PP(65,30,.9,.5,.45,800,.65,1800,.16,.85,2,4,.85,1.3,1.2,true,.5,.22,'w16-profundo'),
+  jesko:    PP(155,55,.3,.8,.18,2450,1.4,3500,.055,.28,3,6,.6,1.12,1.25,true,.85,.25,'jesko-grito'),
+  f812:     PP(135,48,.4,.68,.25,2000,1.15,3000,.08,.45,2,5,.65,1.1,1.18,true,.8,.27,'812-v12'),
+  f40:      PP(95,42,.65,.88,.35,1300,.95,2450,.12,.6,4,7,1.05,1.2,1.35,true,1.0,.26,'f40-turbo'),
+  cgt:      PP(158,52,.3,.72,.16,2350,1.4,3450,.06,.22,2,4,.5,1.0,1.1,true,.7,.27,'cgt-v10'),
+  m5e60:    PP(142,48,.38,.7,.2,2100,1.25,3150,.07,.35,2,5,.55,1.05,1.1,true,.72,.28,'s85-v10'),
+  m3e92:    PP(132,46,.42,.72,.22,1950,1.15,2950,.08,.4,2,5,.6,1.08,1.12,true,.7,.28,'s65-v8'),
+  huracan:  PP(138,50,.38,.74,.22,2050,1.2,3100,.075,.38,2,5,.6,1.08,1.15,true,.75,.27,'huracan-v10'),
+  z370:     PP(115,40,.48,.6,.18,1600,1.0,2650,.085,.4,2,4,.55,.95,.9,true,.55,.32,'vq-nasal'),
+  gt350:    PP(145,48,.36,.8,.22,2200,1.25,3300,.07,.35,3,6,.7,1.12,1.2,true,.78,.26,'voodoo-fp'),
+  slr:      PP(78,34,.82,.62,.4,980,.72,2050,.14,.75,2,5,.85,1.22,1.25,true,.6,.24,'slr-sc'),
+  yarisgr:  PP(125,42,.4,.8,.2,1700,1.05,2750,.08,.4,3,6,.75,1.05,1.2,true,.85,.30,'gr-i3'),
  };
  function popFallback(e){
   if(!e) return POP_PROFILES.v8;
@@ -305,6 +345,7 @@ const Core=(()=>{
   if(c===6) return e.tone>2200?POP_PROFILES.flat6:POP_PROFILES.i6;
   if(c===8) return POP_PROFILES.v8;
   if(c===10) return POP_PROFILES.v10;
+  if(c===16&&POP_PROFILES.chiron) return POP_PROFILES.chiron;
   return POP_PROFILES.v12;
  }
  function popProfileOf(e){
@@ -340,6 +381,26 @@ const Core=(()=>{
   evo:{group:'inspiration',unofficial:true,kind:'piston',cyl:4,rotors:0,fireMul:2,idle:780,max:7500,tone:1720,exhaustQ:1.0,intakeBase:410,intakeRatio:.25,intakeQ:.7,noiseIdle:.012,noiseLoad:.07,rough:.14,pulse:.36,harmonicDecay:10,evenMix:1.1,oddMix:.92,rasp:.18,pulseGain:.165,pulseLoad:.132,subGain:.115,subDiv:110,flutterBase:7,crackle:.55,hint:'I4 turbo em linha (não boxer): sopro seco, kick-down fácil e pops ao estilo rally.'},
   nsx:{group:'inspiration',unofficial:true,kind:'piston',cyl:6,rotors:0,fireMul:3,idle:900,max:8300,tone:2450,exhaustQ:.75,intakeBase:600,intakeRatio:.32,intakeQ:.9,noiseIdle:.008,noiseLoad:.048,rough:.06,pulse:.38,harmonicDecay:13.5,evenMix:.94,oddMix:1.1,rasp:.3,pulseGain:.152,pulseLoad:.12,subGain:.09,subDiv:140,flutterBase:10.5,crackle:.4,hint:'V6 atmosférico agudo e limpo, sobe em linha até às altas sem o abafado de um turbo.'},
   diablo:{group:'inspiration',unofficial:true,kind:'piston',cyl:12,rotors:0,fireMul:6,idle:920,max:7500,tone:2200,exhaustQ:.88,intakeBase:520,intakeRatio:.28,intakeQ:.7,noiseIdle:.009,noiseLoad:.055,rough:.08,pulse:.4,harmonicDecay:12,evenMix:.96,oddMix:1.08,rasp:.35,pulseGain:.155,pulseLoad:.128,subGain:.1,subDiv:130,flutterBase:11,crackle:.62,hint:'V12 clássico mais gutural e médio do que o Aventador teatral; ronco seco nas altas.'},
+  zonda:{group:'inspiration',unofficial:true,kind:'piston',cyl:12,rotors:0,fireMul:6,idle:950,max:7500,tone:2400,exhaustQ:.82,intakeBase:560,intakeRatio:.3,intakeQ:.78,noiseIdle:.009,noiseLoad:.052,rough:.07,pulse:.38,harmonicDecay:13,evenMix:.95,oddMix:1.1,rasp:.4,pulseGain:.152,pulseLoad:.125,subGain:.095,subDiv:135,flutterBase:11.5,crackle:.75,hint:'V12 AMG afinado ao estilo Zonda: teatral, médio-grave e com presença de escape aberta.'},
+  mclarenf1:{group:'inspiration',unofficial:true,kind:'piston',cyl:12,rotors:0,fireMul:6,idle:900,max:7500,tone:2150,exhaustQ:.9,intakeBase:500,intakeRatio:.27,intakeQ:.7,noiseIdle:.008,noiseLoad:.05,rough:.075,pulse:.42,harmonicDecay:14,evenMix:.98,oddMix:1.05,rasp:.28,pulseGain:.155,pulseLoad:.12,subGain:.11,subDiv:128,flutterBase:10,crackle:.55,hint:'V12 atmosférico gutural (inspiração S70): menos grito, mais peito do que um V12 italiano.'},
+  vantage:{group:'inspiration',unofficial:true,kind:'piston',cyl:12,rotors:0,fireMul:6,idle:850,max:7000,tone:1950,exhaustQ:.95,intakeBase:480,intakeRatio:.26,intakeQ:.68,noiseIdle:.009,noiseLoad:.055,rough:.09,pulse:.4,harmonicDecay:12.5,evenMix:1.0,oddMix:1.06,rasp:.3,pulseGain:.158,pulseLoad:.128,subGain:.12,subDiv:122,flutterBase:9.5,crackle:.68,hint:'V12 britânico rico e throaty, com corpo no médio e estalos discretos ao levantar.'},
+  giuliaqv:{group:'inspiration',unofficial:true,kind:'piston',cyl:6,rotors:0,fireMul:3,idle:850,max:7200,tone:2100,exhaustQ:.85,intakeBase:520,intakeRatio:.3,intakeQ:.8,noiseIdle:.01,noiseLoad:.065,rough:.1,pulse:.36,harmonicDecay:11.5,evenMix:.9,oddMix:1.15,rasp:.32,pulseGain:.16,pulseLoad:.13,subGain:.105,subDiv:118,flutterBase:9,crackle:.7,hint:'V6 biturbo com alma de V8 italiano: casca nas altas e pops vivos ao largar.'},
+  mc12:{group:'inspiration',unofficial:true,kind:'piston',cyl:12,rotors:0,fireMul:6,idle:1000,max:8000,tone:3000,exhaustQ:.7,intakeBase:680,intakeRatio:.35,intakeQ:.9,noiseIdle:.007,noiseLoad:.045,rough:.05,pulse:.3,harmonicDecay:15,evenMix:.92,oddMix:1.16,rasp:.48,pulseGain:.148,pulseLoad:.118,subGain:.075,subDiv:150,flutterBase:13,crackle:.65,hint:'V12 de pista agudo e contínuo, quase a cantar como um motor de corrida.'},
+  c8z06:{group:'inspiration',unofficial:true,kind:'piston',cyl:8,rotors:0,fireMul:4,idle:900,max:8600,tone:2700,exhaustQ:.74,intakeBase:710,intakeRatio:.37,intakeQ:.98,noiseIdle:.008,noiseLoad:.052,rough:.08,pulse:.28,harmonicDecay:12,evenMix:.7,oddMix:1.3,rasp:.5,pulseGain:.152,pulseLoad:.122,subGain:.07,subDiv:152,flutterBase:12.5,crackle:.72,hint:'V8 de plano simples americano: idle mais limpo e um pico agudo até 8600 rpm.'},
+  ftype:{group:'inspiration',unofficial:true,kind:'piston',cyl:8,rotors:0,fireMul:4,idle:700,max:6800,tone:1250,exhaustQ:1.1,intakeBase:330,intakeRatio:.18,intakeQ:.5,noiseIdle:.011,noiseLoad:.068,rough:.25,pulse:.3,harmonicDecay:9,evenMix:1.15,oddMix:.88,rasp:.12,pulseGain:.172,pulseLoad:.14,subGain:.155,subDiv:100,flutterBase:6,crackle:.95,whineGain:.018,whineRatio:12,hint:'V8 sobrealimentado com crackle famoso ao levantar; ronco grave e teatral.'},
+  integrale:{group:'inspiration',unofficial:true,kind:'piston',cyl:4,rotors:0,fireMul:2,idle:900,max:7000,tone:1600,exhaustQ:1.05,intakeBase:400,intakeRatio:.24,intakeQ:.72,noiseIdle:.013,noiseLoad:.072,rough:.16,pulse:.34,harmonicDecay:9.5,evenMix:1.12,oddMix:.9,rasp:.2,pulseGain:.168,pulseLoad:.135,subGain:.12,subDiv:108,flutterBase:7.5,crackle:.58,hint:'I4 turbo de rally: sopro seco, irregularidade no ralenti e pops ao estilo Grupo A.'},
+  chiron:{group:'inspiration',unofficial:true,kind:'piston',cyl:16,rotors:0,fireMul:8,idle:600,max:6700,tone:980,exhaustQ:1.15,intakeBase:280,intakeRatio:.15,intakeQ:.42,noiseIdle:.012,noiseLoad:.075,rough:.2,pulse:.35,harmonicDecay:8,evenMix:1.18,oddMix:.85,rasp:.06,pulseGain:.18,pulseLoad:.145,subGain:.175,subDiv:90,flutterBase:5,crackle:.4,hint:'W16 profundo e denso: mais trovão do que grito, com massa grave enorme.'},
+  jesko:{group:'inspiration',unofficial:true,kind:'piston',cyl:8,rotors:0,fireMul:4,idle:950,max:8500,tone:2850,exhaustQ:.72,intakeBase:700,intakeRatio:.36,intakeQ:.95,noiseIdle:.009,noiseLoad:.06,rough:.07,pulse:.26,harmonicDecay:11.5,evenMix:.75,oddMix:1.25,rasp:.52,pulseGain:.15,pulseLoad:.12,subGain:.075,subDiv:148,flutterBase:13,crackle:.7,hint:'V8 biturbo agudo estilo hypercar: sobe rápido e grita nas altas com rasp metálico.'},
+  f812:{group:'inspiration',unofficial:true,kind:'piston',cyl:12,rotors:0,fireMul:6,idle:950,max:8900,tone:2950,exhaustQ:.72,intakeBase:650,intakeRatio:.34,intakeQ:.88,noiseIdle:.0075,noiseLoad:.046,rough:.055,pulse:.33,harmonicDecay:14.5,evenMix:.94,oddMix:1.12,rasp:.42,pulseGain:.15,pulseLoad:.12,subGain:.08,subDiv:145,flutterBase:12,crackle:.72,hint:'V12 Ferrari atmosférico agudo e contínuo, sobe em linha até perto das 9000 rpm.'},
+  f40:{group:'inspiration',unofficial:true,kind:'piston',cyl:8,rotors:0,fireMul:4,idle:900,max:7750,tone:1850,exhaustQ:1.0,intakeBase:450,intakeRatio:.28,intakeQ:.85,noiseIdle:.012,noiseLoad:.08,rough:.12,pulse:.32,harmonicDecay:10,evenMix:.85,oddMix:1.18,rasp:.35,pulseGain:.162,pulseLoad:.132,subGain:.11,subDiv:115,flutterBase:10,crackle:.8,hint:'V8 biturbo clássico: sopro a encher, rasp metálico e estalos ao largar o acelerador.'},
+  cgt:{group:'inspiration',unofficial:true,kind:'piston',cyl:10,rotors:0,fireMul:5,idle:1100,max:8400,tone:3100,exhaustQ:.68,intakeBase:700,intakeRatio:.37,intakeQ:.95,noiseIdle:.007,noiseLoad:.044,rough:.03,pulse:.28,harmonicDecay:16,evenMix:.86,oddMix:1.22,rasp:.55,pulseGain:.146,pulseLoad:.114,subGain:.068,subDiv:158,flutterBase:14,crackle:.55,hint:'V10 Carrera GT: grito limpo e contínuo, quase de F1, com pouco grave.'},
+  m5e60:{group:'inspiration',unofficial:true,kind:'piston',cyl:10,rotors:0,fireMul:5,idle:850,max:8250,tone:2500,exhaustQ:.8,intakeBase:580,intakeRatio:.31,intakeQ:.82,noiseIdle:.008,noiseLoad:.05,rough:.08,pulse:.35,harmonicDecay:13,evenMix:.92,oddMix:1.14,rasp:.36,pulseGain:.155,pulseLoad:.125,subGain:.09,subDiv:132,flutterBase:11,crackle:.6,hint:'V10 S85: metálico e nervoso a meio regime, sobe seco até às altas.'},
+  m3e92:{group:'inspiration',unofficial:true,kind:'piston',cyl:8,rotors:0,fireMul:4,idle:800,max:8400,tone:2350,exhaustQ:.82,intakeBase:600,intakeRatio:.32,intakeQ:.86,noiseIdle:.008,noiseLoad:.05,rough:.09,pulse:.34,harmonicDecay:12.5,evenMix:.88,oddMix:1.16,rasp:.34,pulseGain:.156,pulseLoad:.126,subGain:.088,subDiv:136,flutterBase:11,crackle:.62,hint:'V8 S65 de altas rotações: mais agudo e metálico que um V8 muscle clássico.'},
+  huracan:{group:'inspiration',unofficial:true,kind:'piston',cyl:10,rotors:0,fireMul:5,idle:1000,max:8500,tone:2550,exhaustQ:.78,intakeBase:620,intakeRatio:.33,intakeQ:.86,noiseIdle:.008,noiseLoad:.048,rough:.07,pulse:.32,harmonicDecay:13.5,evenMix:.9,oddMix:1.16,rasp:.4,pulseGain:.152,pulseLoad:.122,subGain:.085,subDiv:140,flutterBase:12,crackle:.68,hint:'V10 Lambo mais seco e teatral que o R8; sobe com casca nas altas.'},
+  z370:{group:'inspiration',unofficial:true,kind:'piston',cyl:6,rotors:0,fireMul:3,idle:750,max:7500,tone:2050,exhaustQ:.88,intakeBase:490,intakeRatio:.28,intakeQ:.75,noiseIdle:.01,noiseLoad:.058,rough:.12,pulse:.38,harmonicDecay:11,evenMix:.95,oddMix:1.08,rasp:.22,pulseGain:.16,pulseLoad:.128,subGain:.115,subDiv:120,flutterBase:8.5,crackle:.45,hint:'V6 VQ atmosférico nasal e áspero, sem o sopro abafado de um twin-turbo.'},
+  gt350:{group:'inspiration',unofficial:true,kind:'piston',cyl:8,rotors:0,fireMul:4,idle:900,max:8250,tone:2600,exhaustQ:.76,intakeBase:680,intakeRatio:.35,intakeQ:.92,noiseIdle:.009,noiseLoad:.055,rough:.1,pulse:.29,harmonicDecay:11.5,evenMix:.72,oddMix:1.26,rasp:.46,pulseGain:.154,pulseLoad:.124,subGain:.08,subDiv:148,flutterBase:11.5,crackle:.7,hint:'V8 flat-plane Voodoo: idle irregular e um uivo agudo distinto do Mustang cross-plane.'},
+  slr:{group:'inspiration',unofficial:true,kind:'piston',cyl:8,rotors:0,fireMul:4,idle:700,max:7000,tone:1200,exhaustQ:1.08,intakeBase:320,intakeRatio:.17,intakeQ:.48,noiseIdle:.011,noiseLoad:.07,rough:.22,pulse:.31,harmonicDecay:9,evenMix:1.2,oddMix:.84,rasp:.08,pulseGain:.175,pulseLoad:.14,subGain:.165,subDiv:98,flutterBase:5.5,crackle:.65,whineGain:.022,whineRatio:11,hint:'V8 compressor SLR: grave, oco e com um sopro/zumbido de sobrealimentação.'},
+  yarisgr:{group:'inspiration',unofficial:true,kind:'piston',cyl:3,rotors:0,fireMul:1.5,idle:950,max:7200,tone:1750,exhaustQ:1.0,intakeBase:460,intakeRatio:.27,intakeQ:.78,noiseIdle:.014,noiseLoad:.078,rough:.28,pulse:.28,harmonicDecay:9,evenMix:.7,oddMix:1.28,rasp:.25,pulseGain:.178,pulseLoad:.138,subGain:.125,subDiv:95,flutterBase:7,crackle:.5,hint:'I3 turbo de rally moderno: pulso irregular, sopro de admissão e pops ao levantar.'},
   i3:{group:'architecture',unofficial:false,kind:'piston',cyl:3,rotors:0,fireMul:1.5,idle:880,max:6700,tone:1680,exhaustQ:1.05,intakeBase:480,intakeRatio:.28,intakeQ:.75,noiseIdle:.012,noiseLoad:.062,rough:.34,pulse:.26,harmonicDecay:8,evenMix:.65,oddMix:1.25,rasp:.18,pulseGain:.185,pulseLoad:.135,subGain:.13,subDiv:85,flutterBase:6,crackle:.22,hint:'Três cilindros genéricos, pulso irregular.'},
   i4:{group:'architecture',unofficial:false,kind:'piston',cyl:4,rotors:0,fireMul:2,idle:820,max:7300,tone:2100,exhaustQ:.7,intakeBase:620,intakeRatio:.34,intakeQ:.85,noiseIdle:.011,noiseLoad:.07,rough:.08,pulse:.42,harmonicDecay:11,evenMix:1.05,oddMix:.9,rasp:.08,pulseGain:.155,pulseLoad:.12,subGain:.09,subDiv:130,flutterBase:9,crackle:.18,hint:'Quatro cilindros nítidos e mais leves de grave.'},
   i5:{group:'architecture',unofficial:false,kind:'piston',cyl:5,rotors:0,fireMul:2.5,idle:790,max:7100,tone:1850,exhaustQ:.92,intakeBase:500,intakeRatio:.27,intakeQ:.68,noiseIdle:.009,noiseLoad:.058,rough:.19,pulse:.33,harmonicDecay:10,evenMix:.85,oddMix:1.12,rasp:.22,pulseGain:.17,pulseLoad:.13,subGain:.11,subDiv:105,flutterBase:7,crackle:.35,hint:'Cinco cilindros com uma cadência desigual.'},
@@ -391,6 +452,26 @@ const Core=(()=>{
   evo:      P(.88,.52,.87,1550,2.8,.065,.37,.68,.75,.32,6,'turbo'),
   nsx:      P(.84,.58,.91,1600,2.5,.080,.42,.72,.30,.33,6,'desportivo'),
   diablo:   P(.86,.56,.89,1550,2.7,.090,.40,.70,.50,.30,6,'desportivo'),
+  zonda:    P(.84,.58,.90,1550,2.6,.095,.40,.70,.55,.29,6,'desportivo'),
+  mclarenf1:P(.86,.56,.90,1550,2.7,.085,.40,.70,.45,.30,6,'desportivo'),
+  vantage:  P(.90,.52,.87,1500,2.9,.080,.38,.68,.50,.29,6,'desportivo'),
+  giuliaqv: P(.86,.56,.89,1600,2.5,.075,.40,.71,.65,.30,6,'desportivo'),
+  mc12:     P(.80,.62,.93,1650,2.2,.090,.44,.74,.40,.30,6,'pista'),
+  c8z06:    P(.82,.60,.92,1650,2.3,.085,.43,.73,.45,.30,6,'pista'),
+  ftype:    P(.92,.50,.85,1450,3.0,.075,.36,.66,.70,.28,6,'desportivo'),
+  integrale:P(.88,.52,.87,1550,2.8,.065,.37,.68,.75,.32,6,'turbo'),
+  chiron:   P(.95,.48,.84,1400,3.2,.070,.34,.64,.35,.28,6,'muscle'),
+  jesko:    P(.80,.62,.93,1700,2.1,.090,.45,.75,.40,.30,6,'pista'),
+  f812:     P(.82,.60,.92,1600,2.4,.090,.43,.73,.45,.30,6,'pista'),
+  f40:      P(.84,.58,.90,1550,2.5,.075,.40,.71,.75,.30,6,'turbo'),
+  cgt:      P(.80,.62,.93,1650,2.2,.090,.44,.74,.35,.30,6,'pista'),
+  m5e60:    P(.84,.58,.91,1600,2.5,.080,.41,.72,.40,.31,6,'desportivo'),
+  m3e92:    P(.84,.58,.91,1600,2.5,.080,.41,.72,.40,.31,6,'desportivo'),
+  huracan:  P(.83,.58,.91,1600,2.5,.090,.42,.72,.50,.30,6,'desportivo'),
+  z370:     P(.95,.50,.86,1500,3.2,.055,.34,.66,.25,.35,6,'calmo'),
+  gt350:    P(.85,.56,.90,1600,2.5,.080,.40,.70,.45,.30,6,'pista'),
+  slr:      P(.92,.50,.85,1450,3.0,.070,.36,.66,.45,.28,6,'muscle'),
+  yarisgr:  P(.88,.52,.87,1550,2.8,.060,.37,.68,.70,.32,6,'turbo'),
  };
  for(const k of Object.keys(engines)){engines[k].persona=GEAR_PERSONA[k];engines[k].pop=POP_PROFILES[k]||popFallback(engines[k]);}
  const GEARBOX_STYLES={
@@ -927,6 +1008,26 @@ const ENGINE_BRAND={
  evo:'Mitsubishi',
  nsx:'Honda',
  diablo:'Lamborghini',
+ zonda:'Pagani',
+ mclarenf1:'McLaren',
+ vantage:'Aston Martin',
+ giuliaqv:'Alfa Romeo',
+ mc12:'Maserati',
+ c8z06:'Chevrolet',
+ ftype:'Jaguar',
+ integrale:'Lancia',
+ chiron:'Bugatti',
+ jesko:'Koenigsegg',
+ f812:'Ferrari',
+ f40:'Ferrari',
+ cgt:'Porsche',
+ m5e60:'BMW',
+ m3e92:'BMW',
+ huracan:'Lamborghini',
+ z370:'Nissan',
+ gt350:'Ford',
+ slr:'Mercedes-AMG',
+ yarisgr:'Toyota / Lexus',
  i3:'Genéricos',i4:'Genéricos',i5:'Genéricos',i6:'Genéricos',
  v6:'Genéricos',flat6:'Genéricos',v8:'Genéricos',v10:'Genéricos',v12:'Genéricos'
 };
@@ -952,6 +1053,7 @@ function engineTypeTag(id){
  if(e.cyl===8) return 'V8';
  if(e.cyl===10) return 'V10';
  if(e.cyl===12) return 'V12';
+ if(e.cyl===16) return 'W16';
  return '';
 }
 let favSet=new Set();
