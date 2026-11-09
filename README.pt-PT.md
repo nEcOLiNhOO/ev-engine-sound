@@ -1,10 +1,10 @@
-# Impulso · Motor virtual v3.3
+# Impulso · Motor virtual v3.4
 
 Aplicação original, num único `index.html`, sem bibliotecas, fontes, gravações ou pedidos de rede (exceto o serviço de localização do próprio browser, se autorizado).
 
-Esta pasta é a entrega autónoma v3.3 (kick-down, blips e pops por perfil sobre a caixa virtual da v3.2): vinte e uma assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação: a integração e o eventual GitHub Pages ficam a cargo de quem autorizar o envio.
+Esta pasta é a entrega autónoma v3.4 (novo perfil SupraMotor 2JZ sobre a v3.3, com kick-down, blips e pops por perfil): vinte e duas assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação: a integração e o eventual GitHub Pages ficam a cargo de quem autorizar o envio.
 
-O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.3 ainda pode não corresponder ao que está online.
+O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.4 ainda pode não corresponder ao que está online.
 
 A publicação HTTPS permite testar num browser normal, mas não garante que resolva a ausência de áudio numa pré-visualização móvel. Toca em **Iniciar som** na página aberta diretamente no browser.
 
@@ -13,7 +13,7 @@ A publicação HTTPS permite testar num browser normal, mas não garante que res
 2. Toca em **Iniciar som**. O volume inicial é 15%; começa baixo também no dispositivo.
 3. Aumenta a velocidade alvo: o motor acompanha a aceleração e faz mudanças virtuais. O controlo de resposta altera a rapidez da aceleração. Reduzir o alvo simula desaceleração.
 4. Mantém **REV** premido para acelerar em vazio (não muda a velocidade). Soltar de propósito, com rotação alta, pode produzir um estalo se os pops estiverem ligados. Cancelar o toque, perder o foco ou ocultar a página não dispara estalos. Também aceita Espaço/Enter com foco.
-5. Experimenta as vinte e uma assinaturas, volume e caráter. Cada perfil tem uma nota curta de carácter. Trocar de perfil enquanto o som corre faz um cruzamento suave entre vozes e cancela estalos pendentes. **Parar som** fecha o contexto de áudio.
+5. Experimenta as vinte e duas assinaturas, volume e caráter. Cada perfil tem uma nota curta de carácter. Trocar de perfil enquanto o som corre faz um cruzamento suave entre vozes e cancela estalos pendentes. **Parar som** fecha o contexto de áudio.
 6. **Estalos e pops** está desligado por omissão. Se o ligares, um cursor controla a intensidade. Não há reprodução automática: o motor só começa depois de tocares em **Iniciar som**.
 
 ## Assinaturas
@@ -27,6 +27,7 @@ O seletor está dividido em **Inspirações de modelos** e **Arquiteturas de mot
 - Lamborghini Aventador · V12
 - Ferrari 458 · V8
 - Mazda RX-7 · rotativo (dois rotores; não é um motor de pistões)
+- SupraMotor 2JZ (v3.4) · seis em linha 3.0 turbo inspirado no 2JZ-GTE: ignição suave de I6, ralenti 850 rpm, máximo 7 100 rpm, sopro de admissão/turbo e flutter ao levantar (reutiliza o ruído de admissão e o flutter existentes; não há um som de blow-off dedicado), um pouco rouco nas altas; caixa desportiva com kick-down fácil, passagens altas e pops na passagem e ao levantar ao estilo turbo, com crackle acima do GT-R/WRX.
 
 **Arquiteturas**
 - I3, I4, I5, I6, V6, Flat-6, V8, V10 e V12
@@ -53,7 +54,7 @@ A v3.3 mantém uma caixa virtual de 7 velocidades com estado e acrescenta:
 - **Kick-down por níveis:** ≥ ~0,45 m/s² → 1 marcha, ≥ ~0,9 → 2, ≥ ~1,55 → 3 (vezes o fator do perfil; a Desportiva baixa os limiares). Com GPS ruidoso, o limiar sobe automaticamente (4× o ruído estimado) e uma subida isolada tem de ser confirmada pela tendência, para não haver trocas em cruzeiro.
 - **Manter e voltar:** enquanto acelera, mantém a marcha baixa e sobe perto do ponto de passagem do perfil. Depois de 2–4 s de velocidade estável (conforme o perfil; mais longo na Desportiva), regressa progressivamente à marcha de cruzeiro.
 - **Desaceleração:** reduções progressivas com **toque de acelerador** (blip de 0,22 s, rotação igualada) e nunca sobe enquanto trava; parado fica em N.
-- **Personalidade por perfil (21):** limiar de kick-down, pontos de passagem, rotação mínima, tempo de regresso, tamanho do blip, quando reduz a travar, propensão a pops na passagem e limite de rotação para pops. Um GT3 RS ou 458 reduz cedo e sobe alto; um I6 ou V12 suave é mais calmo. **Conforto / Desportiva** aplica-se por cima (Desportiva: sem 7.ª, rotação mínima mais alta, kick-down mais fácil, blips maiores, regresso mais lento).
+- **Personalidade por perfil (22):** limiar de kick-down, pontos de passagem, rotação mínima, tempo de regresso, tamanho do blip, quando reduz a travar, propensão a pops na passagem e limite de rotação para pops. Um GT3 RS ou 458 reduz cedo e sobe alto; um I6 ou V12 suave é mais calmo. **Conforto / Desportiva** aplica-se por cima (Desportiva: sem 7.ª, rotação mínima mais alta, kick-down mais fácil, blips maiores, regresso mais lento).
 - **Carga:** depende da procura; em cruzeiro ~0,2.
 
 **Pops (com Estalos ligados):** levantar o pé depois de acelerar e as reduções com blip geram eventos de *overrun*; passagens de caixa exigentes nos perfis desportivos/turbo podem estalar. O limite de rotação passa a ser relativo ao perfil, e a probabilidade cresce de forma não linear com a propensão: desportivos estalam várias vezes num levantar de pé, os suaves quase nunca. Continuam desligados por defeito, com no máximo 3 vozes, intervalo mínimo e pico limitado, e nunca disparam com perda de sinal, mudança de modo, reinício de áudio, página oculta ou troca de perfil.
@@ -73,6 +74,7 @@ Valores medidos nos testes (GPS simulado a 1 Hz, ruído ~0,3 km/h, Conforto; a m
 | aventador | 7.ª / 2684 | 6.ª / 3955 (1.0 s) | 4.ª / 7460 | 6.2 (alta) | 0.7 / 0.55 |
 | f458 | 7.ª / 2700 | 6.ª / 3977 (1.0 s) | 4.ª / 7503 | 7.4 (alta) | 0.8 / 0.4 |
 | rx7 | 7.ª / 2530 | 6.ª / 3727 (1.0 s) | 4.ª / 7031 | 4.0 (alta) | 0.58 / 0.45 |
+| supra2jz | 7.ª / 2191 | 6.ª / 3227 (1.0 s) | 4.ª / 6088 | 3.6 (média) | 0.55 / 0.7 |
 | i3 | 7.ª / 2067 | 6.ª / 3045 (1.0 s) | 5.ª / 4460 | 1.0 (baixa) | 0.22 / 0.05 |
 | i4 | 7.ª / 2252 | 6.ª / 3318 (1.0 s) | 5.ª / 4860 | 0.4 (baixa) | 0.18 / 0.08 |
 | i5 | 7.ª / 2191 | 6.ª / 3227 (1.0 s) | 5.ª / 4726 | 1.8 (baixa) | 0.35 / 0.15 |
@@ -110,11 +112,12 @@ Interface pensada para ecrãs largos e telemóveis. **Não houve teste físico n
 Executar `node test.cjs` (Node.js, sem dependências):
 - análise sintática de todo o JavaScript inline com `vm.Script`;
 - testes determinísticos de GPS (conversão, ausência, ruído, saltos, precisão, ordem temporal, aceleração implausível);
+- v3.4: SupraMotor 2JZ existe com esse nome no grupo das inspirações, ignição de I6, limites válidos, cruzeiro a 120 km/h em 7.ª entre 1 500 e 3 000 rpm, kick-down a 0,6/1,2 m/s², pops ao levantar com estalos ligados e nenhum com desligados, passagens exigentes como candidatas a pop; contagem de perfis passa de 21 para 22.
 - v3.3: personalidade de caixa para os 21 perfis (Desportiva por cima); 0,6 m/s² durante 4 s desde 120 km/h com GPS ruidoso a 1 Hz reduz ≥1 marcha em todos os perfis (≤1,5 s em ≥15 de 20 sementes, sempre ≤2,5 s); 1,2 m/s² reduz ≥2 marchas; 60 s de cruzeiro ruidoso sem trocas em todos os perfis e estilos; regresso à 7.ª depois da aceleração; desaceleração com reduções, blips e rotação limitada; acelerar e levantar com pops ligados estala nos desportivos, pouco ou nada nos suaves e nunca com pops desligados; regras de segurança do overrun e limite de rotação por perfil; simulação com alvo/resposta provoca kick-down.
 - v3.2: caixa virtual — 120 km/h constantes com ruído tipo GPS chega à 7.ª entre 1 800 e 3 000 rpm, sem oscilar e sem candidatos a pops; 60 s de cruzeiro ruidoso sem trocas; os 21 perfis em cruzeiro dentro de ralenti…máx×0,94; aceleração forte provoca kick-down e mais rotação/carga; desaceleração reduz sem subir e termina em 1.ª; parado = N; intervalo mínimo entre trocas; Desportiva com mais rotação do que Conforto; ligação da página ao seletor e aos pops.
 - v3.1: timestamps desviados −60 s, −1 h e +1 h continuam a dar velocidade válida (nativa e estimada); posições a mais de 1 Hz sem velocidade nativa; timestamps repetidos; formatação do desvio no diagnóstico; ausência da rejeição por idade do timestamp.
 - limites de RPM/carga para todos os perfis, mudanças virtuais e mapeamento seguro de uma chave desconhecida;
-- versão visível 3.3; pelo menos 21 assinaturas; agrupamento; notas curtas de carácter; honestidade sem repetir o aviso em cada opção;
+- versão visível 3.4; pelo menos 22 assinaturas; agrupamento; notas curtas de carácter; honestidade sem repetir o aviso em cada opção;
 - unicidade da afinação, incluindo as novas inspirações face às arquiteturas aparentadas;
 - o RX-7 é tratado como rotativo (2 rotores), não como um I4 de pistões;
 - estalos: desligados/mute/parado não disparam; perda de sinal, modo, reinício, página oculta e troca de perfil são eventos proibidos; desaceleração, largar o REV e mudança virtual têm condições e intervalo; propensão diferente entre perfis; amplitude e duração limitadas.

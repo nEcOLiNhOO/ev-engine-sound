@@ -9,10 +9,10 @@ let count=0;function test(name,fn){fn();count++;console.log('PASS '+name);}
 const point=(extra={})=>({lat:38.7,lon:-9.1,accuracy:5,speed:null,time:100000,...extra});
 const EXPECTED={
  i3:3,i4:4,i5:5,i6:6,v6:6,flat6:6,v8:8,v10:10,v12:12,
- gt3rs:6,gtr:6,lfa:10,r8v10:10,wrx:4,mustang:8,
+ gt3rs:6,gtr:6,lfa:10,r8v10:10,wrx:4,mustang:8,supra2jz:6,
  m3:6,c63:8,rs3:5,aventador:12,f458:8
 };
-const INSPIRATIONS=['gt3rs','gtr','lfa','r8v10','wrx','mustang','m3','c63','rs3','aventador','f458','rx7'];
+const INSPIRATIONS=['gt3rs','gtr','lfa','r8v10','wrx','mustang','m3','c63','rs3','aventador','f458','rx7','supra2jz'];
 const ARCHITECTURES=['i3','i4','i5','i6','v6','flat6','v8','v10','v12'];
 const FIELDS=['group','unofficial','kind','cyl','rotors','fireMul','idle','max','tone','exhaustQ','intakeBase','intakeRatio','intakeQ','noiseIdle','noiseLoad','rough','pulse','harmonicDecay','evenMix','oddMix','rasp','pulseGain','pulseLoad','subGain','subDiv','flutterBase','crackle','hint'];
 const synthKey=e=>[e.tone,e.exhaustQ,e.intakeBase,e.intakeRatio,e.intakeQ,e.noiseIdle,e.noiseLoad,e.rough,e.pulse,e.harmonicDecay,e.evenMix,e.oddMix,e.rasp,e.kind,e.fireMul].join('|');
@@ -38,11 +38,12 @@ test('old baseline cannot derive a speed',()=>assert.equal(core.gpsSample(point(
 test('stateless cruise mapping: gear never decreases with speed and RPM drops at a shift',()=>{let prev=core.mapping(1,'v8'),sawDrop=false;for(let s=2;s<=200;s++){const m=core.mapping(s,'v8');assert(m.gear>=prev.gear,String(s));if(m.gear>prev.gear&&m.rpm<prev.rpm)sawDrop=true;prev=m;}assert(sawDrop);assert.equal(core.mapping(0,'v8').gear,0);});
 test('all engines map finite bounded RPM/load over speed sweep',()=>{for(const key of Object.keys(core.engines))for(let s=-10;s<=300;s++){const m=core.mapping(s,key,4),e=core.engines[key];assert(m.rpm>=e.idle&&m.rpm<=e.max);assert(m.load>=0&&m.load<=1);assert(m.gear>=0&&m.gear<=7);}});
 test('positive acceleration increases synthetic load',()=>assert(core.mapping(40,'v6',2).load>core.mapping(40,'v6',0).load));
-test('visible version 3.3 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.3');assert.match(html,/data-version="3\.3"/);assert.match(html,/>v3\.3</);assert.match(html,/Impulso v3\.3/);});
-test('at least 21 presets with expected keys',()=>{
+test('visible version 3.4 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.4');assert.match(html,/data-version="3\.4"/);assert.match(html,/>v3\.4</);assert.match(html,/Impulso v3\.4/);});
+// v3.4: 21 → 22 profiles (SupraMotor 2JZ added).
+test('at least 22 presets with expected keys',()=>{
  const keys=Object.keys(core.engines);
- assert(keys.length>=21,keys.length);
- assert.equal(keys.length,21);
+ assert(keys.length>=22,keys.length);
+ assert.equal(keys.length,22);
  assert.deepEqual(keys.slice().sort(),[...Object.keys(EXPECTED),'rx7'].sort());
  for(const [k,cyl] of Object.entries(EXPECTED)){
   assert.equal(core.engines[k].kind,'piston',k);
@@ -100,11 +101,11 @@ test('every profile has complete bounded unique synthesis tuning and a short hin
   assert(!synth.has(sk),'duplicate synthesis key '+key);
   synth.add(sk);
  }
- assert(fingerprints.size>=21);
+ assert(fingerprints.size>=22);
  assert.equal(synth.size,fingerprints.size);
 });
 test('related profiles differ beyond name and cylinder or rotor count',()=>{
- const pairs=[['gt3rs','flat6'],['gtr','v6'],['lfa','v10'],['r8v10','v10'],['lfa','r8v10'],['wrx','i4'],['mustang','v8'],['i6','v6'],['m3','i6'],['c63','v8'],['c63','mustang'],['rs3','i5'],['aventador','v12'],['f458','v8'],['f458','c63']];
+ const pairs=[['gt3rs','flat6'],['gtr','v6'],['lfa','v10'],['r8v10','v10'],['lfa','r8v10'],['wrx','i4'],['mustang','v8'],['i6','v6'],['m3','i6'],['c63','v8'],['c63','mustang'],['rs3','i5'],['aventador','v12'],['f458','v8'],['f458','c63'],['supra2jz','i6'],['supra2jz','m3']];
  for(const [a,b] of pairs){
   const A=core.engines[a],B=core.engines[b];
   assert.equal(A.kind,B.kind);
@@ -456,8 +457,9 @@ const SEEDS=Array.from({length:20},(_,i)=>100+i*17);
 const CRUISE={name:'cruise',dur:25,a:0};
 function firstDown(log){const acc=log.filter(x=>x.ph==='acc'),t0=acc[0].t-.05,fd=acc.find(x=>x.shift==='down');return fd?fd.t-t0:Infinity;}
 const gearDrop=log=>log.filter(x=>x.ph==='cruise').pop().gear-Math.min(...log.filter(x=>x.ph==='acc').map(x=>x.gear));
-test('v3.3 version is 3.3 and the per-profile gearbox personality covers all 21 profiles',()=>{
- assert.equal(core.VERSION,'3.3');assert.equal(KEYS.length,21);
+// v3.4: version 3.4 and 22 profiles (was 3.3 / 21).
+test('v3.4 version is 3.4 and the per-profile gearbox personality covers all 22 profiles',()=>{
+ assert.equal(core.VERSION,'3.4');assert.equal(KEYS.length,22);
  assert.deepEqual(Object.keys(core.GEAR_PERSONA).sort(),KEYS.slice().sort());
  for(const k of KEYS){const p=core.GEAR_PERSONA[k];
   assert.equal(core.engines[k].persona,p,k);
@@ -553,5 +555,31 @@ test('sim mode: raising the target / throttle at 120 km/h kicks down (page throt
   return {g0,drop:g0-minG};};
  for(const k of KEYS){const lo=run(k,20),hi=run(k,80);
   assert.equal(lo.g0,7,k);assert(lo.drop>=1,k+' throttle 20% drop '+lo.drop);assert(hi.drop>=2,k+' throttle 80% drop '+hi.drop);}
+});
+
+// ---- v3.4: SupraMotor 2JZ ----
+test('SupraMotor 2JZ: label, inspiration group, i6-like firing, ranges, cruise, kick-down and lift-off pops',()=>{
+ const e=core.engines.supra2jz,p=core.GEAR_PERSONA.supra2jz;
+ assert.match(html,/<option value="supra2jz">SupraMotor 2JZ<\/option>/);
+ const insp=html.slice(html.indexOf('<optgroup label="Inspirações de modelos"'),html.indexOf('<optgroup label="Arquiteturas de motor"'));
+ assert.match(insp,/value="supra2jz"/);
+ assert.equal(e.group,'inspiration');assert.equal(e.unofficial,true);
+ assert.equal(e.kind,'piston');assert.equal(e.cyl,6);assert.equal(e.fireMul,core.engines.i6.fireMul);
+ assert.equal(core.firingHz(e,3000),core.firingHz(core.engines.i6,3000));
+ assert(e.idle>=800&&e.idle<=900,'idle '+e.idle);assert(e.max>=7000&&e.max<=7200,'max '+e.max);
+ assert(e.flutterBase>0&&e.noiseLoad>core.engines.i6.noiseLoad&&e.rasp>core.engines.i6.rasp,'turbo whoosh/rasp vs I6');
+ assert(e.crackle>core.engines.gtr.crackle&&e.crackle>core.engines.wrx.crackle,'louder crackle than gtr/wrx');
+ assert(p.popUp>=.5&&p.kick<core.GEAR_PERSONA.i6.kick&&p.shift>=.88,'sporty turbo persona');
+ // cruise at 120 in 7th within 1500–3000 rpm
+ const cr=drive('supra2jz',[CRUISE]).pop();assert.equal(cr.gear,7);assert(cr.rpm>=1500&&cr.rpm<=3000,'cruise rpm '+cr.rpm);
+ for(const seed of SEEDS){
+  const l6=drive('supra2jz',[CRUISE,{name:'acc',dur:4,a:.6}],{seed});assert(gearDrop(l6)>=1,'0.6 seed '+seed);assert(firstDown(l6)<=2.55);
+  const l12=drive('supra2jz',[CRUISE,{name:'acc',dur:4,a:1.2}],{seed});assert(gearDrop(l12)>=2,'1.2 seed '+seed);
+  for(const x of l12) assert(x.rpm<=e.max*.94);
+ }
+ for(const ps of POP_SEEDS) assert(popsOf(liftLog('supra2jz',true,ps))>=1,'pops on, seed '+ps);
+ assert.equal(popsOf(liftLog('supra2jz',false)),0,'pops off');
+ // hard upshifts are pop candidates (turbo-car style)
+ const k=cruiseThenAccel('supra2jz',2.5);assert(k.ups.some(u=>u.popWorthy),'upshift pop candidate');
 });
 console.log(`${count} tests passed; full inline JavaScript syntax valid. These tests cover logic and syntax only, not listening.`);
