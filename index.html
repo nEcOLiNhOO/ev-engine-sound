@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-PT" data-version="3.16"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b10"><title>Impulso · Motor virtual v3.16</title>
+<html lang="pt-PT" data-version="3.17"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b10"><title>Impulso · Motor virtual v3.17</title>
 <style>
 
 :root{color-scheme:dark;--bg:#070b10;--panel:#121a22;--panel2:#18232e;--line:#2c3a48;--text:#f2f6f8;--muted:#9aafbf;--accent:#c4f46c;--blue:#7bd9e7;--warn:#ffd170;--bad:#fc806d;--ok:#6fe3a1;--touch:64px;--tile:76px;--gap:12px;--radius:18px}
@@ -67,7 +67,10 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
 .sheet-head h2{margin:0;font-size:24px}
 .sheet-body{padding:12px 14px;overflow:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0}
 .filters{display:flex;flex-wrap:nowrap;gap:8px;margin-bottom:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;padding-bottom:4px}
-.filters button{min-height:56px;padding:10px 14px;font-size:17px;flex:0 0 auto;white-space:nowrap}
+.filters button{min-height:64px;padding:10px 18px;font-size:19px;font-weight:800;flex:1 0 auto;white-space:nowrap;border-radius:16px}
+.filters button .cnt{font-size:13px;color:var(--muted);margin-left:6px;font-weight:700}
+.brand-head .sub{text-transform:none;letter-spacing:0;font-weight:600;margin-left:8px;font-size:14px}
+.brand-head.quick{color:var(--accent)}
 .brand-head{margin:16px 0 8px;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800}
 .brand-head:first-child{margin-top:4px}
 .ttag{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px;color:var(--muted);vertical-align:middle;font-weight:700;letter-spacing:.04em}
@@ -75,7 +78,8 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
 .tile{min-height:var(--tile);text-align:left;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;border-radius:16px;font-size:18px}
 .tile .tname{font-weight:800;font-size:18px;line-height:1.2}
 .tile .tmeta{color:var(--muted);font-size:14px;margin-top:3px}
-.tile.selected{outline:3px solid var(--accent);background:#1e3320;border-color:var(--accent)}
+.tile.selected{outline:3px solid var(--accent);background:#1e3320;border-color:var(--accent);color:var(--text)}
+.tile.selected .tmeta{color:#cfe8c0}
 .star{min-width:56px;min-height:56px;font-size:24px;border-radius:14px;background:#162029}
 .star.on{color:var(--warn)}
 .adv label{display:block;color:var(--muted);font-size:16px;margin-top:16px}
@@ -110,7 +114,7 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
 </style></head><body>
 <div class="app" role="application" aria-label="Impulso condução">
 <header class="topbar">
- <div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.16</span></div>
+ <div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.17</span></div>
  <div class="pill off" id="gpsPill" role="status" aria-live="polite" aria-label="Estado GPS: Simulação"><span class="dot" aria-hidden="true"></span><span id="gpsPillText">Simulação</span></div>
  <button type="button" class="iconbtn" id="openSettings" aria-label="Abrir definições e avançado">⚙</button>
 </header>
@@ -249,7 +253,7 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
  <div class="sheet-panel">
   <div class="sheet-head"><h2>Motores</h2><button type="button" class="iconbtn" data-close="engineSheet" aria-label="Fechar motores">✕</button></div>
   <div class="sheet-body">
-   <div class="filters" id="engineFilters" role="group" aria-label="Filtro por marca"></div>
+   <div class="filters" id="engineFilters" role="group" aria-label="Filtro por estilo de som"></div>
    <div class="engine-list" id="engineTiles"></div>
    <p class="honesty">Síntese original, não oficial — não é uma gravação nem uma cópia autêntica. A afinação é uma escolha de design.</p>
   </div>
@@ -265,7 +269,7 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
    <input id="character" type="range" min="0" max="100" value="40" aria-label="Caráter do som">
 
    <p class="honesty">Síntese original, não oficial — não é uma gravação nem uma cópia autêntica.</p>
-   <p class="footnote">Impulso v3.16. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Interface pensada para o browser do Tesla em landscape. Síntese original, não oficial.</p>
+   <p class="footnote">Impulso v3.17. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Interface pensada para o browser do Tesla em landscape. Síntese original, não oficial.</p>
   </div>
  </div>
 </div>
@@ -273,7 +277,7 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
 <script>
 'use strict';
 const Core=(()=>{
- const VERSION='3.16';
+ const VERSION='3.17';
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  const POP_LIMITS={maxGain:.38,maxVoices:8,decelThresh:-.28,maxNodesPerEvent:3,crackleDur:.09,shiftDur:.14,burstCooldown:4,liftDv:2,liftWindow:2.5,minSpeed:28,popBus:.65,popCeil:-3,duckDepth:.22,duckMs:.028};
  // Per-profile pop & bang character (v3.10+). bodyHz is a bias; v3.11 blends it with firingHz so pops sit in the engine.
@@ -1033,11 +1037,39 @@ const ENGINE_BRAND={
 };
 const GENERIC_BRAND='Genéricos';
 function brandOf(id){return ENGINE_BRAND[id]||GENERIC_BRAND;}
-function brandList(){
- const set=new Set(Object.keys(engines).map(brandOf));
- const brands=[...set].filter(b=>b!==GENERIC_BRAND).sort((a,b)=>a.localeCompare(b,'pt'));
- if(set.has(GENERIC_BRAND)) brands.push(GENERIC_BRAND);
- return brands;
+/* ---- v3.17: navigation by sound style (UI only; no Core/audio changes) ---- */
+const ENGINE_STYLE={
+ i4:'suave',i6:'suave',v6:'suave',v12:'suave',vantage:'suave',mclarenf1:'suave',
+ v8:'grave',mustang:'grave',hellcat:'grave',c63:'grave',amg62:'grave',slr:'grave',ftype:'grave',chiron:'grave',
+ gt3rs:'agudo',flat6:'agudo',m3:'agudo',vtec:'agudo',nsx:'agudo',f458:'agudo',m3e92:'agudo',c8z06:'agudo',gt350:'agudo',jesko:'agudo',z370:'agudo',
+ lfa:'super',r8v10:'super',v10:'super',huracan:'super',m5e60:'super',cgt:'super',aventador:'super',diablo:'super',zonda:'super',f812:'super',mc12:'super',
+ wrx:'turbo',evo:'turbo',integrale:'turbo',yarisgr:'turbo',rs3:'turbo',i5:'turbo',i3:'turbo',gtr:'turbo',rb26:'turbo',supra2jz:'turbo',f40:'turbo',giuliaqv:'turbo',
+ rx7:'rotativo',rotary4:'rotativo'
+};
+const STYLE_ORDER=[
+ ['suave','Suave','Suave · Cruzeiro','calmo, para viagem'],
+ ['grave','Grave V8','Grave · V8 Muscle','ronco grave e cheio'],
+ ['agudo','Agudo','Agudo · Alta rotação','sobe e canta nas altas'],
+ ['super','V10 / V12','V10 · V12 Supercarro','grito contínuo de supercarro'],
+ ['turbo','Turbo / Rally','Turbo · Rally','sopro, cadência irregular, pops'],
+ ['rotativo','Rotativo','Rotativo','burburinho contínuo, sem pistões']
+];
+function styleOf(id){return ENGINE_STYLE[id]||'suave';}
+function styleList(){return STYLE_ORDER.map(s=>s[0]);}
+let recentList=[];
+try{recentList=JSON.parse((typeof localStorage!=='undefined'&&localStorage.getItem('impulso.recent.v1'))||'[]');if(!Array.isArray(recentList))recentList=[];}catch(_){recentList=[];}
+function noteRecent(id){
+ if(!engines[id]) return;
+ recentList=[id,...recentList.filter(x=>x!==id&&engines[x])].slice(0,4);
+ try{if(typeof localStorage!=='undefined')localStorage.setItem('impulso.recent.v1',JSON.stringify(recentList));}catch(_){}
+}
+function quickIds(){
+ const cur=$('engine').value,out=[];
+ const add=id=>{if(engines[id]&&!out.includes(id))out.push(id);};
+ add(cur);
+ [...favSet].filter(id=>engines[id]).sort((a,b)=>engineLabel(a).localeCompare(engineLabel(b),'pt')).forEach(add);
+ recentList.forEach(add);
+ return out;
 }
 function engineTypeTag(id){
  const e=engines[id];if(!e) return '';
@@ -1094,6 +1126,7 @@ function makeTile(id){
   left.appendChild(tname);left.appendChild(tmeta);
   btn.appendChild(left);btn.appendChild(star);
   btn.addEventListener('click',()=>{
+   noteRecent(id);
    $('engine').value=id;
    if(typeof Event==='function') $('engine').dispatchEvent(new Event('change'));
    else {describeProfile();refreshEngineChrome();}
@@ -1102,9 +1135,10 @@ function makeTile(id){
   });
   return btn;
 }
-function appendHeading(host,title){
+function appendHeading(host,title,sub,extra){
   const h=document.createElement('div');
-  h.className='brand-head';h.textContent=title;h.setAttribute('role','heading');h.setAttribute('aria-level','3');
+  h.className='brand-head'+(extra?' '+extra:'');h.textContent=title;h.setAttribute('role','heading');h.setAttribute('aria-level','3');
+  if(sub){const sp=document.createElement('span');sp.className='sub';sp.textContent=sub;h.appendChild(sp);}
   host.appendChild(h);
 }
 function appendTileRow(host,ids){
@@ -1115,12 +1149,14 @@ function appendTileRow(host,ids){
 }
 function buildEngineFilterChips(){
  const host=$('engineFilters');if(!host||typeof document.createElement!=='function') return;
- const chips=[['todos','Todos'],['fav','★ Favoritos'],...brandList().map(b=>['brand:'+b,b])];
+ const ids=Object.keys(engines);
+ const chips=[['todos','Todos'],['fav','★ Favoritos'],...STYLE_ORDER.map(([k,short])=>['style:'+k,short,ids.filter(id=>styleOf(id)===k).length])];
  host.innerHTML='';
- for(const [key,label] of chips){
+ for(const [key,label,n] of chips){
   const btn=document.createElement('button');
   btn.type='button';btn.setAttribute('data-filter',key);
   btn.textContent=label;
+  if(n){const c=document.createElement('span');c.className='cnt';c.textContent=String(n);btn.appendChild(c);}
   const on=engineFilter===key;
   btn.classList.toggle('active',on);btn.setAttribute('aria-pressed',on?'true':'false');
   btn.addEventListener('click',()=>{
@@ -1141,19 +1177,20 @@ function buildEngineTiles(){
   if(!favs.length){const empty=document.createElement('p');empty.className='note';empty.textContent='Ainda sem favoritos. Toca na estrela de um motor.';host.appendChild(empty);return;}
   appendTileRow(host,favs);return;
  }
- if(engineFilter.startsWith('brand:')){
-  const brand=engineFilter.slice(6);
-  const list=ids.filter(id=>brandOf(id)===brand).sort(byName);
-  if(!list.length){const empty=document.createElement('p');empty.className='note';empty.textContent='Nenhum motor nesta marca.';host.appendChild(empty);return;}
+ if(engineFilter.startsWith('style:')){
+  const key=engineFilter.slice(6),meta=STYLE_ORDER.find(x=>x[0]===key);
+  const list=ids.filter(id=>styleOf(id)===key).sort(byName);
+  if(!list.length){const empty=document.createElement('p');empty.className='note';empty.textContent='Nenhum motor neste estilo.';host.appendChild(empty);return;}
+  if(meta) appendHeading(host,meta[2],meta[3]);
   appendTileRow(host,list);return;
  }
- // Todos: favourites first, then brands A–Z, Genéricos last
- const favs=ids.filter(id=>favSet.has(id)).sort(byName);
- if(favs.length){appendHeading(host,'★ Favoritos');appendTileRow(host,favs);}
- for(const brand of brandList()){
-  const list=ids.filter(id=>brandOf(id)===brand).sort(byName);
+ // Todos: atual + favoritos + recentes primeiro, depois por estilo de som
+ const quick=quickIds();
+ if(quick.length){appendHeading(host,'★ Favoritos e recentes',favSet.size?'':'toca na estrela para fixar','quick');appendTileRow(host,quick);}
+ for(const [key,,title,sub] of STYLE_ORDER){
+  const list=ids.filter(id=>styleOf(id)===key).sort(byName);
   if(!list.length) continue;
-  appendHeading(host,brand);
+  appendHeading(host,title,sub);
   appendTileRow(host,list);
  }
  if(!(host.children&&host.children.length)){

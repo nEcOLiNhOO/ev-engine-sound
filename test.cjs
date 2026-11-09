@@ -46,7 +46,7 @@ test('stateless cruise mapping: gear never decreases with speed and RPM drops at
 test('all engines map finite bounded RPM/load over speed sweep',()=>{for(const key of Object.keys(core.engines))for(let s=-10;s<=300;s++){const m=core.mapping(s,key,4),e=core.engines[key];assert(m.rpm>=e.idle&&m.rpm<=e.max);assert(m.load>=0&&m.load<=1);assert(m.gear>=0&&m.gear<=7);}});
 test('positive acceleration increases synthetic load',()=>assert(core.mapping(40,'v6',2).load>core.mapping(40,'v6',0).load));
 // v3.14: UI redesign; Core audio unchanged from 3.13 aside from VERSION.
-test('visible version 3.16 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.16');assert.match(html,/data-version="3\.16"/);assert.match(html,/>v3\.16</);assert.match(html,/Impulso v3\.16/);});
+test('visible version 3.17 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.17');assert.match(html,/data-version="3\.17"/);assert.match(html,/>v3\.17</);assert.match(html,/Impulso v3\.17/);});
 test('50 presets: 30 legacy + 20 new inspirations',()=>{
  const keys=Object.keys(core.engines);
  assert.equal(keys.length,50);
@@ -515,8 +515,8 @@ const SEEDS=Array.from({length:20},(_,i)=>100+i*17);
 const CRUISE={name:'cruise',dur:25,a:0};
 function firstDown(log){const acc=log.filter(x=>x.ph==='acc'),t0=acc[0].t-.05,fd=acc.find(x=>x.shift==='down');return fd?fd.t-t0:Infinity;}
 const gearDrop=log=>log.filter(x=>x.ph==='cruise').pop().gear-Math.min(...log.filter(x=>x.ph==='acc').map(x=>x.gear));
-test('per-profile gearbox personality covers all 50 profiles (version now 3.16)',()=>{
- assert.equal(core.VERSION,'3.16');assert.equal(KEYS.length,50);
+test('per-profile gearbox personality covers all 50 profiles (version now 3.17)',()=>{
+ assert.equal(core.VERSION,'3.17');assert.equal(KEYS.length,50);
  assert.deepEqual(Object.keys(core.GEAR_PERSONA).sort(),KEYS.slice().sort());
  for(const k of KEYS){const p=core.GEAR_PERSONA[k];
   assert.equal(core.engines[k].persona,p,k);
@@ -909,10 +909,10 @@ test('v3.14/3.15 in-car UI: engine tiles, filters, sheets, large start/volume, G
  assert.match(html,/prefers-reduced-motion/);
  for(const id of Object.keys(core.engines)) assert.match(html,new RegExp('value="'+id+'"'));
 });
-test('v3.16 brands: every profile mapped; new brands present; favourites + Genéricos',()=>{
+test('v3.16 brands (secondary text in v3.17): every profile mapped; favourites + Genéricos',()=>{
  assert.match(script,/const ENGINE_BRAND=/);
  assert.match(script,/buildEngineFilterChips/);
- assert.match(script,/brandList\(\)/);
+ assert.match(script,/brandOf\(id\)/);
  assert.match(script,/brand-head/);
  assert.match(script,/Genéricos/);
  assert.match(html,/overflow-x:auto/);
@@ -962,6 +962,66 @@ test('v3.16 new 20 profiles: UI labels, pops, gear, distinct feels',()=>{
  assert.equal(core.engines.chiron.cyl,16);
  assert.equal(core.engines.chiron.fireMul,8);
  assert.equal(core.engines.c8z06.max,8600);
+});
+test('v3.17: all 50 profiles identical to v3.16 snapshot (fp, pop, synth, gear, hint, whine)',()=>{
+ const snap=JSON.parse(fs.readFileSync(__dirname+'/fixtures/v316-fingerprints.json','utf8'));
+ const keys=Object.keys(snap).filter(k=>!k.startsWith('__'));
+ assert.equal(keys.length,50);
+ assert.deepEqual(keys.slice().sort(),Object.keys(core.engines).slice().sort());
+ for(const k of keys){
+  const e=core.engines[k];
+  assert.equal(core.profileFingerprint(e),snap[k].fp,k+' fingerprint');
+  assert.equal(core.popFingerprint(e.pop),snap[k].pop,k+' pop');
+  const synth=[e.tone,e.exhaustQ,e.intakeBase,e.intakeRatio,e.intakeQ,e.noiseIdle,e.noiseLoad,e.rough,e.pulse,e.harmonicDecay,e.evenMix,e.oddMix,e.rasp,e.kind,e.fireMul,e.pulseGain,e.pulseLoad,e.subGain,e.subDiv,e.flutterBase,e.crackle,e.idle,e.max].join('|');
+  assert.equal(synth,snap[k].synth,k+' synth');
+  assert.equal(JSON.stringify(core.GEAR_PERSONA[k]),JSON.stringify(snap[k].gear),k+' gear');
+  assert.equal(JSON.stringify(core.POP_PROFILES[k]),JSON.stringify(snap[k].popProfile),k+' POP_PROFILES');
+  assert.equal(e.hint,snap[k].hint,k+' hint');
+  assert.equal(e.whineGain||0,snap[k].whine,k+' whine');
+ }
+});
+test('v3.17: Core source byte-identical to v3.16 apart from VERSION',()=>{
+ const snap=JSON.parse(fs.readFileSync(__dirname+'/fixtures/v316-fingerprints.json','utf8'));
+ const src=source.replace(/const VERSION='[\d.]+';/,"const VERSION='X';");
+ assert.equal(require('node:crypto').createHash('sha256').update(src).digest('hex'),snap.__coreSha);
+});
+test('v3.17: engine picker by sound style; every profile in exactly one style',()=>{
+ assert.match(script,/const ENGINE_STYLE=/);
+ assert.match(script,/const STYLE_ORDER=/);
+ assert.doesNotMatch(script,/brandList\(\)/);
+ assert.doesNotMatch(script,/'brand:'/);
+ assert.match(script,/'style:'\+/);
+ const m=script.match(/const ENGINE_STYLE=\{([\s\S]*?)\};/);assert(m);
+ const body=m[1];
+ const map=Function('return {'+body+'}')();
+ const so=script.match(/const STYLE_ORDER=(\[[\s\S]*?\n\]);/);assert(so);
+ const order=Function('return '+so[1])();
+ assert(order.length>=5&&order.length<=6,'5–6 styles');
+ const styles=order.map(x=>x[0]);
+ assert.equal(new Set(styles).size,styles.length);
+ for(const [k,short,title] of order){assert(short.length<=14,k+' short chip label');assert(title.length>=5,k);}
+ // no duplicate keys in the literal (exactly one style each)
+ const literalKeys=[...body.matchAll(/(\w+):'/g)].map(x=>x[1]);
+ assert.equal(literalKeys.length,new Set(literalKeys).size,'duplicate style key');
+ const ids=Object.keys(core.engines);
+ assert.equal(Object.keys(map).length,ids.length);
+ for(const id of ids){assert(styles.includes(map[id]),id+' style');}
+ for(const s of styles) assert(ids.some(id=>map[id]===s),s+' empty');
+ assert.equal(map.hellcat,'grave');assert.equal(map.lfa,'super');assert.equal(map.wrx,'turbo');assert.equal(map.rx7,'rotativo');assert.equal(map.i6,'suave');assert.equal(map.f458,'agudo');
+ // favourites/current/recent first
+ assert.match(script,/impulso\.favs\.v1/);
+ assert.match(script,/impulso\.recent\.v1/);
+ assert.match(script,/★ Favoritos e recentes/);
+ assert(script.indexOf('quickIds()')<script.indexOf('for(const [key,,title,sub] of STYLE_ORDER)'));
+ assert.match(html,/--tile:76px/);
+ assert.match(html,/\.filters button\{min-height:64px/);
+});
+test('v3.17: whole script outside the engine-picker UI block byte-identical to v3.16 (audio, GPS, gearbox, pops)',()=>{
+ const snap=JSON.parse(fs.readFileSync(__dirname+'/fixtures/v316-fingerprints.json','utf8'));
+ const a=script.indexOf('/* ---- v3.14/v3.15 in-car UI wiring'),b=script.indexOf('function openSheet(');
+ assert(a>0&&b>a);
+ const rest=(script.slice(0,a)+script.slice(b)).replace(/const VERSION='[\d.]+';/,'');
+ assert.equal(require('node:crypto').createHash('sha256').update(rest).digest('hex'),snap.__restSha);
 });
 test('v3.15 page builds tiles/chips and syncs favorites key',()=>{
  assert.match(script,/buildEngineTiles/);

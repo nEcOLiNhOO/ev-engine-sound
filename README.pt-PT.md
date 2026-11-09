@@ -1,12 +1,17 @@
-# Impulso · Motor virtual v3.16
+# Impulso · Motor virtual v3.17
 
 Aplicação original, num único `index.html`, sem bibliotecas, fontes, gravações ou pedidos de rede (exceto o serviço de localização do próprio browser, se autorizado).
 
-Esta pasta é a entrega autónoma v3.16 (+20 motores famosos pelo som; 30 anteriores intactos): cinquenta assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação.
+Esta pasta é a entrega autónoma v3.17 (motores organizados por estilo de som; sons iguais à v3.16): cinquenta assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação.
 
-O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.16 ainda pode não corresponder ao que está online.
+O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.17 ainda pode não corresponder ao que está online.
 
 A publicação HTTPS permite testar num browser normal, mas não garante que resolva a ausência de áudio numa pré-visualização móvel. Toca em **Iniciar som** na página aberta diretamente no browser.
+
+## Alterações na v3.17
+- **Motores por estilo de som** em vez de marca: Suave · Cruzeiro, Grave · V8 Muscle, Agudo · Alta rotação, V10 · V12 Supercarro, Turbo · Rally, Rotativo. Seis chips grandes (64 px) visíveis de uma vez; mosaicos ≥76 px; escolha em 1–2 toques.
+- No topo de «Todos»: motor atual + ★ favoritos + últimos 4 usados (`localStorage`). A marca fica como texto pequeno no mosaico.
+- **Som intacto:** Core, áudio, os 50 perfis, `GEAR_PERSONA` e `POP_PROFILES` idênticos à v3.16 (testado contra `fixtures/v316-fingerprints.json`).
 
 ## Alterações na v3.16
 - **+20 perfis** inspirados em motores citados em listas de «best sounding engines» (Pagani Zonda, McLaren F1, Aston Vantage, Alfa Giulia QV, Maserati MC12, Corvette Z06 LT6, Jaguar F-Type R, Lancia Integrale, Bugatti Chiron W16, Koenigsegg Jesko; e ícones de marcas já presentes: Ferrari 812/F40, Carrera GT, M5 E60 V10, M3 E92 V8, Huracán, 370Z, GT350 Voodoo, SLR, GR Yaris).
