@@ -38,7 +38,7 @@ test('old baseline cannot derive a speed',()=>assert.equal(core.gpsSample(point(
 test('stateless cruise mapping: gear never decreases with speed and RPM drops at a shift',()=>{let prev=core.mapping(1,'v8'),sawDrop=false;for(let s=2;s<=200;s++){const m=core.mapping(s,'v8');assert(m.gear>=prev.gear,String(s));if(m.gear>prev.gear&&m.rpm<prev.rpm)sawDrop=true;prev=m;}assert(sawDrop);assert.equal(core.mapping(0,'v8').gear,0);});
 test('all engines map finite bounded RPM/load over speed sweep',()=>{for(const key of Object.keys(core.engines))for(let s=-10;s<=300;s++){const m=core.mapping(s,key,4),e=core.engines[key];assert(m.rpm>=e.idle&&m.rpm<=e.max);assert(m.load>=0&&m.load<=1);assert(m.gear>=0&&m.gear<=7);}});
 test('positive acceleration increases synthetic load',()=>assert(core.mapping(40,'v6',2).load>core.mapping(40,'v6',0).load));
-test('visible version 3.2 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.2');assert.match(html,/data-version="3\.2"/);assert.match(html,/>v3\.2</);assert.match(html,/Impulso v3\.2/);});
+test('visible version 3.3 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.3');assert.match(html,/data-version="3\.3"/);assert.match(html,/>v3\.3</);assert.match(html,/Impulso v3\.3/);});
 test('at least 21 presets with expected keys',()=>{
  const keys=Object.keys(core.engines);
  assert(keys.length>=21,keys.length);
@@ -352,16 +352,20 @@ function cruiseThenAccel(key,a,style='comfort'){
   if(r.shift==='up')ups.push(r);}
  return {before,after:r,maxR,downs,firstDown,ups,e};
 }
-test('strong acceleration kicks down 1-2 gears into a high band and raises RPM and load',()=>{
+// v3.3 adaptation: ≥1.55 m/s² now asks for up to 3 gears (was ≤2), and upshift pops are per-profile
+// (popUp affinity), so a calm I4 no longer marks hard upshifts as pop candidates while sporty/turbo ones do.
+test('strong acceleration kicks down 1-3 gears into a high band and raises RPM and load',()=>{
  for(const key of ['v8','lfa','i4','rx7']){
   const k=cruiseThenAccel(key,2.5);
   assert.equal(k.before.gear,7,key);
   assert(k.downs>=1,key);
-  assert(k.firstDown.from-k.firstDown.to>=1&&k.firstDown.from-k.firstDown.to<=2,key);
+  assert(k.firstDown.from-k.firstDown.to>=1&&k.firstDown.from-k.firstDown.to<=3,key);
   assert(k.maxR>=.55*k.e.max&&k.maxR<=k.e.max*.94,key+' '+k.maxR);
   assert(k.after.load>=.8,key);
-  for(const u of k.ups) assert(u.popWorthy,key+' demanding upshift is a pop candidate');
+  const aff=core.GEAR_PERSONA[key].popUp;
+  if(aff<.15) for(const u of k.ups) assert(!u.popWorthy,key+' calm profile: no upshift pop candidates');
  }
+ const rx=cruiseThenAccel('rx7',2.5);assert(rx.ups.some(u=>u.popWorthy),'rx7 hard upshift is a pop candidate');
 });
 test('mild acceleration does not kick down from cruise',()=>{
  const k=cruiseThenAccel('v8',.4);
@@ -414,12 +418,140 @@ test('sim throttle demand: 0→120 km/h upshifts each gear and settles to calm t
 test('page wires the gearbox, Caixa selector defaults to Conforto, pops upshift gated by popWorthy',()=>{
  assert.match(html,/<select id="gearStyle"><option value="comfort" selected>Conforto/);
  assert.match(html,/value="sport">Desportiva/);
- assert.match(script,/Core\.gearbox\(gbState,\{speed,accel,demand,dt,profile:e,style:\$\('gearStyle'\)\.value\}\)/);
- assert.match(script,/gb\.shift==='up'&&gb\.popWorthy&&prevGear>=1\) maybePop\('upshift'/);
+ // v3.3 adaptation: the call now passes sampleAt (GPS fix receipt time) and pop candidates come from Core.popTriggers.
+ assert.match(script,/Core\.gearbox\(gbState,\{speed,accel,demand,dt,sampleAt,profile:e,style:\$\('gearStyle'\)\.value\}\)/);
+ assert.match(script,/Core\.popTriggers\(gb,\{valid,prevValid,prevGear,rpm,sinceDecelPop\}\)/);
+ assert.match(script,/maybePop\(ev\.event,/);
  assert.doesNotMatch(script,/thresholds=\[0,22,46,74,108,148\]/);
 });
 test('gear ratios are 7 descending synthetic values',()=>{
  const R=core.GEAR_RATIOS;assert.equal(R.length,8);
  for(let i=2;i<R.length;i++) assert(R[i]<R[i-1]);
+});
+
+// ---- v3.3: GPS kick-down, rev-matched blips and per-profile pops ----
+// drive(): 1 Hz GPS-like fixes (Gaussian-ish noise, km/h) passed as discrete samples (sampleAt = fix time),
+// 50 ms frames, page-equivalent RPM smoothing, Core.popTriggers → Core.evaluatePop like tick() does.
+function drive(key,phases,{noise=.3,seed=7,style='comfort',pops=false,intensity=50,popSeed=99}={}){
+ const rnd=lcg(seed),gs=()=>{let t=0;for(let i=0;i<6;i++)t+=rnd();return t-3;},pr=lcg(popSeed);
+ const e=core.engines[key];let st=null,o,v=120,fixV=120,fixT=0,t=0,prevValid=false,prevGear=0,rpm=e.idle,sinceDecelPop=9,lastPopAt=null;
+ const log=[];
+ for(const ph of phases){const n=Math.round(ph.dur/.05);
+  for(let i=0;i<n;i++){v=Math.max(0,v+ph.a*3.6*.05);t+=.05;
+   if(Math.abs(t-Math.round(t))<.026&&Math.round(t)!==fixT){fixT=Math.round(t);fixV=v+gs()*noise;}
+   o=core.gearbox(st,{speed:fixV,accel:0,dt:.05,sampleAt:fixT,profile:e,style});st=o.state;
+   rpm+=(o.rpm-rpm)*(1-Math.exp(-.05*(o.blipping?16:5)));sinceDecelPop+=.05;let popped=0;
+   for(const ev of core.popTriggers(o,{valid:true,prevValid,prevGear,rpm,sinceDecelPop})){
+    if(ev.event==='decel')sinceDecelPop=0;
+    const d=core.evaluatePop({enabled:pops,running:true,muted:false,volume:15,intensity,event:ev.event,validMotion:true,rpm:ev.rpm,maxRpm:e.max,accel:ev.accel??o.aEst,profile:e,now:t,lastPopAt,activeVoices:0,random:pr});
+    if(d.allow){lastPopAt=t;popped++;}
+   }
+   log.push({t,ph:ph.name,speed:fixV,gear:o.gear,rpm:o.rpm,shift:o.shift,blip:o.blip,blipping:o.blipping,popped});
+   prevValid=true;prevGear=o.gear;}
+ }
+ return log;
+}
+const KEYS=Object.keys(core.engines);
+const SEEDS=Array.from({length:20},(_,i)=>100+i*17);
+const CRUISE={name:'cruise',dur:25,a:0};
+function firstDown(log){const acc=log.filter(x=>x.ph==='acc'),t0=acc[0].t-.05,fd=acc.find(x=>x.shift==='down');return fd?fd.t-t0:Infinity;}
+const gearDrop=log=>log.filter(x=>x.ph==='cruise').pop().gear-Math.min(...log.filter(x=>x.ph==='acc').map(x=>x.gear));
+test('v3.3 version is 3.3 and the per-profile gearbox personality covers all 21 profiles',()=>{
+ assert.equal(core.VERSION,'3.3');assert.equal(KEYS.length,21);
+ assert.deepEqual(Object.keys(core.GEAR_PERSONA).sort(),KEYS.slice().sort());
+ for(const k of KEYS){const p=core.GEAR_PERSONA[k];
+  assert.equal(core.engines[k].persona,p,k);
+  assert(p.kick>=.6&&p.kick<=1.2,k);assert(p.shiftLo>=.3&&p.shiftLo<p.shift&&p.shift<=.94,k);
+  assert(p.relax>=2&&p.relax<=4,k+' relax '+p.relax);assert(p.blip>0&&p.blip<=.12,k);
+  assert(p.popUp>=0&&p.popUp<=1&&p.popRpm>=.2&&p.popRpm<=.6,k);}
+ // Desportiva modifies on top of the persona: lower kick thresholds than Conforto for every profile.
+ for(const k of KEYS){const c=core.kickThresholds(core.engines[k],core.GEARBOX_STYLES.comfort),s=core.kickThresholds(core.engines[k],core.GEARBOX_STYLES.sport);
+  for(let i=0;i<3;i++){assert(s[i]<c[i],k);if(i)assert(c[i]>c[i-1],k);}}
+ // calm vs sporty personality really differs
+ assert(core.GEAR_PERSONA.gt3rs.shift>core.GEAR_PERSONA.i6.shift);assert(core.GEAR_PERSONA.c63.popUp>core.GEAR_PERSONA.v12.popUp*5);
+});
+test('0.6 m/s² for 4 s from 120 km/h cruise (1 Hz noisy GPS) kicks down ≥1 gear within ~1.5 s, every profile',()=>{
+ for(const k of KEYS){let in15=0;
+  for(const seed of SEEDS){const log=drive(k,[CRUISE,{name:'acc',dur:4,a:.6}],{seed});
+   assert.equal(log.filter(x=>x.ph==='cruise').pop().gear,7,k+' cruise gear');
+   const t=firstDown(log);assert(t<=2.55,k+' seed '+seed+' first downshift '+t);assert(gearDrop(log)>=1,k);
+   if(t<=1.55)in15++;}
+  assert(in15>=15,k+' only '+in15+'/20 seeds within 1.5 s');
+ }
+});
+test('1.2 m/s² for 4 s from 120 km/h kicks down ≥2 gears for every profile (also with noisier GPS)',()=>{
+ for(const k of KEYS) for(const seed of SEEDS.slice(0,8)) for(const noise of [.3,.5]){
+  const log=drive(k,[CRUISE,{name:'acc',dur:4,a:1.2}],{seed,noise});
+  assert(gearDrop(log)>=2,k+' seed '+seed+' noise '+noise);
+  for(const x of log) assert(x.rpm<=core.engines[k].max*.94,k);
+ }
+});
+test('60 s of noisy steady 120 km/h cruise: 0 shifts for every profile, Conforto and Desportiva',()=>{
+ for(const k of KEYS) for(const style of ['comfort','sport']) for(const seed of [3,11]){
+  const log=drive(k,[{name:'warm',dur:15,a:0},{name:'cruise',dur:60,a:0}],{seed,noise:.5,style});
+  assert.equal(log.filter(x=>x.ph==='cruise'&&x.shift).length,0,k+' '+style+' seed '+seed);
+ }
+});
+test('after the acceleration ends the gearbox relaxes back to top gear (per-profile relax time)',()=>{
+ for(const k of KEYS) for(const a of [.6,1.2]){
+  const log=drive(k,[CRUISE,{name:'acc',dur:4,a},{name:'steady',dur:14,a:0}]);
+  const end=log[log.length-1];assert.equal(end.gear,7,k+' a='+a);
+  const back=log.find(x=>x.ph==='steady'&&x.gear===7);assert(back,k);
+  const tb=back.t-log.find(x=>x.ph==='steady').t;
+  assert(tb<=core.GEAR_PERSONA[k].relax+6,k+' back to 7th after '+tb.toFixed(2)+' s');
+ }
+});
+test('deceleration from cruise downshifts with rev-matched blips (RPM overshoot, bounded)',()=>{
+ for(const k of KEYS){const e=core.engines[k];
+  const log=drive(k,[CRUISE,{name:'dec',dur:12,a:-1.0}]);const dec=log.filter(x=>x.ph==='dec');
+  const downs=dec.filter(x=>x.shift==='down');assert(downs.length>=1,k);
+  assert(downs.every(x=>x.blip),k+' every decel downshift blips');
+  assert(!dec.some(x=>x.shift==='up'),k);
+  const over=dec.filter(x=>x.blipping).some(x=>x.rpm>core.gearRpm(e,x.speed,x.gear)+20);assert(over,k+' blip overshoot');
+  for(const x of dec) assert(x.rpm<=e.max*.94&&x.rpm>=e.idle,k);
+ }
+ const g3=drive('gt3rs',[CRUISE,{name:'dec',dur:12,a:-1.0}]).filter(x=>x.shift==='down').length;
+ const i6=drive('i6',[CRUISE,{name:'dec',dur:12,a:-1.0}]).filter(x=>x.shift==='down').length;
+ assert(g3>i6,'sporty profile downshifts more eagerly on decel ('+g3+' vs '+i6+')');
+});
+// Sporty = crackle propensity ≥ .42; calm = most refined; gtr/i5/v6/flat6/v10 sit in between (no hard claim).
+const SPORTY=KEYS.filter(k=>core.engines[k].crackle>=.42);
+const CALM=['i3','i4','i6','v12'];
+const POP_SEEDS=[987654321,123456789,555555555,2024110801,1357913579]; // large seeds: small Lehmer seeds give a tiny first draw
+const liftLog=(k,pops,popSeed=POP_SEEDS[0])=>drive(k,[CRUISE,{name:'acc',dur:5,a:1.2},{name:'lift',dur:8,a:-.9},{name:'steady',dur:6,a:0}],{pops,popSeed});
+const popsOf=log=>log.reduce((s,x)=>s+x.popped,0);
+test('accel → lift-off with pops on: sporty profiles pop, calm ones few/none, pops off → none',()=>{
+ for(const k of KEYS) assert.equal(popsOf(liftLog(k,false)),0,k+' pops off');
+ assert(SPORTY.length>=12,'sporty set '+SPORTY);
+ for(const k of SPORTY) for(const ps of POP_SEEDS) assert(popsOf(liftLog(k,true,ps))>=1,k+' popSeed '+ps);
+ for(const k of CALM) for(const ps of POP_SEEDS) assert(popsOf(liftLog(k,true,ps))<=2,k+' popSeed '+ps);
+ const avg=ks=>ks.reduce((s,k)=>s+POP_SEEDS.reduce((t,ps)=>t+popsOf(liftLog(k,true,ps)),0),0)/ks.length/POP_SEEDS.length;
+ assert(avg(SPORTY)>=4*avg(CALM),'sporty '+avg(SPORTY)+' vs calm '+avg(CALM));
+ // lift-off generates an overrun candidate (the gearbox flags it)
+ assert(liftLog('c63',false).some(x=>x.shift===null)&&core.popTriggers({liftoff:true,aEst:-.9,shift:null,blip:false},{valid:true,prevValid:true,prevGear:6,rpm:4000}).some(e=>e.event==='overrun'));
+});
+test('overrun pops respect every safety gate and the profile-relative rpm gate',()=>{
+ const e=core.engines.c63,base={event:'overrun',maxRpm:e.max,profile:e,rpm:3500,accel:-.8};
+ assert(core.evaluatePop(popState(base)).allow,'overrun allowed when valid');
+ for(const over of [{enabled:false},{running:false},{muted:true},{volume:0},{validMotion:false},{activeVoices:3},{lastPopAt:9.9}])
+  assert(!core.evaluatePop(popState({...base,...over})).allow,JSON.stringify(over));
+ assert(!core.evaluatePop(popState({...base,rpm:e.idle*1.5})).allow,'below rpm gate');
+ assert(!core.evaluatePop(popState({...base,event:'modeSwitch'})).allow);
+ // gate is relative to the profile's own range: a cruise-level 2400 rpm passes on c63 (low gate) but a high-revving
+ // calm i6 needs more.
+ assert(core.GEAR_PERSONA.c63.popRpm*e.max<2400);
+ assert(core.GEAR_PERSONA.i6.popRpm*core.engines.i6.max>2400);
+ assert(!core.evaluatePop(popState({...base,profile:core.engines.i6,maxRpm:core.engines.i6.max,rpm:2400})).allow);
+});
+test('sim mode: raising the target / throttle at 120 km/h kicks down (page throttle-proxy formula)',()=>{
+ const run=(key,throttle,target=140)=>{const e=core.engines[key];let st=null,r,v=120,minG=9,g0=null;
+  for(let i=0;i<400;i++){r=core.gearbox(st,{speed:v,accel:0,demand:0,dt:.05,profile:e});st=r.state;}
+  g0=r.gear;
+  for(let i=0;i<100;i++){const dt=.05,diff=target-v,rate=diff>0?.5+throttle/100*5:5,ch=core.clamp(diff,-rate*3.6*dt,rate*3.6*dt);v+=ch;const a=ch/dt/3.6;
+   const d=diff>.5?Math.max(core.clamp(a/3,0,1)*.5,throttle/100*core.clamp(diff/15,.3,1)):0;
+   r=core.gearbox(st,{speed:v,accel:a,demand:d,dt,profile:e});st=r.state;minG=Math.min(minG,r.gear);}
+  return {g0,drop:g0-minG};};
+ for(const k of KEYS){const lo=run(k,20),hi=run(k,80);
+  assert.equal(lo.g0,7,k);assert(lo.drop>=1,k+' throttle 20% drop '+lo.drop);assert(hi.drop>=2,k+' throttle 80% drop '+hi.drop);}
 });
 console.log(`${count} tests passed; full inline JavaScript syntax valid. These tests cover logic and syntax only, not listening.`);

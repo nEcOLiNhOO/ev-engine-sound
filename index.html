@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pt-PT" data-version="3.2"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual v3.2</title>
+<html lang="pt-PT" data-version="3.3"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual v3.3</title>
 <style>
 :root{color-scheme:dark;--bg:#0c1219;--panel:#141e28;--line:#293744;--text:#eef4f7;--muted:#a2b3c0;--accent:#c4f46c;--blue:#7bd9e7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% 0,#20303b,transparent 65%),var(--bg);font:16px system-ui,sans-serif;color:var(--text)}main{max-width:1220px;margin:auto;padding:28px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.brand{font-size:24px;letter-spacing:.2em;font-weight:800}.ver{font-size:11px;letter-spacing:.14em;color:var(--muted);font-weight:700;margin-left:8px;vertical-align:middle}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin:8px 0}.badge{border:1px solid var(--line);border-radius:30px;padding:10px 15px;font-size:12px;color:var(--accent)}.layout{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}.panel{background:linear-gradient(140deg,#18232e,#101922);border:1px solid var(--line);border-radius:24px;padding:25px}.modes{display:flex;gap:8px}button,select{font:inherit;color:inherit;background:#202d39;border:1px solid #3b4a58;border-radius:12px;min-height:48px;padding:10px 16px;cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:3px}button.active{background:var(--accent);color:#14200a;border-color:var(--accent)}button:disabled{opacity:.4;cursor:not-allowed}.dial{height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin:15px auto 0;max-width:380px}.dial:before{content:"";position:absolute;inset:5px 10px 0;border:12px solid #273641;border-bottom-color:transparent;border-radius:50% 50% 35% 35%;pointer-events:none}.dial:after{content:"";position:absolute;inset:5px 10px 0;border:12px solid transparent;border-left-color:var(--accent);border-radius:50% 50% 35% 35%;opacity:.7;pointer-events:none}.speed{font-size:88px;line-height:1.1;font-weight:250;font-variant-numeric:tabular-nums;z-index:1}.unit{color:var(--muted);font-size:13px}.source{margin-top:16px;font-size:12px;color:var(--blue);text-align:center;z-index:1}.rpmrow{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin:8px 0}.track{height:10px;background:#2b3741;border-radius:8px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ffd170,#fc806d);transition:width .12s}.stats{display:flex;justify-content:space-between;margin:22px 0;font-size:13px;color:var(--muted)}.stats b{display:block;font-size:20px;color:var(--text);margin-top:5px}.actions{display:flex;gap:12px}.actions button{flex:1;min-height:60px;font-weight:700}#start{background:var(--accent);color:#182312;border:0}#rev{touch-action:none;user-select:none;-webkit-user-select:none}#rev.held{background:var(--blue);color:#12212a}.controls h1{font-size:25px;margin:0 0 6px}.subtitle{color:var(--muted);font-size:14px;line-height:1.5}label{display:block;color:var(--muted);font-size:13px;margin-top:23px}.labelrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.labelrow output{color:var(--text)}select{width:100%}input[type=range]{accent-color:var(--accent);width:100%;min-height:32px;margin:0;cursor:pointer}.note{font-size:12px;color:var(--muted);line-height:1.6}.honesty{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5}#profileHint{margin-top:10px;color:var(--text)}.notice{min-height:45px;padding:12px 0 0;color:var(--blue);font-size:13px;line-height:1.5}.gpsbox{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:18px}.gpsbox button{width:100%}.diag{margin-top:10px;font-size:12px;color:var(--muted)}.diag summary{cursor:pointer;color:var(--text);min-height:32px;padding-top:6px}.diag dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:8px 0 0}.diag dt{color:var(--muted)}.diag dd{margin:0;color:var(--text);font-variant-numeric:tabular-nums;word-break:break-word}.toggle{display:flex;align-items:center;gap:10px;margin-top:20px;color:var(--text);font-size:14px;cursor:pointer}.toggle input{width:22px;height:22px;accent-color:var(--accent);flex-shrink:0}.popsbox{margin-top:4px}.foot{margin:20px 2px;color:var(--muted);font-size:12px;line-height:1.6} [hidden]{display:none!important}@media(max-width:760px){main{padding:16px}.layout{grid-template-columns:1fr}.panel{padding:20px}header{margin-bottom:16px}.brand{font-size:20px}.dial{height:230px}.speed{font-size:76px}.badge{font-size:10px;padding:8px}.controls h1{font-size:23px}}@media(min-width:900px) and (max-height:800px){main{padding-top:18px}.dial{height:225px}label{margin-top:16px}}
 </style></head><body><main>
-<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.2</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
+<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.3</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
 <div class="layout"><section class="panel" aria-label="Instrumentos e reprodução"><div class="modes" aria-label="Modo"><button id="simMode" class="active" aria-pressed="true">Simulação</button><button id="gpsMode" aria-pressed="false">GPS real</button></div>
 <div class="dial"><div class="speed" id="speed">0</div><div class="unit">km/h</div><div class="source" id="source">Velocidade simulada · sem ligação ao carro</div></div>
 <div class="rpmrow"><span id="rpm">800 rpm</span><span id="redline">6 800 máx.</span></div><div class="track" role="meter" aria-label="Rotações do motor" aria-valuemin="0" aria-valuemax="6800" aria-valuenow="800" id="rpmMeter"><div class="fill" id="rpmFill"></div></div>
@@ -50,107 +50,229 @@
 <p class="note">Desligado por omissão. Só em desaceleração, ao largar o REV com rotação alta, ou numa mudança virtual / desaceleração GPS válida. Não lê o pedal e não dispara se o sinal se perder.</p>
 </div>
 </div>
-</section></div><footer class="foot">Impulso v3.2. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Saída pelos altifalantes do carro e o browser Tesla em movimento não estão validados. Síntese original, não oficial.</footer>
+</section></div><footer class="foot">Impulso v3.3. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Saída pelos altifalantes do carro e o browser Tesla em movimento não estão validados. Síntese original, não oficial.</footer>
 </main><script>
 'use strict';
 const Core=(()=>{
- const VERSION='3.2';
+ const VERSION='3.3';
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  const POP_LIMITS={maxGain:.22,maxVoices:3,decelThresh:-.55,maxNodesPerEvent:2,crackleDur:.055,shiftDur:.09};
  const engines={
-  gt3rs:{group:'inspiration',unofficial:true,kind:'piston',cyl:6,rotors:0,fireMul:3,idle:980,max:8800,tone:2750,exhaustQ:.98,intakeBase:720,intakeRatio:.38,intakeQ:1.05,noiseIdle:.01,noiseLoad:.068,rough:.065,pulse:.31,harmonicDecay:11,evenMix:1.22,oddMix:.82,rasp:.42,pulseGain:.158,pulseLoad:.128,subGain:.08,subDiv:145,flutterBase:10,crackle:.55,hint:'Boxer agudo, com admissão mais presente nas altas.'},
+  gt3rs:{group:'inspiration',unofficial:true,kind:'piston',cyl:6,rotors:0,fireMul:3,idle:980,max:8800,tone:2750,exhaustQ:.98,intakeBase:720,intakeRatio:.38,intakeQ:1.05,noiseIdle:.01,noiseLoad:.068,rough:.065,pulse:.31,harmonicDecay:11,evenMix:1.22,oddMix:.82,rasp:.42,pulseGain:.158,pulseLoad:.128,subGain:.08,subDiv:145,flutterBase:10,crackle:.62,hint:'Boxer agudo, com admissão mais presente nas altas.'},
   gtr:{group:'inspiration',unofficial:true,kind:'piston',cyl:6,rotors:0,fireMul:3,idle:780,max:7100,tone:1550,exhaustQ:1.15,intakeBase:280,intakeRatio:.18,intakeQ:.45,noiseIdle:.016,noiseLoad:.078,rough:.085,pulse:.45,harmonicDecay:10,evenMix:1.05,oddMix:.92,rasp:.05,pulseGain:.162,pulseLoad:.118,subGain:.145,subDiv:110,flutterBase:7,crackle:.35,hint:'V6 mais abafado, com um sopro de admissão contínuo.'},
-  lfa:{group:'inspiration',unofficial:true,kind:'piston',cyl:10,rotors:0,fireMul:5,idle:1050,max:9200,tone:3200,exhaustQ:.68,intakeBase:680,intakeRatio:.36,intakeQ:.92,noiseIdle:.007,noiseLoad:.042,rough:.028,pulse:.29,harmonicDecay:17,evenMix:.88,oddMix:1.2,rasp:.55,pulseGain:.148,pulseLoad:.115,subGain:.07,subDiv:160,flutterBase:13,crackle:.18,hint:'V10 muito agudo e contínuo, quase a cantar.'},
-  r8v10:{group:'inspiration',unofficial:true,kind:'piston',cyl:10,rotors:0,fireMul:5,idle:880,max:8500,tone:2350,exhaustQ:.9,intakeBase:510,intakeRatio:.26,intakeQ:.74,noiseIdle:.0085,noiseLoad:.05,rough:.095,pulse:.34,harmonicDecay:12,evenMix:.9,oddMix:1.15,rasp:.38,pulseGain:.16,pulseLoad:.132,subGain:.1,subDiv:128,flutterBase:9,crackle:.48,hint:'V10 com mais casca a meio regime do que o perfil genérico.'},
+  lfa:{group:'inspiration',unofficial:true,kind:'piston',cyl:10,rotors:0,fireMul:5,idle:1050,max:9200,tone:3200,exhaustQ:.68,intakeBase:680,intakeRatio:.36,intakeQ:.92,noiseIdle:.007,noiseLoad:.042,rough:.028,pulse:.29,harmonicDecay:17,evenMix:.88,oddMix:1.2,rasp:.55,pulseGain:.148,pulseLoad:.115,subGain:.07,subDiv:160,flutterBase:13,crackle:.5,hint:'V10 muito agudo e contínuo, quase a cantar.'},
+  r8v10:{group:'inspiration',unofficial:true,kind:'piston',cyl:10,rotors:0,fireMul:5,idle:880,max:8500,tone:2350,exhaustQ:.9,intakeBase:510,intakeRatio:.26,intakeQ:.74,noiseIdle:.0085,noiseLoad:.05,rough:.095,pulse:.34,harmonicDecay:12,evenMix:.9,oddMix:1.15,rasp:.38,pulseGain:.16,pulseLoad:.132,subGain:.1,subDiv:128,flutterBase:9,crackle:.6,hint:'V10 com mais casca a meio regime do que o perfil genérico.'},
   wrx:{group:'inspiration',unofficial:true,kind:'piston',cyl:4,rotors:0,fireMul:2,idle:760,max:6700,tone:1480,exhaustQ:1.08,intakeBase:390,intakeRatio:.23,intakeQ:.64,noiseIdle:.013,noiseLoad:.064,rough:.26,pulse:.3,harmonicDecay:9,evenMix:1.28,oddMix:.75,rasp:.2,pulseGain:.175,pulseLoad:.138,subGain:.125,subDiv:95,flutterBase:6,crackle:.42,hint:'Boxer de quatro, com um ralenti mais irregular.'},
-  mustang:{group:'inspiration',unofficial:true,kind:'piston',cyl:8,rotors:0,fireMul:4,idle:640,max:6400,tone:1180,exhaustQ:.95,intakeBase:340,intakeRatio:.19,intakeQ:.52,noiseIdle:.009,noiseLoad:.06,rough:.3,pulse:.32,harmonicDecay:8.5,evenMix:1.2,oddMix:.85,rasp:.04,pulseGain:.178,pulseLoad:.142,subGain:.165,subDiv:100,flutterBase:5,crackle:.38,hint:'V8 grave e preguiçoso no ralenti.'},
+  mustang:{group:'inspiration',unofficial:true,kind:'piston',cyl:8,rotors:0,fireMul:4,idle:640,max:6400,tone:1180,exhaustQ:.95,intakeBase:340,intakeRatio:.19,intakeQ:.52,noiseIdle:.009,noiseLoad:.06,rough:.3,pulse:.32,harmonicDecay:8.5,evenMix:1.2,oddMix:.85,rasp:.04,pulseGain:.178,pulseLoad:.142,subGain:.165,subDiv:100,flutterBase:5,crackle:.62,hint:'V8 grave e preguiçoso no ralenti.'},
   m3:{group:'inspiration',unofficial:true,kind:'piston',cyl:6,rotors:0,fireMul:3,idle:820,max:8300,tone:2280,exhaustQ:.78,intakeBase:610,intakeRatio:.33,intakeQ:.88,noiseIdle:.007,noiseLoad:.046,rough:.055,pulse:.41,harmonicDecay:14,evenMix:.97,oddMix:1.08,rasp:.26,pulseGain:.152,pulseLoad:.118,subGain:.088,subDiv:138,flutterBase:11,crackle:.58,hint:'Seis em linha mais nervoso e metálico nas altas.'},
   c63:{group:'inspiration',unofficial:true,kind:'piston',cyl:8,rotors:0,fireMul:4,idle:680,max:7000,tone:1280,exhaustQ:1.12,intakeBase:310,intakeRatio:.17,intakeQ:.48,noiseIdle:.011,noiseLoad:.066,rough:.26,pulse:.29,harmonicDecay:9,evenMix:1.16,oddMix:.88,rasp:.14,pulseGain:.172,pulseLoad:.14,subGain:.155,subDiv:102,flutterBase:6,crackle:.92,hint:'V8 grave e oco; mais propenso a estalos sintéticos se os ativares.'},
   rs3:{group:'inspiration',unofficial:true,kind:'piston',cyl:5,rotors:0,fireMul:2.5,idle:840,max:7200,tone:1980,exhaustQ:1.02,intakeBase:470,intakeRatio:.29,intakeQ:.8,noiseIdle:.01,noiseLoad:.061,rough:.21,pulse:.3,harmonicDecay:9.5,evenMix:.78,oddMix:1.22,rasp:.3,pulseGain:.168,pulseLoad:.136,subGain:.118,subDiv:108,flutterBase:7.5,crackle:.72,hint:'Cinco cilindros com cadência irregular e um ronco mais cheio.'},
   aventador:{group:'inspiration',unofficial:true,kind:'piston',cyl:12,rotors:0,fireMul:6,idle:980,max:8700,tone:3050,exhaustQ:.74,intakeBase:640,intakeRatio:.34,intakeQ:.86,noiseIdle:.008,noiseLoad:.047,rough:.062,pulse:.35,harmonicDecay:13.5,evenMix:.93,oddMix:1.14,rasp:.44,pulseGain:.15,pulseLoad:.122,subGain:.078,subDiv:148,flutterBase:12.5,crackle:.7,hint:'V12 mais seco e teatral nas altas, não o V12 genérico suave.'},
   f458:{group:'inspiration',unofficial:true,kind:'piston',cyl:8,rotors:0,fireMul:4,idle:900,max:9000,tone:2680,exhaustQ:.76,intakeBase:700,intakeRatio:.37,intakeQ:.96,noiseIdle:.008,noiseLoad:.05,rough:.075,pulse:.27,harmonicDecay:12.5,evenMix:.72,oddMix:1.28,rasp:.48,pulseGain:.154,pulseLoad:.124,subGain:.072,subDiv:155,flutterBase:12,crackle:.8,hint:'V8 agudo de plano simples sintético, mais a cantar do que a rolar.'},
-  rx7:{group:'inspiration',unofficial:true,kind:'rotary',cyl:0,rotors:2,fireMul:2,idle:850,max:8200,tone:2450,exhaustQ:.85,intakeBase:580,intakeRatio:.31,intakeQ:.72,noiseIdle:.014,noiseLoad:.072,rough:.048,pulse:.36,harmonicDecay:10.5,evenMix:1.15,oddMix:.95,rasp:.36,pulseGain:.148,pulseLoad:.116,subGain:.095,subDiv:118,flutterBase:14,crackle:.5,hint:'Motor rotativo de dois rotores (não é de pistões): burburinho contínuo e agudo.'},
+  rx7:{group:'inspiration',unofficial:true,kind:'rotary',cyl:0,rotors:2,fireMul:2,idle:850,max:8200,tone:2450,exhaustQ:.85,intakeBase:580,intakeRatio:.31,intakeQ:.72,noiseIdle:.014,noiseLoad:.072,rough:.048,pulse:.36,harmonicDecay:10.5,evenMix:1.15,oddMix:.95,rasp:.36,pulseGain:.148,pulseLoad:.116,subGain:.095,subDiv:118,flutterBase:14,crackle:.58,hint:'Motor rotativo de dois rotores (não é de pistões): burburinho contínuo e agudo.'},
   i3:{group:'architecture',unofficial:false,kind:'piston',cyl:3,rotors:0,fireMul:1.5,idle:880,max:6700,tone:1680,exhaustQ:1.05,intakeBase:480,intakeRatio:.28,intakeQ:.75,noiseIdle:.012,noiseLoad:.062,rough:.34,pulse:.26,harmonicDecay:8,evenMix:.65,oddMix:1.25,rasp:.18,pulseGain:.185,pulseLoad:.135,subGain:.13,subDiv:85,flutterBase:6,crackle:.22,hint:'Três cilindros genéricos, pulso irregular.'},
   i4:{group:'architecture',unofficial:false,kind:'piston',cyl:4,rotors:0,fireMul:2,idle:820,max:7300,tone:2100,exhaustQ:.7,intakeBase:620,intakeRatio:.34,intakeQ:.85,noiseIdle:.011,noiseLoad:.07,rough:.08,pulse:.42,harmonicDecay:11,evenMix:1.05,oddMix:.9,rasp:.08,pulseGain:.155,pulseLoad:.12,subGain:.09,subDiv:130,flutterBase:9,crackle:.18,hint:'Quatro cilindros nítidos e mais leves de grave.'},
   i5:{group:'architecture',unofficial:false,kind:'piston',cyl:5,rotors:0,fireMul:2.5,idle:790,max:7100,tone:1850,exhaustQ:.92,intakeBase:500,intakeRatio:.27,intakeQ:.68,noiseIdle:.009,noiseLoad:.058,rough:.19,pulse:.33,harmonicDecay:10,evenMix:.85,oddMix:1.12,rasp:.22,pulseGain:.17,pulseLoad:.13,subGain:.11,subDiv:105,flutterBase:7,crackle:.35,hint:'Cinco cilindros com uma cadência desigual.'},
   i6:{group:'architecture',unofficial:false,kind:'piston',cyl:6,rotors:0,fireMul:3,idle:700,max:7200,tone:1750,exhaustQ:.55,intakeBase:380,intakeRatio:.2,intakeQ:.5,noiseIdle:.005,noiseLoad:.035,rough:.04,pulse:.52,harmonicDecay:15,evenMix:1,oddMix:1,rasp:.03,pulseGain:.15,pulseLoad:.1,subGain:.1,subDiv:140,flutterBase:10,crackle:.08,hint:'Seis em linha suave e uniforme.'},
   v6:{group:'architecture',unofficial:false,kind:'piston',cyl:6,rotors:0,fireMul:3,idle:850,max:7400,tone:1900,exhaustQ:.82,intakeBase:430,intakeRatio:.24,intakeQ:.62,noiseIdle:.008,noiseLoad:.052,rough:.13,pulse:.38,harmonicDecay:12,evenMix:.92,oddMix:1.08,rasp:.12,pulseGain:.16,pulseLoad:.13,subGain:.13,subDiv:120,flutterBase:8,crackle:.28,hint:'V6 compacto e um pouco áspero.'},
   flat6:{group:'architecture',unofficial:false,kind:'piston',cyl:6,rotors:0,fireMul:3,idle:900,max:8000,tone:2400,exhaustQ:.88,intakeBase:560,intakeRatio:.3,intakeQ:.78,noiseIdle:.009,noiseLoad:.05,rough:.09,pulse:.4,harmonicDecay:13,evenMix:1.18,oddMix:.88,rasp:.28,pulseGain:.155,pulseLoad:.125,subGain:.1,subDiv:125,flutterBase:9,crackle:.32,hint:'Seis opostos, timbre mais metálico.'},
-  v8:{group:'architecture',unofficial:false,kind:'piston',cyl:8,rotors:0,fireMul:4,idle:750,max:6800,tone:1400,exhaustQ:.8,intakeBase:400,intakeRatio:.25,intakeQ:.6,noiseIdle:.008,noiseLoad:.055,rough:.22,pulse:.38,harmonicDecay:12,evenMix:1.1,oddMix:.95,rasp:.06,pulseGain:.16,pulseLoad:.13,subGain:.14,subDiv:120,flutterBase:8,crackle:.4,hint:'V8 genérico, grave e irregular.'},
+  v8:{group:'architecture',unofficial:false,kind:'piston',cyl:8,rotors:0,fireMul:4,idle:750,max:6800,tone:1400,exhaustQ:.8,intakeBase:400,intakeRatio:.25,intakeQ:.6,noiseIdle:.008,noiseLoad:.055,rough:.22,pulse:.38,harmonicDecay:12,evenMix:1.1,oddMix:.95,rasp:.06,pulseGain:.16,pulseLoad:.13,subGain:.14,subDiv:120,flutterBase:8,crackle:.45,hint:'V8 genérico, grave e irregular.'},
   v10:{group:'architecture',unofficial:false,kind:'piston',cyl:10,rotors:0,fireMul:5,idle:900,max:8700,tone:2600,exhaustQ:.72,intakeBase:540,intakeRatio:.29,intakeQ:.7,noiseIdle:.007,noiseLoad:.048,rough:.07,pulse:.36,harmonicDecay:14,evenMix:.95,oddMix:1.1,rasp:.32,pulseGain:.15,pulseLoad:.12,subGain:.09,subDiv:135,flutterBase:11,crackle:.38,hint:'V10 agudo e intenso.'},
   v12:{group:'architecture',unofficial:false,kind:'piston',cyl:12,rotors:0,fireMul:6,idle:850,max:9000,tone:2900,exhaustQ:.6,intakeBase:450,intakeRatio:.22,intakeQ:.55,noiseIdle:.006,noiseLoad:.04,rough:.035,pulse:.48,harmonicDecay:16,evenMix:1,oddMix:1,rasp:.15,pulseGain:.145,pulseLoad:.11,subGain:.085,subDiv:150,flutterBase:12,crackle:.12,hint:'V12 suave e cheio nas altas.'}
  };
- // ---- v3.2 virtual automatic gearbox (pure, stateful) ----
+ // ---- v3.3 virtual automatic gearbox (pure, stateful, per-profile personality) ----
  // Synthetic design values, not any real transmission. rpm = km/h * ratio * profile scale.
  const GEAR_RATIOS=[0,120,87.5,63.8,46.5,33.9,24.7,18];
  const TOP_GEAR=GEAR_RATIOS.length-1;
- const GEARBOX_STYLES={
-  comfort:{top:7,floorMin:1500,floorIdle:1.3,upLow:.32,upHigh:.88,kick:.55,band:[.55,.75],minGap:1.0,cruiseHold:1.6,decelDown:.27,loadBias:0},
-  sport:{top:6,floorMin:2000,floorIdle:1.6,upLow:.5,upHigh:.9,kick:.38,band:[.6,.8],minGap:.85,cruiseHold:2.2,decelDown:.36,loadBias:.05}
+ // Per-profile personality. kick: kick-down threshold scale (lower = more eager); shiftLo/shift: upshift point
+ // (fraction of max rpm) at low/full demand while accelerating; floor: cruise rpm floor (Conforto);
+ // relax: s of steady speed before relaxing back up; blip: rev-match blip (fraction of max);
+ // decelDown/decelCap: downshift on decel below decelDown*max if next-lower gear stays <= decelCap*max;
+ // popUp: affinity for pops on hard upshifts; popRpm: overrun pop rpm gate (fraction of max); sportTop: top gear in Desportiva.
+ const P=(kick,shiftLo,shift,floor,relax,blip,decelDown,decelCap,popUp,popRpm,sportTop,feel)=>({kick,shiftLo,shift,floor,relax,blip,decelDown,decelCap,popUp,popRpm,sportTop,feel});
+ const GEAR_PERSONA={
+  gt3rs:    P(.80,.62,.93,1650,2.2,.090,.44,.74,.35,.30,6,'pista'),
+  f458:     P(.82,.60,.92,1650,2.4,.085,.43,.73,.40,.30,6,'pista'),
+  lfa:      P(.82,.62,.93,1600,2.3,.090,.44,.74,.30,.31,6,'pista'),
+  r8v10:    P(.85,.58,.91,1600,2.6,.080,.42,.72,.40,.31,6,'desportivo'),
+  aventador:P(.85,.58,.90,1600,2.8,.100,.42,.72,.55,.30,6,'desportivo'),
+  m3:       P(.85,.58,.90,1650,2.5,.075,.41,.72,.35,.31,6,'desportivo'),
+  c63:      P(.88,.52,.86,1550,2.8,.080,.38,.70,.60,.29,6,'desportivo'),
+  rx7:      P(.82,.64,.93,1700,2.2,.090,.45,.75,.45,.32,6,'pista'),
+  rs3:      P(.85,.56,.88,1600,2.6,.075,.40,.70,.55,.31,6,'desportivo'),
+  gtr:      P(.88,.52,.86,1550,2.8,.060,.36,.68,.75,.33,6,'turbo'),
+  wrx:      P(.90,.50,.85,1550,3.0,.065,.36,.68,.80,.33,6,'turbo'),
+  mustang:  P(1.00,.45,.82,1400,3.2,.070,.33,.62,.30,.28,6,'muscle'),
+  v8:       P(1.02,.46,.84,1450,3.2,.060,.32,.62,.20,.30,6,'muscle'),
+  flat6:    P(.95,.50,.87,1550,3.0,.055,.33,.66,.20,.36,6,'equilibrado'),
+  v10:      P(.92,.54,.88,1550,3.0,.060,.36,.68,.20,.35,6,'equilibrado'),
+  v6:       P(1.00,.46,.84,1500,3.4,.045,.29,.62,.12,.40,6,'calmo'),
+  i5:       P(1.00,.46,.84,1500,3.4,.045,.28,.62,.15,.40,6,'calmo'),
+  i4:       P(1.03,.44,.82,1500,3.6,.040,.27,.60,.08,.42,6,'económico'),
+  i3:       P(1.05,.42,.80,1450,3.8,.035,.26,.60,.05,.42,6,'económico'),
+  i6:       P(1.05,.42,.80,1450,4.0,.030,.25,.60,.04,.44,6,'suave'),
+  v12:      P(1.05,.44,.82,1450,4.0,.035,.26,.60,.05,.42,6,'suave')
  };
- const ACCEL_TAU=.8,CRUISE_DEADBAND=.25;
+ for(const k of Object.keys(engines)) engines[k].persona=GEAR_PERSONA[k];
+ const GEARBOX_STYLES={
+  comfort:{top:7,floorMul:1,floorMin:0,upLow:.32,kickMul:1,shiftAdd:0,shiftLoAdd:0,relaxMul:1,blipMul:1,decelAdd:0,popUpAdd:0,minGap:1.0,loadBias:0,kick:.55},
+  sport:{top:6,floorMul:1.35,floorMin:2000,upLow:.5,kickMul:.85,shiftAdd:.03,shiftLoAdd:.08,relaxMul:1.5,blipMul:1.3,decelAdd:.06,popUpAdd:.10,minGap:.85,loadBias:.05,kick:.38}
+ };
+ const KICK_LEVELS=[.45,.9,1.55];   // m/s^2 (scaled by persona.kick and style) for 1/2/3-gear kick-down
+ const NOISE_K=4.0, WARMUP_SAMPLES=3, SHORT_SPAN=.9, TREND_SPAN=1.8, HIST_SPAN=4;
+ const DEFAULT_PERSONA=P(1,.46,.84,1500,3.2,.05,.3,.62,.15,.38,6,'calmo');
+ function personaOf(e){return (e&&e.persona)||DEFAULT_PERSONA;}
  function gearScale(e){return clamp(e.max/7000,.9,1.25);}
  function gearRpm(e,speed,g){
   if(!e||g<=0) return e?e.idle:800;
   return clamp(Math.max(0,speed)*GEAR_RATIOS[g]*gearScale(e),e.idle,e.max*.94);
  }
  function rawGearRpm(e,speed,g){return g<=0?0:Math.max(0,speed)*GEAR_RATIOS[g]*gearScale(e);}
- function gearFloor(e,st){return Math.max(st.floorMin,e.idle*st.floorIdle);}
- function demandFromAccel(a){return clamp((Number(a)||0)/2.5,0,1);}
+ function gearFloor(e,st){const pz=personaOf(e);return Math.max(st.floorMin,pz.floor*st.floorMul,e.idle*1.3);}
+ function topGear(e,st){return st.top===7?TOP_GEAR:Math.min(st.top,personaOf(e).sportTop);}
+ function demandFromAccel(a){return clamp((Number(a)||0)/2,0,1);}
+ function kickThresholds(e,st){const k=personaOf(e).kick*st.kickMul;return KICK_LEVELS.map(x=>x*k);}
  function cruiseGear(e,speed,style='comfort'){
   const st=GEARBOX_STYLES[style]||GEARBOX_STYLES.comfort;
   if(speed<1) return 0;
-  const floor=gearFloor(e,st);
-  for(let g=st.top;g>=1;g--) if(rawGearRpm(e,speed,g)>=floor&&rawGearRpm(e,speed,g)<=e.max*.88) return g;
-  return rawGearRpm(e,speed,1)<floor?1:st.top;
+  const floor=gearFloor(e,st),top=topGear(e,st);
+  for(let g=top;g>=1;g--) if(rawGearRpm(e,speed,g)>=floor&&rawGearRpm(e,speed,g)<=e.max*.88) return g;
+  return rawGearRpm(e,speed,1)<floor?1:top;
+ }
+ function slopeOver(hist,span){
+  const n=hist.length;if(n<2) return null;
+  const last=hist[n-1];
+  for(let i=n-2;i>=0;i--) if(last.t-hist[i].t>=span) return (last.v-hist[i].v)/3.6/(last.t-hist[i].t);
+  return null;
  }
  function gearbox(state,input){
   const e=input&&input.profile;
   const style=GEARBOX_STYLES[input&&input.style]||GEARBOX_STYLES.comfort;
   const s0=state||{};
-  const st={gear:s0.gear??0,sinceShift:s0.sinceShift??99,accelEma:s0.accelEma??0,cruiseTime:s0.cruiseTime??0,shifts:s0.shifts??0};
-  if(!e) return {gear:0,rpm:800,load:0,shift:null,popWorthy:false,state:st};
+  const st={gear:s0.gear??0,sinceShift:s0.sinceShift??99,accelEma:s0.accelEma??0,cruiseTime:s0.cruiseTime??0,shifts:s0.shifts??0,
+   t:s0.t??0,hist:s0.hist?s0.hist.slice():[],lastSampleAt:s0.lastSampleAt??null,samples:s0.samples??0,noiseVar:s0.noiseVar??.0225,
+   phase:s0.phase??'cruise',kickApplied:s0.kickApplied??0,phaseGear0:s0.phaseGear0??0,peakDemand:s0.peakDemand??0,
+   holdT:s0.holdT??0,decelT:s0.decelT??0,prevShort:s0.prevShort??null,varD2:s0.varD2??.0675,blipT:s0.blipT??0,blipRpm:s0.blipRpm??0,aEst:s0.aEst??0};
+  const none={gear:0,rpm:800,load:0,shift:null,popWorthy:false,liftoff:false,blip:false,blipping:false,demand:0,aEst:0,state:st};
+  if(!e) return none;
+  const pz=personaOf(e);
   const dt=clamp(Number(input.dt)||0,0,.25);
   const speed=clamp(Number(input.speed)||0,0,250);
-  const accel=clamp(Number(input.accel)||0,-8,8);
-  st.accelEma+=(accel-st.accelEma)*(1-Math.exp(-dt/ACCEL_TAU));
-  const demand=Number.isFinite(input.demand)?clamp(input.demand,0,1):demandFromAccel(st.accelEma);
-  st.sinceShift+=dt;
-  if(Math.abs(st.accelEma)<CRUISE_DEADBAND&&demand<.2) st.cruiseTime+=dt; else st.cruiseTime=0;
-  const floor=gearFloor(e,style);
-  let shift=null,fromRpm=0,g=st.gear;
-  const gap=style.minGap;
-  const R=k=>rawGearRpm(e,speed,k);
-  if(speed<1){ if(g!==0){shift='down';} g=0; }
-  else if(g===0){ g=1; shift=null; st.sinceShift=gap; }
-  else{
-   const rpmNow=R(g);
-   const upAt=style.upLow*e.max+(style.upHigh-style.upLow)*e.max*Math.pow(demand,1.1);
-   // 1) kick-down on strong demand
-   if(demand>=style.kick&&rpmNow<style.band[0]*e.max&&g>1&&st.sinceShift>=gap*.6){
-    let pick=null;
-    for(const k of [g-1,g-2]) if(k>=1&&R(k)<=.85*e.max){pick=k; if(R(k)>=style.band[0]*e.max) break;}
-    if(pick!==null){fromRpm=rpmNow;g=pick;shift='down';}
+  const accelIn=clamp(Number(input.accel)||0,-8,8);
+  st.t+=dt;st.sinceShift+=dt;
+  // --- acceleration estimate from the speed history (works with 1 Hz GPS fixes or per-frame sim speed)
+  let newSample=false;
+  const sampleAt=Number.isFinite(input.sampleAt)?input.sampleAt:null;
+  const lastH=st.hist[st.hist.length-1];
+  if(sampleAt!==null){ if(sampleAt!==st.lastSampleAt){st.lastSampleAt=sampleAt;newSample=true;} }
+  else if(!lastH||(speed!==lastH.v&&st.t-lastH.t>=.15)||st.t-lastH.t>=1.2) newSample=true;
+  if(newSample){
+   st.hist.push({t:st.t,v:speed});st.samples++;
+   while(st.hist.length>2&&st.t-st.hist[0].t>HIST_SPAN) st.hist.shift();
+  }
+  st.accelEma+=(accelIn-st.accelEma)*(1-Math.exp(-dt/.8));
+  const aShort=slopeOver(st.hist,SHORT_SPAN),aTrend=slopeOver(st.hist,TREND_SPAN);
+  let aEst=aShort===null?st.accelEma:(aTrend===null?aShort:.75*aShort+.25*aTrend);
+  if(aShort!==null&&aTrend!==null&&aShort>0&&aTrend>0) aEst=Math.max(aEst,Math.min(aShort,aTrend*1.6));
+  st.aEst=aEst;
+  // Speed-noise estimate from second differences of the per-sample slope: a sustained acceleration does not
+  // inflate it (only the onset step does, and that is clipped). Thresholds use the estimate from BEFORE this sample.
+  const warm=st.samples>WARMUP_SAMPLES||sampleAt===null&&st.t>1.2;
+  const noiseFloor=NOISE_K*Math.sqrt(st.noiseVar);
+  if(newSample&&aShort!==null){
+   if(st.prevShort!==null){
+    const lim=3*Math.sqrt(st.varD2),raw=aShort-st.prevShort;
+    // A step bigger than 3σ is a manoeuvre change (onset / lift-off), not noise: skip it once warmed up.
+    if(st.samples<12||Math.abs(raw)<=lim){
+     const d2=clamp(raw,-lim*1.5,lim*1.5),alpha=st.samples<12?1/Math.max(2,st.samples-2):.08;
+     st.varD2=clamp(st.varD2+(d2*d2-st.varD2)*alpha,.0012,1.08);
+    }
+    st.noiseVar=st.varD2/3;
    }
-   // 2) redline protection
-   else if(rpmNow>=.92*e.max&&g<TOP_GEAR&&st.sinceShift>=gap*.5){fromRpm=rpmNow;g++;shift='up';}
-   // 3) normal / cruise upshift
-   else if(g<style.top&&st.accelEma>-.3&&st.sinceShift>=gap&&R(g+1)>=floor&&(rpmNow>upAt||st.cruiseTime>=style.cruiseHold)&&!(demand>=style.kick&&R(g+1)<style.band[0]*e.max)){
-    fromRpm=rpmNow;g++;shift='up';
-    if(st.cruiseTime>=style.cruiseHold) st.cruiseTime=style.cruiseHold*.5;
-   }
-   // 4) lugging, style top-gear limit, or deceleration downshift
-   else if(g>1&&st.sinceShift>=gap&&(g>style.top||rpmNow<floor*.85||(st.accelEma<-.6&&rpmNow<Math.max(floor*1.15,style.decelDown*e.max)&&R(g-1)<=.62*e.max))){
-    fromRpm=rpmNow;g--;shift='down';
+   st.prevShort=aShort;
+  }
+  const th=kickThresholds(e,style).map((x,i)=>Math.max(x,noiseFloor*(1+.3*i)));
+  // Onset statistic: the freshest single-fix slope (what the noise floor is calibrated on), confirmed by a rising trend.
+  const kStat=aShort===null?aEst:(aTrend===null||aTrend>=.35*th[0]?Math.max(aEst,aShort):aEst);
+  let level=0; if(warm) for(let i=0;i<3;i++) if(kStat>=th[i]) level=i+1;
+  // Demand: provided (sim throttle proxy) or derived from the estimated acceleration (GPS, no pedal).
+  const dIn=Number.isFinite(input.demand)?clamp(input.demand,0,1):null;
+  const demand=dIn!==null?Math.max(dIn,demandFromAccel(aEst)*.6):demandFromAccel(aEst);
+  if(dIn!==null){ if(dIn>=.85) level=Math.max(level,3); else if(dIn>=.6) level=Math.max(level,2); else if(dIn>=style.kick) level=Math.max(level,1); }
+  // Decel detection: needs persistence (two GPS fixes) unless strong.
+  const decelThr=-Math.max(.35,NOISE_K*.9*Math.sqrt(st.noiseVar));
+  if(warm&&aEst<=decelThr) st.decelT+=dt; else st.decelT=0;
+  const decelOn=st.decelT>=(aEst<=-1.5?.3:1.1);
+  // --- phase machine
+  let liftoff=false;
+  if(st.phase!=='accel'&&level>=1){st.phase='accel';st.phaseGear0=st.gear;st.kickApplied=0;st.peakDemand=0;}
+  if(st.phase==='accel'){
+   st.peakDemand=Math.max(st.peakDemand,demand);
+   if(level===0&&aEst<th[0]*.35&&(dIn===null||dIn<.1)){
+    liftoff=st.peakDemand>=.2;st.phase='hold';st.holdT=pz.relax*style.relaxMul;st.kickApplied=0;
    }
   }
-  if(shift&&g!==st.gear){st.sinceShift=0;st.shifts++;} else if(g===st.gear) shift=null;
+  if(decelOn&&st.phase!=='accel') st.phase='decel';
+  if(st.phase==='decel'&&!decelOn&&aEst>decelThr*.5){st.phase='hold';st.holdT=pz.relax*style.relaxMul;}
+  if(st.phase==='hold'){st.holdT-=dt;if(st.holdT<=0) st.phase='cruise';}
+  if(Math.abs(aEst)<.25&&demand<.2) st.cruiseTime+=dt; else st.cruiseTime=0;
+  // --- shift decisions
+  const floor=gearFloor(e,style),top=topGear(e,style),gap=style.minGap;
+  const R=k=>rawGearRpm(e,speed,k);
+  let shift=null,fromRpm=0,g=st.gear,blip=false;
+  const shiftPt=clamp(pz.shift+style.shiftAdd,.6,.94),shiftLo=clamp(pz.shiftLo+style.shiftLoAdd,.3,shiftPt);
+  if(speed<1){ if(g!==0) shift='down'; g=0; st.phase='cruise'; }
+  else if(g===0){ g=1; st.sinceShift=gap; }
+  else{
+   const rpmNow=R(g);
+   if(st.phase==='accel'&&level>st.kickApplied&&g>1&&st.sinceShift>=gap*.5){
+    // kick-down: go (level) gears below the gear held at onset, but never into a gear above the shift point
+    let want=Math.max(1,Math.min(g,st.phaseGear0-level));
+    while(want<g&&R(want)>shiftPt*.97*e.max) want++;
+    if(want<g){fromRpm=rpmNow;g=want;shift='down';}
+    st.kickApplied=level;
+   }
+   else if(rpmNow>=.92*e.max&&g<TOP_GEAR&&st.sinceShift>=gap*.5){fromRpm=rpmNow;g++;shift='up';}
+   else if(st.phase==='accel'){
+    const pt=(shiftLo+(shiftPt-shiftLo)*clamp(demand*1.4,0,1))*e.max;
+    if(g<top&&st.sinceShift>=gap&&rpmNow>=pt&&R(g+1)>=floor){fromRpm=rpmNow;g++;shift='up';}
+   }
+   else if(st.phase==='decel'){
+    const down=clamp(pz.decelDown+style.decelAdd,.2,.6)*e.max;
+    if(g>1&&st.sinceShift>=gap&&(rpmNow<Math.max(down,floor*.85))&&R(g-1)<=clamp(pz.decelCap+style.decelAdd,.5,.8)*e.max){fromRpm=rpmNow;g--;shift='down';blip=true;}
+    else if(g>1&&st.sinceShift>=gap&&rpmNow<floor*.85){fromRpm=rpmNow;g--;shift='down';blip=true;}
+   }
+   else{
+    const upAt=style.upLow*e.max+(shiftPt-style.upLow)*e.max*Math.pow(demand,1.1);
+    const relaxed=st.phase==='cruise';
+    if(g<top&&relaxed&&st.sinceShift>=gap&&R(g+1)>=floor&&(rpmNow>upAt||st.cruiseTime>=1.6)){
+     fromRpm=rpmNow;g++;shift='up';
+     if(st.cruiseTime>=1.6) st.cruiseTime=.8;
+    }
+    else if(g>1&&st.sinceShift>=gap&&(g>top||rpmNow<floor*.85)){fromRpm=rpmNow;g--;shift='down';}
+   }
+  }
+  if(shift&&g!==st.gear){st.sinceShift=0;st.shifts++;} else if(g===st.gear){shift=null;blip=false;}
   st.gear=g;
-  const rpm=g===0?e.idle:gearRpm(e,speed,g);
-  const decel=st.accelEma<-.3;
+  if(blip){st.blipT=.22;st.blipRpm=clamp(pz.blip*style.blipMul,0,.2)*e.max;}
+  let rpm=g===0?e.idle:gearRpm(e,speed,g);
+  const blipping=st.blipT>0;
+  if(blipping){rpm=Math.min(e.max*.94,rpm+st.blipRpm*Math.sin(Math.PI*(1-st.blipT/.22)));st.blipT=Math.max(0,st.blipT-dt);}
+  const decel=st.phase==='decel'||aEst<-.3;
   const load=g===0?.08:clamp(decel?.08+.04*speed/120:.14+.06*Math.min(1,speed/120)+.72*demand+style.loadBias,0,1);
-  const popWorthy=shift==='up'&&(demand>=.45||(fromRpm>=.6*e.max&&st.accelEma>.3));
-  return {gear:g,rpm,load,shift,popWorthy,demand,state:st};
+  const popUpAff=clamp(pz.popUp+style.popUpAdd,0,1);
+  const popWorthy=shift==='up'&&popUpAff>=.15&&demand>=1.05-popUpAff*.9&&fromRpm>=.55*e.max;
+  return {gear:g,rpm,load,shift,popWorthy,liftoff:liftoff&&g>0,blip,blipping,demand,aEst,level,phase:st.phase,state:st};
+ }
+ // Pop event candidates from a gearbox step (pure; the page and tests share it). evaluatePop still decides.
+ function popTriggers(gb,ctx){
+  const out=[];
+  if(!gb||!ctx||!ctx.valid||!ctx.prevValid) return out;
+  if(gb.shift==='up'&&gb.popWorthy&&ctx.prevGear>=1) out.push({event:'upshift',rpm:ctx.rpm});
+  if(gb.liftoff) out.push({event:'overrun',rpm:ctx.rpm});
+  if(gb.blip) out.push({event:'overrun',rpm:Math.max(ctx.rpm,gb.rpm)});
+  if(!out.length&&gb.aEst<=POP_LIMITS.decelThresh&&(ctx.sinceDecelPop??9)>=.5) out.push({event:'decel',rpm:ctx.rpm,accel:gb.aEst});
+  return out;
  }
  // Stateless steady-state helper (legacy API): cruise gear for a given speed.
  function mapping(speed,key,accel=0){
@@ -200,18 +322,21 @@ const Core=(()=>{
   if(s.muted||!s.volume||s.volume<=0) return deny('muted');
   const forbidden=new Set(['signal-loss','mode-switch','audio-restart','hidden','engine-change','none','']);
   if(!s.event||forbidden.has(s.event)) return deny('forbidden');
-  if(!(s.event==='decel'||s.event==='rev-release'||s.event==='upshift')) return deny('forbidden');
-  if((s.event==='decel'||s.event==='upshift')&&!s.validMotion) return deny('invalid');
+  if(!(s.event==='decel'||s.event==='overrun'||s.event==='rev-release'||s.event==='upshift')) return deny('forbidden');
+  if((s.event==='decel'||s.event==='overrun'||s.event==='upshift')&&!s.validMotion) return deny('invalid');
   const intensity=clamp(Number(s.intensity)||0,0,100);
   if(intensity<=0) return deny('intensity');
   const profile=s.profile||{};
   const maxRpm=s.maxRpm||profile.max||7000;
   const rpm=s.rpm||0;
   const propensity=clamp(profile.crackle??.25,0,1);
+  // v3.3: overrun gate is profile-relative (persona.popRpm × max), so lift-off from ~3000–4000 rpm can crackle.
+  const popGate=Math.max((profile.idle||750)*1.8,clamp((profile.persona&&profile.persona.popRpm)||.38,.2,.6)*maxRpm);
   if(s.event==='decel'){
    if(!(s.accel<=POP_LIMITS.decelThresh)) return deny('not-decel');
-   if(rpm<Math.max(2200,maxRpm*.38)) return deny('rpm-low');
+   if(rpm<popGate) return deny('rpm-low');
   }
+  if(s.event==='overrun'&&rpm<popGate) return deny('rpm-low');
   if(s.event==='rev-release'&&rpm<maxRpm*.55) return deny('rpm-low');
   if(s.event==='upshift'&&rpm<1800) return deny('rpm-low');
   const now=s.now??0;
@@ -219,8 +344,9 @@ const Core=(()=>{
   if(s.lastPopAt!=null&&(now-s.lastPopAt)<minGap) return deny('cooldown');
   if((s.activeVoices||0)>=POP_LIMITS.maxVoices) return deny('voice-cap');
   const rnd=typeof s.random==='function'?s.random():1;
-  const p=propensity*(.35+.65*(intensity/100));
-  if(s.event==='decel'&&rnd>p) return deny('roll');
+  // v3.3: convex propensity curve so calm profiles rarely crackle on a long lift-off while sporty ones still do.
+  const p=Math.pow(propensity,1.6)*(.35+.65*(intensity/100));
+  if((s.event==='decel'||s.event==='overrun')&&rnd>p) return deny('roll');
   const kind=s.event==='upshift'?'shift-pop':'crackle';
   const count=kind==='shift-pop'?1:Math.min(3,1+Math.floor((intensity/100)*propensity*2.2));
   const gain=Math.min(POP_LIMITS.maxGain,.045+propensity*.09*(intensity/100)+(kind==='shift-pop'?.04:0));
@@ -281,10 +407,10 @@ const Core=(()=>{
   r.accel=accelFrom(base,r);
   return {track:{baseline:r.point,last:r.point,lastRawTs:p.rawTs??null},result:r};
  }
- return {VERSION,clamp,engines,mapping,gearbox,gearRpm,cruiseGear,demandFromAccel,GEAR_RATIOS,GEARBOX_STYLES,distance,gpsSample,gpsFix,gpsStep,formatOffset,harmonicPartial,profileFingerprint,firingMul,firingHz,evaluatePop,popEnvelope,POP_LIMITS};
+ return {VERSION,clamp,engines,mapping,gearbox,gearRpm,cruiseGear,demandFromAccel,popTriggers,kickThresholds,GEAR_PERSONA,KICK_LEVELS,GEAR_RATIOS,GEARBOX_STYLES,distance,gpsSample,gpsFix,gpsStep,formatOffset,harmonicPartial,profileFingerprint,firingMul,firingHz,evaluatePop,popEnvelope,POP_LIMITS};
 })();
 const $=id=>document.getElementById(id),{clamp,engines,mapping,gpsSample}=Core;
-let gbState=null,gpsTrack=null,gpsStats={ok:0,bad:0,dup:0},gpsLastOffset=null,gpsLastAcc=null,gpsLastNative=null,gpsLastSource='—',gpsLastReason='—',gpsLastError='—',gpsPerm='—',diagTimer=0,mode='sim',speed=0,rpm=800,load=0,gear=0,rev=false,running=false,audio=null,watch=null,previous=null,lastFix=0,gpsSpeed=null,gpsAcceleration=0,lastFrame=performance.now(),frame=0,hiddenPause=false,prevGear=0,prevValid=false,popSuppress=false,lastPopAt=null;
+let gbState=null,sinceDecelPop=9,gpsTrack=null,gpsStats={ok:0,bad:0,dup:0},gpsLastOffset=null,gpsLastAcc=null,gpsLastNative=null,gpsLastSource='—',gpsLastReason='—',gpsLastError='—',gpsPerm='—',diagTimer=0,mode='sim',speed=0,rpm=800,load=0,gear=0,rev=false,running=false,audio=null,watch=null,previous=null,lastFix=0,gpsSpeed=null,gpsAcceleration=0,lastFrame=performance.now(),frame=0,hiddenPause=false,prevGear=0,prevValid=false,popSuppress=false,lastPopAt=null;
 function message(t){$('status').textContent=t;}
 function describeProfile(){
  const e=engines[$('engine').value];
@@ -565,20 +691,26 @@ function tick(now){
   if(valid){speed=gpsSpeed;accel=gpsAcceleration;}
   else{speed=0;gpsAcceleration=0;if(lastFix&&now-lastFix>=8000) $('gpsInfo').textContent='Sinal desatualizado. Velocidade indisponível.';}
  }
- // GPS: demand left undefined so the gearbox derives it from smoothed acceleration (no pedal access).
- const gb=valid?Core.gearbox(gbState,{speed,accel,demand,dt,profile:e,style:$('gearStyle').value}):null;
+ // GPS: demand left undefined so the gearbox derives it from the speed history (no pedal access);
+ // sampleAt = receipt time of the GPS fix, so 1 Hz fixes are treated as discrete samples.
+ const sampleAt=mode==='gps'&&valid?lastFix/1000:undefined;
+ const gb=valid?Core.gearbox(gbState,{speed,accel,demand,dt,sampleAt,profile:e,style:$('gearStyle').value}):null;
  gbState=gb?gb.state:null;
  const nextGear=gb?gb.gear:0;
  let targetRPM=gb?gb.rpm:e.idle;
  let targetLoad=gb?gb.load:0;
  if(mode==='sim'&&rev){targetRPM=e.max*.9;targetLoad=.9;}
- rpm+=(targetRPM-rpm)*(1-Math.exp(-dt*(rev?3:5)));
+ rpm+=(targetRPM-rpm)*(1-Math.exp(-dt*(rev?3:gb&&gb.blipping?16:5))); // faster follow so rev-match blips are audible
  load+=(targetLoad-load)*(1-Math.exp(-dt*4));
  const suppress=popSuppress;popSuppress=false;
  if(!suppress&&running){
-  // Only demanding upshifts are pop candidates; calm cruise upshifts never are. evaluatePop keeps its cooldown.
-  if(valid&&prevValid&&gb&&gb.shift==='up'&&gb.popWorthy&&prevGear>=1) maybePop('upshift',{validMotion:true,rpm,accel});
-  else if(valid&&prevValid&&accel<=Core.POP_LIMITS.decelThresh) maybePop('decel',{validMotion:true,rpm,accel});
+  // Pop candidates (hard upshift, lift-off overrun, rev-matched decel downshift, sustained decel) come from the
+  // gearbox via Core.popTriggers; evaluatePop still applies toggle, mute, rpm gate, roll, cooldown and voice cap.
+  sinceDecelPop+=dt;
+  for(const ev of Core.popTriggers(gb,{valid,prevValid,prevGear,rpm,sinceDecelPop})){
+   if(ev.event==='decel') sinceDecelPop=0;
+   maybePop(ev.event,{validMotion:true,rpm:ev.rpm,accel:ev.accel??(gb?gb.aEst:accel)});
+  }
  }
  prevValid=valid;prevGear=nextGear;gear=nextGear;
  $('speed').textContent=valid?Math.round(speed):'—';
