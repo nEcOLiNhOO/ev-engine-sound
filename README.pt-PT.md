@@ -1,10 +1,10 @@
-# Impulso · Motor virtual v3.1
+# Impulso · Motor virtual v3.2
 
 Aplicação original, num único `index.html`, sem bibliotecas, fontes, gravações ou pedidos de rede (exceto o serviço de localização do próprio browser, se autorizado).
 
-Esta pasta é a entrega autónoma v3.1 (correção do GPS sobre a v3.0): vinte e uma assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação: a integração e o eventual GitHub Pages ficam a cargo de quem autorizar o envio.
+Esta pasta é a entrega autónoma v3.2 (caixa automática virtual sobre a v3.1): vinte e uma assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação: a integração e o eventual GitHub Pages ficam a cargo de quem autorizar o envio.
 
-O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.1 ainda pode não corresponder ao que está online.
+O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.2 ainda pode não corresponder ao que está online.
 
 A publicação HTTPS permite testar num browser normal, mas não garante que resolva a ausência de áudio numa pré-visualização móvel. Toca em **Iniciar som** na página aberta diretamente no browser.
 
@@ -45,6 +45,18 @@ Não disparam com perda de sinal, posição antiga, mudança de modo, reinício 
 
 Isto não reproduz mapas reais de afterfire nem o pedal do acelerador. Em GPS a desaceleração é inferida da velocidade.
 
+## Caixa automática virtual (v3.2)
+Até à v3.1 a marcha dependia só da velocidade (limites fixos), por isso a 120 km/h constantes ficava em 4.ª/5.ª a cerca de 5 000 rpm. A v3.2 tem uma caixa automática virtual de 7 velocidades, com estado, que decide pela velocidade **e** pela procura:
+- **Procura:** na simulação vem da aceleração e do cursor de resposta enquanto o alvo está acima da velocidade atual; no GPS vem da aceleração estimada e suavizada (não há acesso ao pedal).
+- **Cruzeiro:** com aceleração quase nula, sobe progressivamente até à marcha mais alta que mantém a rotação acima de um mínimo (cerca de 1 500 rpm ou 1,3× o ralenti). Em **Conforto**, 120 km/h fica em 7.ª a cerca de 2 000–2 700 rpm, conforme o perfil.
+- **Aceleração forte:** reduz 1–2 marchas (kick-down) para a zona de 55–75 % do máximo e sobe perto de 88–90 % enquanto a aceleração continua. Aceleração suave mantém a marcha.
+- **Desaceleração:** reduz progressivamente e nunca sobe enquanto trava; parado fica em N.
+- **Estabilidade:** histerese, intervalo mínimo de ~1 s entre trocas e média móvel da aceleração com zona morta, para o ruído do GPS não provocar trocas sucessivas.
+- **Carga:** depende sobretudo da procura; em cruzeiro fica por volta de 0,2, por isso o som é mais calmo.
+- **Caixa: Conforto / Desportiva.** Conforto por omissão. Desportiva não usa a 7.ª, mantém rotações mais altas e reduz com menos procura.
+
+Os pops na passagem de caixa continuam a depender da opção de estalos e das regras existentes, mas agora só são candidatos em passagens exigentes (procura alta ou rotação alta a acelerar). As passagens de cruzeiro a velocidade constante não disparam pops. As relações e limites são escolhas de design sintético, não dados de uma caixa real.
+
 ## Modo GPS
 Seleciona **GPS real** e toca em **Autorizar localização**. Requer contexto seguro: HTTPS ou localhost e permissão do browser. Abrir um ficheiro local é recomendado para simulação; não se deve contar com GPS via `file://`.
 
@@ -70,9 +82,10 @@ Interface pensada para ecrãs largos e telemóveis. **Não houve teste físico n
 Executar `node test.cjs` (Node.js, sem dependências):
 - análise sintática de todo o JavaScript inline com `vm.Script`;
 - testes determinísticos de GPS (conversão, ausência, ruído, saltos, precisão, ordem temporal, aceleração implausível);
+- v3.2: caixa virtual — 120 km/h constantes com ruído tipo GPS chega à 7.ª entre 1 800 e 3 000 rpm, sem oscilar e sem candidatos a pops; 60 s de cruzeiro ruidoso sem trocas; os 21 perfis em cruzeiro dentro de ralenti…máx×0,94; aceleração forte provoca kick-down e mais rotação/carga; desaceleração reduz sem subir e termina em 1.ª; parado = N; intervalo mínimo entre trocas; Desportiva com mais rotação do que Conforto; ligação da página ao seletor e aos pops.
 - v3.1: timestamps desviados −60 s, −1 h e +1 h continuam a dar velocidade válida (nativa e estimada); posições a mais de 1 Hz sem velocidade nativa; timestamps repetidos; formatação do desvio no diagnóstico; ausência da rejeição por idade do timestamp.
 - limites de RPM/carga para todos os perfis, mudanças virtuais e mapeamento seguro de uma chave desconhecida;
-- versão visível 3.1; pelo menos 21 assinaturas; agrupamento; notas curtas de carácter; honestidade sem repetir o aviso em cada opção;
+- versão visível 3.2; pelo menos 21 assinaturas; agrupamento; notas curtas de carácter; honestidade sem repetir o aviso em cada opção;
 - unicidade da afinação, incluindo as novas inspirações face às arquiteturas aparentadas;
 - o RX-7 é tratado como rotativo (2 rotores), não como um I4 de pistões;
 - estalos: desligados/mute/parado não disparam; perda de sinal, modo, reinício, página oculta e troca de perfil são eventos proibidos; desaceleração, largar o REV e mudança virtual têm condições e intervalo; propensão diferente entre perfis; amplitude e duração limitadas.

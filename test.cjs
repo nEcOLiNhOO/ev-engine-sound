@@ -34,10 +34,11 @@ test('invalid coordinates rejected',()=>assert.equal(core.gpsSample(null,point({
 test('duplicate timestamp rejected',()=>assert.equal(core.gpsSample(point(),point()).ok,false));
 test('implausible acceleration rejected',()=>assert.equal(core.gpsSample(point({kmh:0}),point({speed:30,time:102000})).ok,false));
 test('old baseline cannot derive a speed',()=>assert.equal(core.gpsSample(point({kmh:0}),point({time:125000})).speed,null));
-test('virtual gears upshift and RPM drops',()=>{let a=core.mapping(21.9,'v8'),b=core.mapping(22,'v8');assert.equal(a.gear,1);assert.equal(b.gear,2);assert(b.rpm<a.rpm);});
-test('all engines map finite bounded RPM/load over speed sweep',()=>{for(const key of Object.keys(core.engines))for(let s=-10;s<=300;s++){const m=core.mapping(s,key,4),e=core.engines[key];assert(m.rpm>=e.idle&&m.rpm<=e.max);assert(m.load>=0&&m.load<=1);assert(m.gear>=0&&m.gear<=6);}});
+// v3.2: mapping() is now a stateless cruise-gear helper; the old fixed 22 km/h threshold no longer exists.
+test('stateless cruise mapping: gear never decreases with speed and RPM drops at a shift',()=>{let prev=core.mapping(1,'v8'),sawDrop=false;for(let s=2;s<=200;s++){const m=core.mapping(s,'v8');assert(m.gear>=prev.gear,String(s));if(m.gear>prev.gear&&m.rpm<prev.rpm)sawDrop=true;prev=m;}assert(sawDrop);assert.equal(core.mapping(0,'v8').gear,0);});
+test('all engines map finite bounded RPM/load over speed sweep',()=>{for(const key of Object.keys(core.engines))for(let s=-10;s<=300;s++){const m=core.mapping(s,key,4),e=core.engines[key];assert(m.rpm>=e.idle&&m.rpm<=e.max);assert(m.load>=0&&m.load<=1);assert(m.gear>=0&&m.gear<=7);}});
 test('positive acceleration increases synthetic load',()=>assert(core.mapping(40,'v6',2).load>core.mapping(40,'v6',0).load));
-test('visible version 3.1 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.1');assert.match(html,/data-version="3\.1"/);assert.match(html,/>v3\.1</);assert.match(html,/Impulso v3\.1/);});
+test('visible version 3.2 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.2');assert.match(html,/data-version="3\.2"/);assert.match(html,/>v3\.2</);assert.match(html,/Impulso v3\.2/);});
 test('at least 21 presets with expected keys',()=>{
  const keys=Object.keys(core.engines);
  assert(keys.length>=21,keys.length);
@@ -126,9 +127,13 @@ test('unknown engine key maps to a safe idle state',()=>{
 test('mapping uses each profile idle and cap rather than a shared redline',()=>{
  const muscle=core.mapping(200,'mustang');
  const high=core.mapping(200,'lfa');
- assert.equal(muscle.rpm,core.engines.mustang.max*.94);
+ // v3.2: at 200 km/h cruise the gearbox sits in top gear, so the cap is checked via gearRpm in 1st instead.
+ assert(muscle.rpm<=core.engines.mustang.max*.94&&muscle.rpm>=core.engines.mustang.idle);
  assert(high.rpm>muscle.rpm);
- assert(high.rpm<=core.engines.lfa.max);
+ assert(high.rpm<=core.engines.lfa.max*.94);
+ assert.equal(core.gearRpm(core.engines.mustang,200,1),core.engines.mustang.max*.94);
+ assert.equal(core.gearRpm(core.engines.lfa,200,1),core.engines.lfa.max*.94);
+ assert.equal(core.gearRpm(core.engines.mustang,2,7),core.engines.mustang.idle);
 });
 test('RX-7 is a rotary profile, not a piston-cylinder stand-in',()=>{
  const e=core.engines.rx7;
@@ -294,5 +299,127 @@ test('diagnostics panel exposes timestamp offset in seconds',()=>{
  assert.equal(core.formatOffset(0),'0.0 s');
  assert.equal(core.formatOffset(null),'indisponível');
  assert.equal(core.gpsFix({coords:{latitude:1,longitude:1,accuracy:5,speed:null}},1,WALL).offsetSec,null);
+});
+
+// ---- v3.2 virtual automatic gearbox ----
+function lcg(seed){let s=seed;return()=>{s=(s*16807)%2147483647;return s/2147483647;};}
+function gpsLike(key,{v=120,secs=10,style='comfort',start=null,seed=7,noise=.8}={}){
+ const rnd=lcg(seed),gauss=()=>{let s=0;for(let i=0;i<6;i++)s+=rnd();return s-3;};
+ const e=core.engines[key];let st=start,r,prev=v,acc=0,shifts=0,ups=0,downs=0,flips=0,lastDir=null,pops=0,minR=1e9,maxR=0;
+ for(let i=0;i<secs*20;i++){
+  if(i%20===0){const s=v+gauss()*noise;acc=(s-prev)/3.6;prev=s;}  // 1 Hz GPS, accel held between fixes
+  r=core.gearbox(st,{speed:prev,accel:acc,dt:.05,profile:e,style});st=r.state; // demand undefined → from smoothed accel
+  if(r.shift){shifts++;if(r.shift==='up')ups++;else downs++;if(lastDir&&lastDir!==r.shift)flips++;lastDir=r.shift;}
+  if(r.popWorthy)pops++;
+  if(i>=secs*20-40){minR=Math.min(minR,r.rpm);maxR=Math.max(maxR,r.rpm);}
+ }
+ return {r,shifts,ups,downs,flips,pops,minR,maxR};
+}
+const startIn=(g)=>({gear:g,sinceShift:5,accelEma:0,cruiseTime:0,shifts:0});
+test('steady 120 km/h with GPS-like noise converges to top gear at calm RPM without hunting',()=>{
+ for(const key of ['v8','mustang','i4','m3','c63','lfa','f458','rx7','v12','gt3rs','wrx']){
+  const out=gpsLike(key,{start:startIn(4)});
+  assert.equal(out.r.gear,7,key);
+  assert(out.minR>=1800&&out.maxR<=3000,key+' rpm '+out.minR+'-'+out.maxR);
+  assert(out.shifts<=3,key+' shifts '+out.shifts);
+  assert.equal(out.downs,0,key);
+  assert.equal(out.flips,0,key);
+  assert.equal(out.pops,0,key+' cruise upshifts must not be pop candidates');
+  assert(out.r.load>=.15&&out.r.load<=.3,key+' load '+out.r.load);
+ }
+});
+test('long noisy cruise in top gear stays put (no shifts in 60 s, several seeds)',()=>{
+ for(const seed of [3,11,29,97]){
+  const out=gpsLike('v8',{secs:60,start:startIn(7),seed,noise:1.2});
+  assert.equal(out.shifts,0,'seed '+seed);
+  assert.equal(out.r.gear,7);
+ }
+});
+test('every profile cruises calmly in Conforto at 120 km/h and stays within idle..max*0.94',()=>{
+ for(const [key,e] of Object.entries(core.engines)){
+  const out=gpsLike(key,{start:startIn(3)});
+  assert(out.r.rpm>=e.idle&&out.r.rpm<=e.max*.94,key);
+  assert(out.r.rpm<=3000&&out.r.rpm>=1500,key+' '+out.r.rpm);
+  assert(out.flips===0,key);
+ }
+});
+function cruiseThenAccel(key,a,style='comfort'){
+ const e=core.engines[key];let st=null,r;
+ for(let i=0;i<120;i++){r=core.gearbox(st,{speed:100,accel:0,dt:.05,profile:e,style});st=r.state;}
+ const before=r;let v=100,maxR=0,downs=0,firstDown=null,ups=[];
+ for(let i=0;i<120;i++){v+=a*3.6*.05;r=core.gearbox(st,{speed:v,accel:a,dt:.05,profile:e,style});st=r.state;maxR=Math.max(maxR,r.rpm);
+  if(r.shift==='down'){downs++;if(!firstDown)firstDown={from:before.gear,to:r.gear};}
+  if(r.shift==='up')ups.push(r);}
+ return {before,after:r,maxR,downs,firstDown,ups,e};
+}
+test('strong acceleration kicks down 1-2 gears into a high band and raises RPM and load',()=>{
+ for(const key of ['v8','lfa','i4','rx7']){
+  const k=cruiseThenAccel(key,2.5);
+  assert.equal(k.before.gear,7,key);
+  assert(k.downs>=1,key);
+  assert(k.firstDown.from-k.firstDown.to>=1&&k.firstDown.from-k.firstDown.to<=2,key);
+  assert(k.maxR>=.55*k.e.max&&k.maxR<=k.e.max*.94,key+' '+k.maxR);
+  assert(k.after.load>=.8,key);
+  for(const u of k.ups) assert(u.popWorthy,key+' demanding upshift is a pop candidate');
+ }
+});
+test('mild acceleration does not kick down from cruise',()=>{
+ const k=cruiseThenAccel('v8',.4);
+ assert.equal(k.downs,0);
+});
+test('deceleration downshifts progressively, never upshifts, and ends in 1st',()=>{
+ for(const key of ['v8','lfa','mustang']){
+  const e=core.engines[key];let st=null,r;
+  for(let i=0;i<120;i++){r=core.gearbox(st,{speed:120,accel:0,dt:.05,profile:e});st=r.state;}
+  let v=120,downs=0,ups=0,lastT=-9,minGap=9,t=0;
+  while(v>6){v-=2.5*3.6*.05;t+=.05;r=core.gearbox(st,{speed:v,accel:-2.5,dt:.05,profile:e});st=r.state;
+   if(r.shift){if(r.shift==='down')downs++;else ups++;minGap=Math.min(minGap,t-lastT);lastT=t;}
+   assert(r.rpm>=e.idle&&r.rpm<=e.max*.94);assert(r.load<=.2);}
+  assert(downs>=4,key);assert.equal(ups,0,key);assert.equal(r.gear,1,key);
+  assert(minGap>=.95,key+' minGap '+minGap);
+ }
+});
+test('stopped means neutral; moving off engages 1st',()=>{
+ const e=core.engines.v8;
+ let r=core.gearbox(null,{speed:0,accel:0,dt:.05,profile:e});
+ assert.equal(r.gear,0);assert.equal(r.rpm,e.idle);
+ r=core.gearbox(r.state,{speed:3,accel:1,dt:.05,profile:e});
+ assert.equal(r.gear,1);
+ r=core.gearbox(r.state,{speed:0,accel:-1,dt:.05,profile:e});
+ assert.equal(r.gear,0);
+ assert.deepEqual(core.gearbox(null,{speed:50,profile:undefined}).gear,0);
+});
+test('minimum time between ordinary shifts is respected',()=>{
+ const e=core.engines.v8;let st=startIn(1),r,t=0,last=-9,gaps=[];
+ for(let i=0;i<400;i++){t+=.05;r=core.gearbox(st,{speed:Math.min(120,10+t*12),accel:3.3,demand:.5,dt:.05,profile:e});st=r.state;if(r.shift){gaps.push(t-last);last=t;}}
+ assert(gaps.slice(1).every(g=>g>=.95),gaps.join(','));
+});
+test('Desportiva holds a lower gear and higher RPM than Conforto at cruise',()=>{
+ for(const key of ['v8','m3','lfa','rx7','mustang']){
+  const c=gpsLike(key,{start:startIn(4),style:'comfort',secs:12});
+  const s=gpsLike(key,{start:startIn(4),style:'sport',secs:12});
+  assert(s.r.gear<c.r.gear,key);
+  assert(s.r.rpm>c.r.rpm+300,key+' '+s.r.rpm+' vs '+c.r.rpm);
+  assert(s.r.rpm<=core.engines[key].max*.94);
+ }
+ assert(core.GEARBOX_STYLES.sport.kick<core.GEARBOX_STYLES.comfort.kick);
+});
+test('sim throttle demand: 0→120 km/h upshifts each gear and settles to calm top gear',()=>{
+ const e=core.engines.v8;let st=null,r,v=0,ups=0;
+ for(let i=0;i<1200;i++){const target=120,diff=target-v,a=diff>0?2.75:0;v=Math.min(target,v+a*3.6*.05);
+  const d=target-v>.5?Math.max(core.clamp(a/3,0,1)*.5,.45*core.clamp((target-v)/15,.3,1)):0;
+  r=core.gearbox(st,{speed:v,accel:v<target?a:0,demand:d,dt:.05,profile:e});st=r.state;if(r.shift==='up')ups++;}
+ assert.equal(r.gear,7);assert(ups>=6);assert(r.rpm<2300);assert(r.load<.25);
+});
+test('page wires the gearbox, Caixa selector defaults to Conforto, pops upshift gated by popWorthy',()=>{
+ assert.match(html,/<select id="gearStyle"><option value="comfort" selected>Conforto/);
+ assert.match(html,/value="sport">Desportiva/);
+ assert.match(script,/Core\.gearbox\(gbState,\{speed,accel,demand,dt,profile:e,style:\$\('gearStyle'\)\.value\}\)/);
+ assert.match(script,/gb\.shift==='up'&&gb\.popWorthy&&prevGear>=1\) maybePop\('upshift'/);
+ assert.doesNotMatch(script,/thresholds=\[0,22,46,74,108,148\]/);
+});
+test('gear ratios are 7 descending synthetic values',()=>{
+ const R=core.GEAR_RATIOS;assert.equal(R.length,8);
+ for(let i=2;i<R.length;i++) assert(R[i]<R[i-1]);
 });
 console.log(`${count} tests passed; full inline JavaScript syntax valid. These tests cover logic and syntax only, not listening.`);
