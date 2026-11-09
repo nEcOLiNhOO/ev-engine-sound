@@ -38,8 +38,8 @@ test('old baseline cannot derive a speed',()=>assert.equal(core.gpsSample(point(
 test('stateless cruise mapping: gear never decreases with speed and RPM drops at a shift',()=>{let prev=core.mapping(1,'v8'),sawDrop=false;for(let s=2;s<=200;s++){const m=core.mapping(s,'v8');assert(m.gear>=prev.gear,String(s));if(m.gear>prev.gear&&m.rpm<prev.rpm)sawDrop=true;prev=m;}assert(sawDrop);assert.equal(core.mapping(0,'v8').gear,0);});
 test('all engines map finite bounded RPM/load over speed sweep',()=>{for(const key of Object.keys(core.engines))for(let s=-10;s<=300;s++){const m=core.mapping(s,key,4),e=core.engines[key];assert(m.rpm>=e.idle&&m.rpm<=e.max);assert(m.load>=0&&m.load<=1);assert(m.gear>=0&&m.gear<=7);}});
 test('positive acceleration increases synthetic load',()=>assert(core.mapping(40,'v6',2).load>core.mapping(40,'v6',0).load));
-// v3.5: version 3.4 → 3.5.
-test('visible version 3.5 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.5');assert.match(html,/data-version="3\.5"/);assert.match(html,/>v3\.5</);assert.match(html,/Impulso v3\.5/);});
+// v3.6: version 3.5 → 3.6.
+test('visible version 3.6 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.6');assert.match(html,/data-version="3\.6"/);assert.match(html,/>v3\.6</);assert.match(html,/Impulso v3\.6/);});
 // v3.4: 21 → 22 profiles (SupraMotor 2JZ added).
 test('at least 22 presets with expected keys',()=>{
  const keys=Object.keys(core.engines);
@@ -459,8 +459,8 @@ const CRUISE={name:'cruise',dur:25,a:0};
 function firstDown(log){const acc=log.filter(x=>x.ph==='acc'),t0=acc[0].t-.05,fd=acc.find(x=>x.shift==='down');return fd?fd.t-t0:Infinity;}
 const gearDrop=log=>log.filter(x=>x.ph==='cruise').pop().gear-Math.min(...log.filter(x=>x.ph==='acc').map(x=>x.gear));
 // v3.4: version 3.4 and 22 profiles (was 3.3 / 21).
-test('per-profile gearbox personality covers all 22 profiles (version now 3.5)',()=>{
- assert.equal(core.VERSION,'3.5');assert.equal(KEYS.length,22);
+test('per-profile gearbox personality covers all 22 profiles (version now 3.6)',()=>{
+ assert.equal(core.VERSION,'3.6');assert.equal(KEYS.length,22);
  assert.deepEqual(Object.keys(core.GEAR_PERSONA).sort(),KEYS.slice().sort());
  for(const k of KEYS){const p=core.GEAR_PERSONA[k];
   assert.equal(core.engines[k].persona,p,k);
@@ -608,11 +608,12 @@ test('noise rises with load (only under real load) and with the slider; slider 0
  }
  assert.equal(core.noiseGate(.2),0);assert.equal(core.noiseGate(1),1);
 });
-test('master chain constants: highpass 30–40 Hz, lowpass 6–8 kHz, band-limited noise, no hard limiter',()=>{
+// v3.6 adaptation: HP 30–40 Hz → 20–30 Hz, LP 6–8 kHz → 10–13 kHz, compressor ≤4:1 → ≤8:1 (still no 12:1 hard limiter).
+test('master chain constants: highpass 20–30 Hz, lowpass 10–13 kHz, band-limited noise, no hard limiter',()=>{
  const A=core.AUDIO;
- assert(A.hpHz>=30&&A.hpHz<=40);assert(A.lpHz>=6000&&A.lpHz<=8000);
+ assert(A.hpHz>=20&&A.hpHz<=30);assert(A.lpHz>=10000&&A.lpHz<=13000);
  assert(A.noiseHpHz>=100&&A.noiseHpHz<=200&&A.noiseLpHz>=2000&&A.noiseLpHz<=3000);
- assert(A.comp.ratio<12&&A.comp.ratio<=4,'ratio '+A.comp.ratio);assert(A.comp.threshold>=-12);assert(A.comp.attack>=.01);
+ assert(A.comp.ratio<12&&A.comp.ratio<=8,'ratio '+A.comp.ratio);assert(A.comp.threshold>=-12);assert(A.comp.attack>=.01);
  assert.equal(A.clip.oversample,'4x');assert(A.clip.ceiling<1);
  assert.equal(A.volumeMax,70);assert.match(html,/<input id="volume" type="range" min="0" max="70"/);
  // soft clip: identity below the knee, monotonic, bounded by the ceiling
@@ -623,13 +624,14 @@ test('master chain constants: highpass 30–40 Hz, lowpass 6–8 kHz, band-limit
  assert(core.audioParams(core.engines.v8,3000,.5,{volume:100}).master<=A.volumeMax/100*A.masterScale+1e-12);
  assert.doesNotMatch(script,/ratio\.value=12/);
 });
-test('harmonic band-limit: highest partial < sampleRate/2 (and ≤ sampleRate/4, 12 kHz) at max rpm, 44.1 and 48 kHz, every profile',()=>{
+// v3.6 adaptation: cap min(sampleRate/4, 12 kHz) → min(0.72 × Nyquist, 16 kHz); still strictly below Nyquist.
+test('harmonic band-limit: highest partial < sampleRate/2 (and ≤ 0.72·Nyquist, 16 kHz) at max rpm, 44.1 and 48 kHz, every profile',()=>{
  for(const sr of [44100,48000]) for(const k of KEYS){const e=core.engines[k];
   for(const rpm of [e.idle,e.max*.5,e.max*.9,e.max]){
    const P=core.audioParams(e,rpm,1,{sampleRate:sr,character:1});
    const top=P.harmonics*(P.firing+P.flutterDepth);
    assert(top<sr/2,k+' '+sr+' rpm '+rpm+' top '+top);
-   assert(top<=Math.min(sr/4,12000)+1e-9,k+' top '+top);
+   assert(top<=Math.min(sr/2*.72,16000)+1e-9,k+' top '+top);
    assert(P.harmonics>=4&&P.harmonics<=47);
   }
   // per-rpm bands: low rpm keeps more harmonics than max rpm
@@ -642,7 +644,7 @@ test('harmonic band-limit: highest partial < sampleRate/2 (and ≤ sampleRate/4,
 test('sub-bass sits in the audible range and the flutter FM depth is capped',()=>{
  for(const k of KEYS){const e=core.engines[k];
   for(const rpm of [e.idle,e.max*.5,e.max]){const P=core.audioParams(e,rpm,.5,{character:1});
-   assert(P.subF>=38&&P.subF<=160,k+' subF '+P.subF);
+   assert(P.subF>=30&&P.subF<=160,k+' subF '+P.subF); // v3.6 adaptation: floor 38 → 30 Hz
    assert(P.flutterDepth<=P.firing*core.AUDIO.flutterFrac+1e-9,k);
    assert(P.exhaustF<=core.AUDIO.lpHz);
    assert(P.intakeF>=250&&P.intakeF<=2000);}}
@@ -655,6 +657,37 @@ test('intake-noise slider: default 25 %, persisted per device, invalid values fa
  assert.equal(core.readNoisePref(mem('60')),60);assert.equal(core.readNoisePref(mem('250')),100);
  assert.equal(core.readNoisePref(mem('abc')),25);assert.equal(core.readNoisePref({getItem(){throw Error('denied');}}),25);
  assert.match(script,/setItem\('impulso\.intakeNoise'/);
+});
+// ---- v3.6: timbre midway between v3.4 and v3.5 ----
+const V34={hpHz:0,lpHz:null,comp:{threshold:-16,knee:8,ratio:12},masterScale:.48,flutter:(e,rpm,c)=>e.rough*(1+c)*rpm/70,subGain:(e,load)=>e.subGain*(.6+load*.4),clipKnee:1};
+const V35={hpHz:35,lpHz:7000,comp:{threshold:-10,knee:10,ratio:3},masterScale:1.9,flutterFrac:.035,partialLimit:sr=>Math.min(sr/4,12000),subGain:(e,load)=>e.subGain*(.45+load*.35),clipKnee:.6};
+const makeupDb=({threshold:t,knee:k,ratio:r})=>{const full=t+k/2*(1+1/r)+(0-t-k)/r;return -full*.6;}; // Web Audio spec makeup gain
+const between=(x,a,b)=>x>=Math.min(a,b)-1e-9&&x<=Math.max(a,b)+1e-9;
+test('v3.6 audio parameters lie between v3.4 and v3.5 (filters, dynamics, gain, partials, flutter, sub)',()=>{
+ const A=core.AUDIO;
+ assert(A.hpHz>V34.hpHz&&A.hpHz<V35.hpHz,'HP');
+ for(const sr of [44100,48000]){
+  assert(A.lpHz>V35.lpHz&&A.lpHz<sr/2,'LP between 7 kHz and v3.4 (no LP, Nyquist)');
+  const lim=core.partialLimit(sr);assert(lim>V35.partialLimit(sr)&&lim<sr/2,'partial limit '+lim);
+  for(const k of KEYS){const e=core.engines[k];
+   for(const rpm of [e.max*.6,e.max*.9]){
+    const n=core.harmonicCount(e,rpm,sr),f=core.firingHz(e,rpm);
+    const n34=Math.min(47,Math.floor(sr/2/f)),n35=core.clamp(Math.floor(V35.partialLimit(sr)/(f+Math.min(e.rough*1.4*rpm/70,f*V35.flutterFrac))),4,47);
+    assert(between(n,n35,n34),k+' harmonics '+n+' not between '+n35+' and '+n34);
+   }}
+ }
+ assert(between(A.comp.ratio,V35.comp.ratio,V34.comp.ratio)&&A.comp.ratio>V35.comp.ratio&&A.comp.ratio<V34.comp.ratio,'ratio');
+ assert(between(A.comp.threshold,V34.comp.threshold,V35.comp.threshold),'threshold');
+ assert(A.clip.knee>V35.clipKnee&&A.clip.knee<V34.clipKnee,'soft clip only near full scale');
+ // effective output gain (master scale × compressor makeup): v3.4 < v3.6 < v3.5, about half the dB step
+ const g=x=>20*Math.log10(x.masterScale)+makeupDb(x.comp),g34=g(V34),g35=g(V35),g36=g(A);
+ assert(g36>g34&&g36<g35,'gain '+g34.toFixed(1)+' < '+g36.toFixed(1)+' < '+g35.toFixed(1));
+ assert(Math.abs((g36-g34)-(g35-g34)/2)<=1.5,'roughly half of the v3.5 gain step');
+ for(const k of KEYS){const e=core.engines[k];
+  for(const rpm of [e.idle,e.max*.5,e.max*.9]){const P=core.audioParams(e,rpm,.5,{character:.4});
+   assert(between(P.flutterDepth,Math.min(V34.flutter(e,rpm,.4),core.firingHz(e,rpm)*V35.flutterFrac),V34.flutter(e,rpm,.4)),k+' flutter');
+   assert(P.subGain<V35.subGain(e,.5)&&P.subGain>0,k+' sub lighter than v3.5 but present');
+   assert(P.subGain<V34.subGain(e,.5),k+' sub below v3.4 level (v3.4 sub was mostly subsonic)');}}
 });
 async function pageAudioTest(){
  const nodes=[],waves=[];let sr=44100;
@@ -684,13 +717,13 @@ async function pageAudioTest(){
  const comp=nodes.find(n=>n.kind==='comp'),shaper=nodes.find(n=>n.kind==='shaper');
  assert(comp&&shaper,'compressor and waveshaper exist');
  assert.equal(nodes.filter(n=>n.kind==='comp').length,1);
- assert(comp.ratio.value<=4&&comp.threshold.value>=-12,'gentle compressor');
+ assert(comp.ratio.value<=8&&comp.ratio.value<12&&comp.threshold.value>=-12,'moderate compressor (v3.6: ≤8:1)');
  assert.equal(shaper.oversample,'4x');assert(shaper.curve&&shaper.curve.length>=1024);
  assert.deepEqual(shaper.out.map(n=>n.kind),['destination']);
  const lp=nodes.find(n=>n.out.includes(comp)),hp=nodes.find(n=>n.out.includes(lp)),master=nodes.find(n=>n.out.includes(hp));
  assert.equal(lp.kind,'biquad');assert.equal(lp.type,'lowpass');assert.equal(hp.kind,'biquad');assert.equal(hp.type,'highpass');
- assert(lp.frequency.value>=6000&&lp.frequency.value<=8000,'LP '+lp.frequency.value);
- assert(hp.frequency.value>=30&&hp.frequency.value<=40,'HP '+hp.frequency.value);
+ assert(lp.frequency.value>=10000&&lp.frequency.value<=13000,'LP '+lp.frequency.value);
+ assert(hp.frequency.value>=20&&hp.frequency.value<=30,'HP '+hp.frequency.value);
  assert.equal(master.kind,'gain');
  // every source reaches the destination only through master → HP → LP → comp → clip
  assert.equal(nodes.filter(n=>n.out.some(d=>d.kind==='destination')).length,1);

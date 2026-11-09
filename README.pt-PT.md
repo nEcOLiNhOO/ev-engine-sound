@@ -1,10 +1,10 @@
-# Impulso · Motor virtual v3.5
+# Impulso · Motor virtual v3.6
 
 Aplicação original, num único `index.html`, sem bibliotecas, fontes, gravações ou pedidos de rede (exceto o serviço de localização do próprio browser, se autorizado).
 
-Esta pasta é a entrega autónoma v3.5 (áudio limpo para as colunas do carro, sobre a v3.4 com o SupraMotor 2JZ, kick-down, blips e pops por perfil): vinte e duas assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação: a integração e o eventual GitHub Pages ficam a cargo de quem autorizar o envio.
+Esta pasta é a entrega autónoma v3.6 (timbre intermédio entre a v3.4 e a v3.5, mantendo o áudio sem chiado; SupraMotor 2JZ, kick-down, blips e pops por perfil): vinte e duas assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação: a integração e o eventual GitHub Pages ficam a cargo de quem autorizar o envio.
 
-O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.5 ainda pode não corresponder ao que está online.
+O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.6 ainda pode não corresponder ao que está online.
 
 A publicação HTTPS permite testar num browser normal, mas não garante que resolva a ausência de áudio numa pré-visualização móvel. Toca em **Iniciar som** na página aberta diretamente no browser.
 
@@ -116,6 +116,37 @@ Outras correções: `maximumAge:0` (sem posições em cache), tempo de espera de
 - subgrave uma oitava abaixo da frequência de ignição (38–160 Hz), audível nas colunas;
 - ganho: no mesmo volume da aplicação o motor soa cerca de 7 dB mais alto (ponderação A); a 70 % os picos ficam por volta de −1,5 dBFS, sem corte duro. Os estalos continuam com os mesmos limites (pico ≤ 0,22 antes do volume, máx. 3 vozes, intervalo mínimo).
 
+**Ajuste intermédio (v3.6):** a v3.5 eliminou o chiado, mas o timbre ficou estranho (agudos cortados a 7 kHz, subgrave forte uma oitava abaixo, compressão e saturação mais presentes). A v3.6 fica a meio caminho em cada elemento que muda o timbre e mantém a correção do chiado:
+- passa-baixo final 7 kHz → **11,5 kHz** (volta brilho e aspereza); passa-alto 35 → **25 Hz**;
+- harmónicos: limite min(taxa/4, 12 kHz) → **min(0,72 × Nyquist, 16 kHz)**, por isso os motores de muitos cilindros recuperam harmónicos a rotação alta (sempre abaixo de Nyquist);
+- subgrave: continua audível (uma oitava abaixo da ignição, mínimo 30 Hz), mas com **cerca de metade** do ganho da v3.5, para dar corpo sem ribombar;
+- dinâmica: compressor **6:1 a −12 dB** (v3.4: 12:1 a −16, sem efeito real; v3.5: 3:1); a saturação suave só atua perto de 0 dBFS (joelho 0,85, teto 0,98), sem colorir níveis normais;
+- vibrato (flutter): limite 3,5 % → **7 %** da frequência de ignição;
+- ganho: cerca de **+3,7 dB** face à v3.4 (a v3.5 tinha +7 dB);
+- ruído de admissão: igual à v3.5 (só em carga, 150 Hz–2,5 kHz, controlo a 25 %): ao ralenti e em cruzeiro continua 55–74 dB(A) abaixo do tom em todos os perfis.
+
+Medições offline (modelo Node da cadeia Web Audio, volume da app a 70 %, caráter 40 %; não é uma escuta). Brilho = centroide espectral acima de 100 Hz; percentagens de agudos e grave calculadas sobre a banda audível (≥ 25 Hz); "carga" = 75 % do máximo com carga 0,9:
+
+| perfil | versão | brilho (centroide >100 Hz) ralenti/cruzeiro/carga, Hz | >3 kHz % (carga) | >7 kHz % (carga) | grave 25–100 Hz % ralenti/cruzeiro | <25 Hz % ralenti/cruzeiro | ruído abaixo do tom dB(A) ralenti/cruzeiro/carga | 70 %: RMS/pico dBFS (carga) | dB(A) vs v3.4 (cruzeiro) |
+|---|---|---|---|---|---|---|---|---|---|
+| v8 | v3.4 | 311 / 446 / 886 | 0.5 | 0.08 | 45 / 1 | 36 / 34 | 24 / 24 / 18 | -20.3 / -10.1 | 0.0 |
+| v8 | v3.5 | 310 / 442 / 678 | 0.3 | 0.00 | 50 / 23 | 0 / 0 | 68 / 71 / 33 | -14.0 / -3.7 | 7.3 |
+| v8 | v3.6 | 311 / 443 / 797 | 0.3 | 0.00 | 48 / 9 | 0 / 0 | 68 / 71 / 33 | -18.1 / -8.0 | 3.8 |
+| gt3rs | v3.4 | 392 / 644 / 1361 | 6.9 | 0.31 | 48 / 0 | 20 / 19 | 21 / 21 / 16 | -22.3 / -10.5 | 0.0 |
+| gt3rs | v3.5 | 387 / 636 / 1127 | 5.4 | 0.01 | 49 / 11 | 0 / 0 | 62 / 67 / 31 | -15.6 / -3.9 | 7.3 |
+| gt3rs | v3.6 | 388 / 637 / 1241 | 6.4 | 0.03 | 48 / 4 | 0 / 0 | 62 / 67 / 31 | -19.3 / -8.0 | 3.8 |
+| i4 | v3.4 | 211 / 379 / 680 | 1.2 | 0.18 | 69 / 35 | 19 / 17 | 15 / 18 / 15 | -21.0 / -10.1 | 0.0 |
+| i4 | v3.5 | 203 / 369 / 623 | 0.5 | 0.00 | 61 / 38 | 0 / 0 | 57 / 63 / 30 | -14.1 / -2.7 | 7.3 |
+| i4 | v3.6 | 205 / 370 / 626 | 0.5 | 0.00 | 66 / 36 | 0 / 0 | 57 / 63 / 30 | -17.8 / -6.8 | 3.7 |
+| supra2jz | v3.4 | 294 / 352 / 757 | 0.7 | 0.09 | 60 / 1 | 30 / 28 | 21 / 21 / 16 | -19.9 / -9.3 | 0.0 |
+| supra2jz | v3.5 | 291 / 349 / 613 | 0.3 | 0.00 | 60 / 16 | 0 / 0 | 62 / 66 / 29 | -13.3 / -2.7 | 7.3 |
+| supra2jz | v3.6 | 291 / 349 / 687 | 0.4 | 0.00 | 60 / 6 | 0 / 0 | 62 / 66 / 29 | -17.2 / -7.0 | 3.7 |
+| v12 | v3.4 | 510 / 825 / 1633 | 9.7 | 0.22 | 38 / 0 | 21 / 21 | 28 / 27 / 20 | -22.6 / -12.6 | 0.0 |
+| v12 | v3.5 | 505 / 721 / 1375 | 9.3 | 0.04 | 43 / 0 | 0 / 0 | 71 / 73 / 36 | -15.7 / -5.8 | 7.0 |
+| v12 | v3.6 | 508 / 792 / 1537 | 11.1 | 0.10 | 40 / 0 | 0 / 0 | 72 / 74 / 35 | -20.0 / -10.6 | 3.7 |
+
+Leitura: o brilho em carga e a energia acima de 7 kHz ficam entre a v3.4 e a v3.5 (no I4 o brilho fica quase igual ao da v3.5). A percentagem acima de 3 kHz do V12 em carga fica ligeiramente acima de ambas (11,1 %), porque o subgrave é mais leve e a medida é relativa. O grave audível ao ralenti continua perto da v3.5, porque nesses perfis a própria ignição fica abaixo de 100 Hz. O ruído abaixo do tom mantém-se igual ao da v3.5.
+
 **Dicas no carro:**
 1. Começa com o volume do Tesla moderado (por exemplo um terço) e sobe primeiro o **volume da aplicação** (50–70 %). Assim o sinal fica bem acima do ruído do sistema de som.
 2. Se ainda ouvires sopro, baixa o **Ruído de admissão** (0–15 %). A 0 % o som é só tonal.
@@ -135,13 +166,14 @@ Interface pensada para ecrãs largos e telemóveis. **Não houve teste físico n
 Executar `node test.cjs` (Node.js, sem dependências):
 - análise sintática de todo o JavaScript inline com `vm.Script`;
 - testes determinísticos de GPS (conversão, ausência, ruído, saltos, precisão, ordem temporal, aceleração implausível);
+- v3.6: parâmetros de áudio entre a v3.4 e a v3.5 (passa-alto, passa-baixo, limite de harmónicos e número de harmónicos por perfil, rácio/limiar do compressor, joelho da saturação, ganho efetivo ≈ metade do passo, flutter e subgrave); intervalos adaptados: passa-alto 20–30 Hz, passa-baixo 10–13 kHz, compressor ≤ 8:1, limite de harmónicos 0,72 × Nyquist/16 kHz, subgrave ≥ 30 Hz.
 - v3.5: ruído quase nulo ao ralenti e em cruzeiro para os 22 perfis (também com o controlo a 100 %); o ruído sobe com a carga e com o controlo, e é zero a 0 %; constantes da cadeia (passa-alto 30–40 Hz, passa-baixo 6–8 kHz, ruído 150 Hz–2,5 kHz, compressor ≤ 4:1, sem 12:1, saturação 4× limitada); limite de harmónicos abaixo de Nyquist a 44,1 e 48 kHz, à rotação máxima, em todos os perfis; subgrave audível e flutter limitado; controlo Ruído de admissão (25 % por omissão, guardado, valores inválidos ignorados); página com AudioContext simulado: master → passa-alto → passa-baixo → compressor → saturação, ruído baixo ao ralenti e mais alto em aceleração, ondas limitadas por gama.
 - v3.4: SupraMotor 2JZ existe com esse nome no grupo das inspirações, ignição de I6, limites válidos, cruzeiro a 120 km/h em 7.ª entre 1 500 e 3 000 rpm, kick-down a 0,6/1,2 m/s², pops ao levantar com estalos ligados e nenhum com desligados, passagens exigentes como candidatas a pop; contagem de perfis passa de 21 para 22.
 - v3.3: personalidade de caixa para os 21 perfis (Desportiva por cima); 0,6 m/s² durante 4 s desde 120 km/h com GPS ruidoso a 1 Hz reduz ≥1 marcha em todos os perfis (≤1,5 s em ≥15 de 20 sementes, sempre ≤2,5 s); 1,2 m/s² reduz ≥2 marchas; 60 s de cruzeiro ruidoso sem trocas em todos os perfis e estilos; regresso à 7.ª depois da aceleração; desaceleração com reduções, blips e rotação limitada; acelerar e levantar com pops ligados estala nos desportivos, pouco ou nada nos suaves e nunca com pops desligados; regras de segurança do overrun e limite de rotação por perfil; simulação com alvo/resposta provoca kick-down.
 - v3.2: caixa virtual — 120 km/h constantes com ruído tipo GPS chega à 7.ª entre 1 800 e 3 000 rpm, sem oscilar e sem candidatos a pops; 60 s de cruzeiro ruidoso sem trocas; os 21 perfis em cruzeiro dentro de ralenti…máx×0,94; aceleração forte provoca kick-down e mais rotação/carga; desaceleração reduz sem subir e termina em 1.ª; parado = N; intervalo mínimo entre trocas; Desportiva com mais rotação do que Conforto; ligação da página ao seletor e aos pops.
 - v3.1: timestamps desviados −60 s, −1 h e +1 h continuam a dar velocidade válida (nativa e estimada); posições a mais de 1 Hz sem velocidade nativa; timestamps repetidos; formatação do desvio no diagnóstico; ausência da rejeição por idade do timestamp.
 - limites de RPM/carga para todos os perfis, mudanças virtuais e mapeamento seguro de uma chave desconhecida;
-- versão visível 3.5; pelo menos 22 assinaturas; agrupamento; notas curtas de carácter; honestidade sem repetir o aviso em cada opção;
+- versão visível 3.6; pelo menos 22 assinaturas; agrupamento; notas curtas de carácter; honestidade sem repetir o aviso em cada opção;
 - unicidade da afinação, incluindo as novas inspirações face às arquiteturas aparentadas;
 - o RX-7 é tratado como rotativo (2 rotores), não como um I4 de pistões;
 - estalos: desligados/mute/parado não disparam; perda de sinal, modo, reinício, página oculta e troca de perfil são eventos proibidos; desaceleração, largar o REV e mudança virtual têm condições e intervalo; propensão diferente entre perfis; amplitude e duração limitadas.
