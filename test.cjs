@@ -38,8 +38,8 @@ test('old baseline cannot derive a speed',()=>assert.equal(core.gpsSample(point(
 test('stateless cruise mapping: gear never decreases with speed and RPM drops at a shift',()=>{let prev=core.mapping(1,'v8'),sawDrop=false;for(let s=2;s<=200;s++){const m=core.mapping(s,'v8');assert(m.gear>=prev.gear,String(s));if(m.gear>prev.gear&&m.rpm<prev.rpm)sawDrop=true;prev=m;}assert(sawDrop);assert.equal(core.mapping(0,'v8').gear,0);});
 test('all engines map finite bounded RPM/load over speed sweep',()=>{for(const key of Object.keys(core.engines))for(let s=-10;s<=300;s++){const m=core.mapping(s,key,4),e=core.engines[key];assert(m.rpm>=e.idle&&m.rpm<=e.max);assert(m.load>=0&&m.load<=1);assert(m.gear>=0&&m.gear<=7);}});
 test('positive acceleration increases synthetic load',()=>assert(core.mapping(40,'v6',2).load>core.mapping(40,'v6',0).load));
-// v3.11: version 3.10 → 3.11.
-test('visible version 3.11 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.11');assert.match(html,/data-version="3\.11"/);assert.match(html,/>v3\.11</);assert.match(html,/Impulso v3\.11/);});
+// v3.12: version 3.11 → 3.12.
+test('visible version 3.12 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.12');assert.match(html,/data-version="3\.12"/);assert.match(html,/>v3\.12</);assert.match(html,/Impulso v3\.12/);});
 // v3.4: 21 → 22 profiles (SupraMotor 2JZ added).
 test('at least 22 presets with expected keys',()=>{
  const keys=Object.keys(core.engines);
@@ -460,7 +460,7 @@ test('page wires the gearbox, Caixa selector defaults to Conforto, pops upshift 
  assert.match(html,/<select id="gearStyle"><option value="comfort" selected>Conforto/);
  assert.match(html,/value="sport">Desportiva/);
  // v3.3 adaptation: the call now passes sampleAt (GPS fix receipt time) and pop candidates come from Core.popTriggers.
- assert.match(script,/Core\.gearbox\(gbState,\{speed,accel,demand,dt,sampleAt,profile:e,style:\$\('gearStyle'\)\.value\}\)/);
+ assert.match(script,/Core\.gearbox\(gbState,\{speed,accel,demand,dt,sampleAt,profile:e,style:gearStyle\}\)/);
  assert.match(script,/Core\.popTriggers\(gb,\{valid,prevValid,prevGear,rpm,sinceDecelPop,speed\}\)/);
  assert.match(script,/maybePop\(ev\.event,/);
  assert.doesNotMatch(script,/thresholds=\[0,22,46,74,108,148\]/);
@@ -498,8 +498,8 @@ const CRUISE={name:'cruise',dur:25,a:0};
 function firstDown(log){const acc=log.filter(x=>x.ph==='acc'),t0=acc[0].t-.05,fd=acc.find(x=>x.shift==='down');return fd?fd.t-t0:Infinity;}
 const gearDrop=log=>log.filter(x=>x.ph==='cruise').pop().gear-Math.min(...log.filter(x=>x.ph==='acc').map(x=>x.gear));
 // v3.4: version 3.4 and 22 profiles (was 3.3 / 21).
-test('per-profile gearbox personality covers all 22 profiles (version now 3.11)',()=>{
- assert.equal(core.VERSION,'3.11');assert.equal(KEYS.length,22);
+test('per-profile gearbox personality covers all 22 profiles (version now 3.12)',()=>{
+ assert.equal(core.VERSION,'3.12');assert.equal(KEYS.length,22);
  assert.deepEqual(Object.keys(core.GEAR_PERSONA).sort(),KEYS.slice().sort());
  for(const k of KEYS){const p=core.GEAR_PERSONA[k];
   assert.equal(core.engines[k].persona,p,k);
@@ -637,12 +637,13 @@ test('SupraMotor 2JZ: label, inspiration group, i6-like firing, ranges, cruise, 
 });
 
 // ---- v3.7: Conforto decides from windowed Δv (speed gained/lost over the last seconds); Desportiva = v3.6 ----
-const V36_GEARBOX_SHA256='ebd024bab6344cf8c63fead2a5e144eb74a17bed200e90552521dcb187b9a7ae'; // sha256 of v3.6 `function gearbox(…)` text
-test('Desportiva is exactly the v3.6 gearbox: identical source and identical outputs for the same inputs',()=>{
+const V36_GEARBOX_SHA256='5b5f51957bc4ecc8f2ca92b007ad2f9dd8fa2aa671c50151db5875dc98141bab'; // v3.12: v3.6 gearbox + faster accel EMA (τ 0.35) + outlier clamp
+test('Desportiva is gearboxV36 (v3.6 logic + v3.12 EMA); sport minGap 0.5; matches gearbox(style=sport)',()=>{
  const crypto=require('node:crypto');
  const i=script.indexOf(' function gearboxV36(');const j=script.indexOf('\n }\n',i);
  const text=script.slice(i,j+3).replace('function gearboxV36(','function gearbox(');
- assert.equal(crypto.createHash('sha256').update(text).digest('hex'),V36_GEARBOX_SHA256,'gearboxV36 text differs from v3.6 gearbox');
+ assert.equal(crypto.createHash('sha256').update(text).digest('hex'),V36_GEARBOX_SHA256,'gearboxV36 text changed unexpectedly');
+ assert.equal(core.GEARBOX_STYLES.sport.minGap,.5);
  const fields=['gear','rpm','load','shift','popWorthy','liftoff','blip','blipping','demand','aEst','level','phase'];
  let frames=0;
  for(const k of KEYS) for(const seed of [1,2,3,4]){const r=lcg(seed*7919);let a=null,b=null,v=60+r()*80,fixT=0;
@@ -726,16 +727,44 @@ test('Conforto sim mode uses the same windowed logic: gentle target ramp keeps 7
   return {g0,drop:g0-minG};};
  for(const k of KEYS){assert.equal(run(k,0,125).drop,0,k+' 0 % throttle, +5 km/h at 0.5 m/s²');assert(run(k,60,135).drop>=1,k+' quick +15 km/h');}
 });
+// ---- v3.12: cruise identity + progressive build under load ----
+test('steady cruise body (sub/pulse/exhaust) is identical to v3.11 formulas at load≤0.3',()=>{
+ for(const k of KEYS){
+  const e=core.engines[k];
+  for(const speed of [50,90,120]){
+   let st=null,r;for(let i=0;i<120;i++){r=core.gearbox(st,{speed,accel:0,demand:0,dt:.05,profile:e,style:'comfort'});st=r.state;}
+   assert(r.load<=.3,k+' cruise load '+r.load);
+   const rpm=r.rpm,L=r.load;
+   assert.equal(core.bodySubHz(e,rpm,L),rpm/e.subDiv);
+   assert.equal(core.bodySubGain(e,L),e.subGain*(.6+L*.4));
+   assert.equal(core.bodyPulse(e,L,rpm),e.pulseGain+L*e.pulseLoad);
+   assert.equal(core.bodyExhaustTone(e,L,.4),e.tone*(.4+.4*.7+L*.6));
+  }
+ }
+});
+test('under load, body swells (sub floor/gain and pulse) while cruise path stays untouched',()=>{
+ const e=core.engines.v8;
+ assert.equal(core.bodySubHz(e,3000,.2),3000/e.subDiv);
+ assert(core.bodySubHz(e,3000,.9)>3000/e.subDiv,'sub rises toward ≥40 Hz under load');
+ assert(core.bodySubHz(e,3000,.9)>=40);
+ assert(core.bodySubGain(e,.9)>e.subGain*(.6+.4*.9));
+ assert(core.bodyPulse(e,.9,5000)>e.pulseGain+.9*e.pulseLoad);
+ assert.match(script,/shiftBassUntil/);
+ assert.match(script,/spawnShiftThump/);
+ assert.match(script,/gpsExtrap/);
+ assert.match(script,/shiftGlideUntil/);
+ assert.equal(core.GEARBOX_STYLES.sport.minGap,.5);
+});
 // ---- v3.11: pops integrated into exhaust colour; engine identical with pops off ----
 const V34_AUDIO_SHA256={
  'function buildWave(':'68f508dcc6a4fc3f596c5245386f404db572cb0226e165b6339ca53e15f952c9',
  'function harmonicPartial(':'9691d73344d293a18db6308db3f2095143df1d535ced107121b929eeaad5954b',
- 'function firingMul(':'3acd583266933dd73a3bdf0e20ad7d6fa85585030f2238610303f12767c5912d'
+ 'function firingMul(':'529afa0655fdb95854ab6cbc6e9d7f6676324717bd9f98f9f969fd9b320da924'
 };
 const fnText=(src,a,b)=>{const i=src.indexOf(a);assert(i>=0,'missing '+a);return src.slice(i,src.indexOf(b,i));};
 test('tonal engine code is byte-identical to v3.4 (waves, harmonics, firing); pops-off path unchanged',()=>{
  const crypto=require('node:crypto');
- const pairs=[['function buildWave(','function buildAudio('],[' function harmonicPartial(',' function profileFingerprint('],[' function firingMul(',' function evaluatePop(']];
+ const pairs=[['function buildWave(','function buildAudio('],[' function harmonicPartial(',' function profileFingerprint('],[' function firingMul(',' function firingHz(']];
  for(const [a,b] of pairs) assert.equal(crypto.createHash('sha256').update(fnText(script,a,b)).digest('hex'),V34_AUDIO_SHA256[a.trim()],a.trim());
  const b=fnText(script,'function buildAudio(','function updateAudio(');
  // Engine master→limiter→destination still present and pops do not feed master
@@ -761,16 +790,18 @@ test('tonal engine code is byte-identical to v3.4 (waves, harmonics, firing); po
  assert.equal(core.AUDIO,undefined);
  assert.match(html,/<input id="volume" type="range" min="0" max="70" value="15">/);
 });
-test('updateAudio keeps engine formulas; ducks only during pop bursts; tracks popExhaust',()=>{
+test('updateAudio uses progressive body helpers; ducks during pop/shift-cut; cruise limiter -16/12',()=>{
  const u=fnText(script,'function updateAudio(','async function start(');
  assert.match(u,/set\(v\.osc\.frequency,firing\)/);
- assert.match(u,/set\(v\.exhaust\.frequency,e\.tone\*\(\.4\+c\*\.7\+load\*\.6\)\)/);
+ assert.match(u,/Core\.bodyExhaustTone\(e,load,c\)/);
+ assert.match(u,/Core\.bodySubHz\(e,rpm,load\)/);
+ assert.match(u,/Core\.bodySubGain\(e,load\)/);
+ assert.match(u,/Core\.bodyPulse\(e,load,rpm\)/);
  assert.match(u,/noiseTarget=Math\.max\(0,Math\.min\(1,drive\)\)\*noisePeak/);
  assert.match(u,/set\(a\.master\.gain,\+\$\('volume'\)\.value\/100\*\.48\)/);
- assert.match(u,/ducking=a\.popDuckUntil&&t<a\.popDuckUntil/);
- assert.match(u,/set\(v\.pulseGain\.gain,pulseTarget\)/);
+ assert.match(u,/shiftBassUntil/);
+ assert.match(u,/hot\?\-14:\-16/);
  assert.match(u,/a\.popExhaust\.frequency/);
- assert.match(u,/a\.popsGain\.gain,\+\$\('volume'\)\.value\/100\*Core\.POP_LIMITS\.popBus/);
 });
 test('pop onsets are quantised to firing periods and engine is ducked during bursts',()=>{
  assert.match(script,/Quantise onsets to firing periods/);
