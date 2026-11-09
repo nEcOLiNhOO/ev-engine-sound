@@ -1,12 +1,17 @@
-# Impulso · Motor virtual v3.13
+# Impulso · Motor virtual v3.14
 
 Aplicação original, num único `index.html`, sem bibliotecas, fontes, gravações ou pedidos de rede (exceto o serviço de localização do próprio browser, se autorizado).
 
-Esta pasta é a entrega autónoma v3.13 (comportamento v3.12 mantido; mais oito inspirações de motor): trinta assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação.
+Esta pasta é a entrega autónoma v3.14 (som/Core idênticos à v3.13; interface redesenhada para o browser do Tesla): trinta assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação.
 
-O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.13 ainda pode não corresponder ao que está online.
+O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.14 ainda pode não corresponder ao que está online.
 
 A publicação HTTPS permite testar num browser normal, mas não garante que resolva a ausência de áudio numa pré-visualização móvel. Toca em **Iniciar som** na página aberta diretamente no browser.
+
+## Alterações na v3.14
+- **UI para condução no Tesla.** Ecrã principal «Condução» em landscape, contraste alto, sem scroll em ~1180×800: Start/Stop ≥120 px, velocidade/marcha/rpm grandes, pill GPS (verde/âmbar/vermelho), volume com −/+, segmentos Modo / Caixa / Pops.
+- **Motores em mosaicos** (≥76 px) com filtros (V8, V6/I6, I3–I5, V10/V12, Rotativo, Favoritos) e favoritos em `localStorage`; 30 perfis em ≤2 toques. Definições/avançado (caráter, diagnóstico GPS, textos) numa folha.
+- **Acessibilidade:** fonte ≥18 px no ecrã principal, alvos ≥56–64 px, `prefers-reduced-motion`, `aria-*`. **Sem alterações** à síntese, caixa, GPS ou pops (Core = v3.13 excepto VERSION).
 
 ## Alterações na v3.13
 - **+8 inspirações de motor** (síntese original, não oficial): TypeVTEC I4 (crossover ~5800 rpm), HellCharge V8 SC (zumbido de compressor ligado à rotação, sem chiado agudo), AMGMotor 6.2 V8 NA, QuadRotor 4 rotores, SkylineMotor RB26, EvoMotor 4G63, NSXMotor V6, DiabloMotor V12. Cada uma com `GEAR_PERSONA` e `POP_PROFILES` próprios.
@@ -42,7 +47,7 @@ A publicação HTTPS permite testar num browser normal, mas não garante que res
 2. Toca em **Iniciar som**. O volume inicial é 15%; começa baixo também no dispositivo.
 3. Aumenta a velocidade alvo: o motor acompanha a aceleração e faz mudanças virtuais. O controlo de resposta altera a rapidez da aceleração. Reduzir o alvo simula desaceleração.
 4. Mantém **REV** premido para acelerar em vazio (não muda a velocidade). Soltar de propósito, com rotação alta, pode produzir um estalo se os pops estiverem ligados. Cancelar o toque, perder o foco ou ocultar a página não dispara estalos. Também aceita Espaço/Enter com foco.
-5. Experimenta as trinta assinaturas, volume e caráter. Cada perfil tem uma nota curta de carácter. Trocar de perfil enquanto o som corre faz um cruzamento suave entre vozes e cancela estalos pendentes. **Parar som** fecha o contexto de áudio.
+5. Experimenta as trinta assinaturas (mosaicos no seletor de motores), volume e caráter. Cada perfil tem uma nota curta de carácter. Trocar de perfil enquanto o som corre faz um cruzamento suave entre vozes e cancela estalos pendentes. **Parar som** fecha o contexto de áudio.
 6. **Estalos e pops** está desligado por omissão. Se o ligares, um cursor controla a intensidade. Não há reprodução automática: o motor só começa depois de tocares em **Iniciar som**.
 
 ## Assinaturas

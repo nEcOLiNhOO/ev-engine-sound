@@ -41,8 +41,8 @@ test('old baseline cannot derive a speed',()=>assert.equal(core.gpsSample(point(
 test('stateless cruise mapping: gear never decreases with speed and RPM drops at a shift',()=>{let prev=core.mapping(1,'v8'),sawDrop=false;for(let s=2;s<=200;s++){const m=core.mapping(s,'v8');assert(m.gear>=prev.gear,String(s));if(m.gear>prev.gear&&m.rpm<prev.rpm)sawDrop=true;prev=m;}assert(sawDrop);assert.equal(core.mapping(0,'v8').gear,0);});
 test('all engines map finite bounded RPM/load over speed sweep',()=>{for(const key of Object.keys(core.engines))for(let s=-10;s<=300;s++){const m=core.mapping(s,key,4),e=core.engines[key];assert(m.rpm>=e.idle&&m.rpm<=e.max);assert(m.load>=0&&m.load<=1);assert(m.gear>=0&&m.gear<=7);}});
 test('positive acceleration increases synthetic load',()=>assert(core.mapping(40,'v6',2).load>core.mapping(40,'v6',0).load));
-// v3.13: version 3.12 → 3.13 (+8 inspirations).
-test('visible version 3.13 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.13');assert.match(html,/data-version="3\.13"/);assert.match(html,/>v3\.13</);assert.match(html,/Impulso v3\.13/);});
+// v3.14: UI redesign; Core audio unchanged from 3.13 aside from VERSION.
+test('visible version 3.14 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.14');assert.match(html,/data-version="3\.14"/);assert.match(html,/>v3\.14</);assert.match(html,/Impulso v3\.14/);});
 test('30 presets: 22 legacy + 8 new inspirations',()=>{
  const keys=Object.keys(core.engines);
  assert.equal(keys.length,30);
@@ -271,7 +271,7 @@ test('pops control defaults to off and intensity is optional',()=>{
  assert.match(html,/id="popsIntensity"/);
  assert.doesNotMatch(html,/id="popsEnable"[^>]*checked/);
  assert.match(html,/Estalos e pops \(opcional\)/);
- assert.match(html,/<input id="popsIntensity" type="range" min="5" max="100" value="50">/);
+ assert.match(html,/<input id="popsIntensity" type="range" min="5" max="100" value="50"[^>]*>/);
 });
 
 // ---- v3.1 GPS timing fix: receipt time, never pos.timestamp age ----
@@ -468,7 +468,7 @@ test('sim throttle demand: 0→120 km/h upshifts each gear and settles to calm t
  assert.equal(r.gear,7);assert(ups>=6);assert(r.rpm<2300);assert(r.load<.25);
 });
 test('page wires the gearbox, Caixa selector defaults to Conforto, pops upshift gated by popWorthy',()=>{
- assert.match(html,/<select id="gearStyle"><option value="comfort" selected>Conforto/);
+ assert.match(html,/<select id="gearStyle"[^>]*><option value="comfort" selected>Conforto/);
  assert.match(html,/value="sport">Desportiva/);
  // v3.3 adaptation: the call now passes sampleAt (GPS fix receipt time) and pop candidates come from Core.popTriggers.
  assert.match(script,/Core\.gearbox\(gbState,\{speed,accel,demand,dt,sampleAt,profile:e,style:gearStyle\}\)/);
@@ -508,8 +508,8 @@ const SEEDS=Array.from({length:20},(_,i)=>100+i*17);
 const CRUISE={name:'cruise',dur:25,a:0};
 function firstDown(log){const acc=log.filter(x=>x.ph==='acc'),t0=acc[0].t-.05,fd=acc.find(x=>x.shift==='down');return fd?fd.t-t0:Infinity;}
 const gearDrop=log=>log.filter(x=>x.ph==='cruise').pop().gear-Math.min(...log.filter(x=>x.ph==='acc').map(x=>x.gear));
-test('per-profile gearbox personality covers all 30 profiles (version now 3.13)',()=>{
- assert.equal(core.VERSION,'3.13');assert.equal(KEYS.length,30);
+test('per-profile gearbox personality covers all 30 profiles (version now 3.14)',()=>{
+ assert.equal(core.VERSION,'3.14');assert.equal(KEYS.length,30);
  assert.deepEqual(Object.keys(core.GEAR_PERSONA).sort(),KEYS.slice().sort());
  for(const k of KEYS){const p=core.GEAR_PERSONA[k];
   assert.equal(core.engines[k].persona,p,k);
@@ -798,7 +798,7 @@ test('tonal engine code is byte-identical to v3.4 (waves, harmonics, firing); po
  assert.doesNotMatch(html,/intakeNoise|Ruído de admissão/);
  assert.doesNotMatch(script,/createWaveShaper|Core\.AUDIO|audioParams|softClip/);
  assert.equal(core.AUDIO,undefined);
- assert.match(html,/<input id="volume" type="range" min="0" max="70" value="15">/);
+ assert.match(html,/<input id="volume" type="range" min="0" max="70" value="15"[^>]*>/);
 });
 test('updateAudio uses progressive body helpers; ducks during pop/shift-cut; cruise limiter -16/12',()=>{
  const u=fnText(script,'function updateAudio(','async function start(');
@@ -867,6 +867,47 @@ test('updateAudio wires VTEC and optional whine without changing cruise path mar
  assert.match(script,/whineLP\.frequency\.value=3200/);
 });
 
+
+test('v3.14 Core audio module matches v3.13 byte-for-byte except VERSION',()=>{
+ const prev=fs.readFileSync(__dirname+'/../ev-engine-sound-v3.13/index.html','utf8');
+ const ps=prev.match(/<script>([\s\S]*?)<\/script>/)[1];
+ const cs=script;
+ const pCore=ps.slice(0,ps.indexOf("const $=")).replace(/VERSION='3\.\d+'/,"VERSION='X'");
+ const cCore=cs.slice(0,cs.indexOf("const $=")).replace(/VERSION='3\.\d+'/,"VERSION='X'");
+ assert.equal(cCore,pCore);
+});
+test('v3.14 in-car UI: engine tiles, filters, sheets, large start/volume, GPS pill',()=>{
+ assert.match(html,/id="engineTiles"/);
+ assert.match(html,/id="engineFilters"/);
+ assert.match(html,/id="engineSheet"/);
+ assert.match(html,/id="settingsSheet"/);
+ assert.match(html,/id="openEngines"/);
+ assert.match(html,/id="openSettings"/);
+ assert.match(html,/id="gpsPill"/);
+ assert.match(html,/id="volDown"/);
+ assert.match(html,/id="volUp"/);
+ assert.match(html,/id="gearComfort"/);
+ assert.match(html,/id="gearSport"/);
+ assert.match(html,/id="popsOn"/);
+ assert.match(html,/id="popsOff"/);
+ // CSS min sizes for Tesla touch
+ assert.match(html,/#start\{[^}]*min-height:120px/);
+ assert.match(html,/--tile:76px/);
+ assert.match(html,/--touch:64px/);
+ assert.match(html,/min-height:var\(--tile\)/);
+ assert.match(html,/font:18px/);
+ assert.match(html,/prefers-reduced-motion/);
+ // all 30 profile values still present for tiles/select
+ for(const id of Object.keys(core.engines)) assert.match(html,new RegExp('value="'+id+'"'));
+});
+test('v3.14 page builds a tile per profile and syncs favorites key',()=>{
+ assert.match(script,/buildEngineTiles/);
+ assert.match(script,/impulso\.favs\.v1/);
+ assert.match(script,/ENGINE_FILTERS/);
+ assert.match(script,/openSheet\('engineSheet'\)/);
+ assert.match(script,/data-filter/);
+});
+
 async function pageAudioTest(){
  const nodes=[],waves=[];let sr=44100;
  const param=v=>({value:v,targets:[],setTargetAtTime(x,t,tc){this.targets.push({x,t,tc});this.value=x;},setValueAtTime(x){this.value=x;},cancelScheduledValues(){},linearRampToValueAtTime(x){this.value=x;},exponentialRampToValueAtTime(x){this.value=x;}});
@@ -883,11 +924,18 @@ async function pageAudioTest(){
   createPeriodicWave(re,im){const w={n:im.length,im:Array.from(im)};waves.push(w);return w;}
   resume(){return Promise.resolve();}close(){return Promise.resolve();}}
  const els={};
- for(const [,id] of html.matchAll(/id="([^"]+)"/g)) els[id]={id,textContent:'',hidden:false,value:'',checked:false,disabled:false,style:{},classList:{toggle(){},add(){},remove(){}},setAttribute(){},addEventListener(){},setPointerCapture(){},onclick:null};
+ for(const [,id] of html.matchAll(/id="([^"]+)"/g)) els[id]={id,textContent:'',hidden:false,value:'',checked:false,disabled:false,style:{},classList:{toggle(){},add(){},remove(){}},setAttribute(){},addEventListener(){},setPointerCapture(){},dispatchEvent(){return true;},appendChild(){},onclick:null,options:[],children:[],dataset:{},innerHTML:''};
+ // Fake engine <select> options from HTML so engineLabel works
+ const engSel=html.slice(html.indexOf('<select id="engine"'), html.indexOf('</select>', html.indexOf('<select id="engine"'))+9);
+ for(const m of engSel.matchAll(/<option value="([^"]+)">([^<]*)<\/option>/g)){
+  els.engine.options.push({value:m[1],textContent:m[2]});
+ }
+ els.engineTiles={...els.engineTiles, appendChild(c){this.children.push(c);}, get children(){return this._c||(this._c=[]);}, set innerHTML(v){this._c=[];}, get innerHTML(){return '';}};
+
  const KEY='supra2jz';
  Object.assign(els.engine,{value:KEY});els.target.value='0';els.throttle.value='45';els.volume.value='50';els.character.value='40';els.popsIntensity.value='50';els.gearStyle.value='comfort';els.popsEnable.checked=false;
  let raf=null,perf=1000;
- const ctx={document:{getElementById:id=>els[id],addEventListener(){},hidden:false},window:{isSecureContext:true,addEventListener(){},AudioContext:FakeAC},
+ const ctx={document:{getElementById:id=>els[id],querySelectorAll:()=>[],querySelector:()=>null,createElement:(tag)=>({tagName:tag,style:{},classList:{toggle(){},add(){},remove(){}},setAttribute(){},addEventListener(){},appendChild(){},dataset:{},textContent:'',innerHTML:''}),addEventListener(){},hidden:false},window:{isSecureContext:true,addEventListener(){},AudioContext:FakeAC,Event:function(t){this.type=t;},localStorage:{_d:{},getItem(k){return this._d[k]||null;},setItem(k,v){this._d[k]=String(v);}}},
   navigator:{geolocation:{watchPosition(){return 1;},clearWatch(){}},permissions:null},performance:{now:()=>perf},
   requestAnimationFrame:f=>{raf=f;return 1;},cancelAnimationFrame(){},Date,Math,Number,Set,Object,Array,String,Error,Float32Array,Promise,setTimeout,console};
  vm.runInNewContext(script,ctx);

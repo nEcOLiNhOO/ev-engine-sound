@@ -1,16 +1,169 @@
 <!doctype html>
-<html lang="pt-PT" data-version="3.13"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual v3.13</title>
+<html lang="pt-PT" data-version="3.14"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b10"><title>Impulso · Motor virtual v3.14</title>
 <style>
-:root{color-scheme:dark;--bg:#0c1219;--panel:#141e28;--line:#293744;--text:#eef4f7;--muted:#a2b3c0;--accent:#c4f46c;--blue:#7bd9e7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% 0,#20303b,transparent 65%),var(--bg);font:16px system-ui,sans-serif;color:var(--text)}main{max-width:1220px;margin:auto;padding:28px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.brand{font-size:24px;letter-spacing:.2em;font-weight:800}.ver{font-size:11px;letter-spacing:.14em;color:var(--muted);font-weight:700;margin-left:8px;vertical-align:middle}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin:8px 0}.badge{border:1px solid var(--line);border-radius:30px;padding:10px 15px;font-size:12px;color:var(--accent)}.layout{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}.panel{background:linear-gradient(140deg,#18232e,#101922);border:1px solid var(--line);border-radius:24px;padding:25px}.modes{display:flex;gap:8px}button,select{font:inherit;color:inherit;background:#202d39;border:1px solid #3b4a58;border-radius:12px;min-height:48px;padding:10px 16px;cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:3px}button.active{background:var(--accent);color:#14200a;border-color:var(--accent)}button:disabled{opacity:.4;cursor:not-allowed}.dial{height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin:15px auto 0;max-width:380px}.dial:before{content:"";position:absolute;inset:5px 10px 0;border:12px solid #273641;border-bottom-color:transparent;border-radius:50% 50% 35% 35%;pointer-events:none}.dial:after{content:"";position:absolute;inset:5px 10px 0;border:12px solid transparent;border-left-color:var(--accent);border-radius:50% 50% 35% 35%;opacity:.7;pointer-events:none}.speed{font-size:88px;line-height:1.1;font-weight:250;font-variant-numeric:tabular-nums;z-index:1}.unit{color:var(--muted);font-size:13px}.source{margin-top:16px;font-size:12px;color:var(--blue);text-align:center;z-index:1}.rpmrow{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin:8px 0}.track{height:10px;background:#2b3741;border-radius:8px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ffd170,#fc806d);transition:width .12s}.stats{display:flex;justify-content:space-between;margin:22px 0;font-size:13px;color:var(--muted)}.stats b{display:block;font-size:20px;color:var(--text);margin-top:5px}.actions{display:flex;gap:12px}.actions button{flex:1;min-height:60px;font-weight:700}#start{background:var(--accent);color:#182312;border:0}#rev{touch-action:none;user-select:none;-webkit-user-select:none}#rev.held{background:var(--blue);color:#12212a}.controls h1{font-size:25px;margin:0 0 6px}.subtitle{color:var(--muted);font-size:14px;line-height:1.5}label{display:block;color:var(--muted);font-size:13px;margin-top:23px}.labelrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.labelrow output{color:var(--text)}select{width:100%}input[type=range]{accent-color:var(--accent);width:100%;min-height:32px;margin:0;cursor:pointer}.note{font-size:12px;color:var(--muted);line-height:1.6}.honesty{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5}#profileHint{margin-top:10px;color:var(--text)}.notice{min-height:45px;padding:12px 0 0;color:var(--blue);font-size:13px;line-height:1.5}.gpsbox{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:18px}.gpsbox button{width:100%}.diag{margin-top:10px;font-size:12px;color:var(--muted)}.diag summary{cursor:pointer;color:var(--text);min-height:32px;padding-top:6px}.diag dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:8px 0 0}.diag dt{color:var(--muted)}.diag dd{margin:0;color:var(--text);font-variant-numeric:tabular-nums;word-break:break-word}.toggle{display:flex;align-items:center;gap:10px;margin-top:20px;color:var(--text);font-size:14px;cursor:pointer}.toggle input{width:22px;height:22px;accent-color:var(--accent);flex-shrink:0}.popsbox{margin-top:4px}.foot{margin:20px 2px;color:var(--muted);font-size:12px;line-height:1.6} [hidden]{display:none!important}@media(max-width:760px){main{padding:16px}.layout{grid-template-columns:1fr}.panel{padding:20px}header{margin-bottom:16px}.brand{font-size:20px}.dial{height:230px}.speed{font-size:76px}.badge{font-size:10px;padding:8px}.controls h1{font-size:23px}}@media(min-width:900px) and (max-height:800px){main{padding-top:18px}.dial{height:225px}label{margin-top:16px}}
-</style></head><body><main>
-<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.13</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
-<div class="layout"><section class="panel" aria-label="Instrumentos e reprodução"><div class="modes" aria-label="Modo"><button id="simMode" class="active" aria-pressed="true">Simulação</button><button id="gpsMode" aria-pressed="false">GPS real</button></div>
-<div class="dial"><div class="speed" id="speed">0</div><div class="unit">km/h</div><div class="source" id="source">Velocidade simulada · sem ligação ao carro</div></div>
-<div class="rpmrow"><span id="rpm">800 rpm</span><span id="redline">6 800 máx.</span></div><div class="track" role="meter" aria-label="Rotações do motor" aria-valuemin="0" aria-valuemax="6800" aria-valuenow="800" id="rpmMeter"><div class="fill" id="rpmFill"></div></div>
-<div class="stats"><div>MARCHA VIRTUAL<b id="gear">N</b></div><div>CARGA SINTÉTICA<b id="load">0%</b></div><div>ÁUDIO<b id="audioState">Desligado</b></div></div>
-<div class="actions"><button id="start">▶ Iniciar som</button><button id="rev" aria-label="Manter premido para acelerar o motor em vazio">REV · manter</button></div><div class="notice" role="status" aria-live="polite" id="status">Começa com volume baixo. O som só é ativado por ti.</div>
-</section><section class="panel controls"><div class="eyebrow">Escolhe a tua assinatura</div><h1>Elétrico no movimento.<br>Combustão no ouvido.</h1><div class="subtitle">Síntese em tempo real, sem gravações nem downloads. Vinte e uma assinaturas, com estalos opcionais.</div>
-<label for="engine">Assinatura sonora</label><select id="engine">
+
+:root{color-scheme:dark;--bg:#070b10;--panel:#121a22;--panel2:#18232e;--line:#2c3a48;--text:#f2f6f8;--muted:#9aafbf;--accent:#c4f46c;--blue:#7bd9e7;--warn:#ffd170;--bad:#fc806d;--ok:#6fe3a1;--touch:64px;--tile:76px;--gap:12px;--radius:18px}
+*{box-sizing:border-box}
+html,body{height:100%;margin:0}
+body{background:radial-gradient(ellipse at 80% -10%,#1a2a36,transparent 55%),var(--bg);font:18px/1.35 system-ui,-apple-system,sans-serif;color:var(--text);overflow:hidden}
+@media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+[hidden]{display:none!important}
+button,select,input{font:inherit;color:inherit}
+button{background:#1d2a36;border:1px solid var(--line);border-radius:14px;min-height:var(--touch);padding:12px 16px;cursor:pointer;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+button.active,button[aria-pressed="true"]{background:var(--accent);color:#14200a;border-color:var(--accent);font-weight:700}
+button:disabled{opacity:.4;cursor:not-allowed}
+.app{height:100%;max-width:1220px;margin:0 auto;padding:10px 14px 12px;display:flex;flex-direction:column;gap:10px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-shrink:0}
+.brand{font-size:22px;letter-spacing:.18em;font-weight:800}
+.brand .ver{font-size:13px;letter-spacing:.12em;color:var(--muted);margin-left:8px;font-weight:700}
+.pill{display:inline-flex;align-items:center;gap:8px;min-height:48px;padding:8px 14px;border-radius:999px;border:1px solid var(--line);font-size:16px;font-weight:700}
+.pill .dot{width:12px;height:12px;border-radius:50%;background:var(--muted)}
+.pill.ok{border-color:#2f6b4a;background:#10241a;color:var(--ok)}.pill.ok .dot{background:var(--ok)}
+.pill.warn{border-color:#7a6230;background:#2a220f;color:var(--warn)}.pill.warn .dot{background:var(--warn)}
+.pill.bad{border-color:#7a3a32;background:#2a1412;color:var(--bad)}.pill.bad .dot{background:var(--bad)}
+.pill.off{color:var(--muted)}
+.iconbtn{min-width:64px;min-height:64px;font-size:22px;border-radius:16px}
+.main{flex:1;min-height:0;display:grid;grid-template-columns:1.15fr .85fr;gap:12px}
+.panel{background:linear-gradient(160deg,var(--panel2),var(--panel));border:1px solid var(--line);border-radius:22px;padding:14px;display:flex;flex-direction:column;gap:10px;min-height:0}
+.seg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.seg.tri{grid-template-columns:1fr 1fr 1fr}
+.seg button{min-height:56px;font-size:18px;font-weight:650}
+.readout{display:grid;grid-template-columns:1.4fr .7fr .9fr;gap:10px;align-items:stretch}
+.speedbox,.statbox{background:#0d141b;border:1px solid var(--line);border-radius:18px;padding:10px 12px;text-align:center}
+.speed{font-size:72px;line-height:1;font-weight:250;font-variant-numeric:tabular-nums}
+.unit{color:var(--muted);font-size:16px;margin-top:2px}
+.source{color:var(--blue);font-size:15px;margin-top:6px;min-height:1.3em}
+.statbox .lbl{color:var(--muted);font-size:14px;letter-spacing:.06em}
+.statbox b{display:block;font-size:34px;margin-top:4px;font-variant-numeric:tabular-nums}
+.rpmwrap{margin-top:2px}
+.rpmrow{display:flex;justify-content:space-between;color:var(--muted);font-size:16px;margin-bottom:6px}
+.track{height:18px;background:#24313c;border-radius:10px;overflow:hidden}
+.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ffd170,#fc806d)}
+@media (prefers-reduced-motion:no-preference){.fill{transition:width .12s}}
+.actions{display:grid;grid-template-columns:1.4fr 1fr;gap:10px}
+#start{min-height:120px;font-size:28px;font-weight:800;background:var(--accent);color:#182312;border:0;border-radius:22px}
+#start.running{background:var(--bad);color:#1a0a08}
+#rev{min-height:120px;font-size:22px;font-weight:800;touch-action:none;user-select:none;-webkit-user-select:none}
+#rev.held{background:var(--blue);color:#12212a}
+.volrow{display:grid;grid-template-columns:64px 1fr 64px auto;gap:8px;align-items:center}
+.volrow button{min-width:64px;min-height:64px;font-size:28px;font-weight:800}
+.volrow input[type=range]{width:100%;min-height:48px;accent-color:var(--accent)}
+.volrow output{min-width:64px;text-align:right;font-weight:700;font-size:20px}
+.engine-current{display:grid;grid-template-columns:1fr auto;gap:8px}
+#openEngines{min-height:72px;font-size:18px;text-align:left;padding:12px 16px;display:flex;flex-direction:column;justify-content:center;gap:2px}
+#openEngines .name{font-size:22px;font-weight:800}
+#openEngines .hint{font-size:15px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.notice{min-height:28px;color:var(--blue);font-size:16px}
+.sim-inline{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sim-inline label{display:block;color:var(--muted);font-size:15px;margin-bottom:4px}
+.labelrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:6px;font-size:16px}
+.labelrow output{color:var(--text);font-weight:700}
+input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0;cursor:pointer}
+.sr-only,select.sr-select{position:absolute!important;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.sheet{position:fixed;inset:0;background:rgba(0,0,0,.62);z-index:40;display:flex;align-items:stretch;justify-content:center;padding:10px}
+.sheet-panel{width:min(1180px,100%);background:var(--bg);border:1px solid var(--line);border-radius:22px;display:flex;flex-direction:column;max-height:100%;overflow:hidden}
+.sheet-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);flex-shrink:0}
+.sheet-head h2{margin:0;font-size:24px}
+.sheet-body{padding:12px 14px;overflow:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+.filters button{min-height:56px;padding:10px 14px;font-size:17px}
+.tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
+.tile{min-height:var(--tile);text-align:left;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;border-radius:16px;font-size:18px}
+.tile .tname{font-weight:800;font-size:18px;line-height:1.2}
+.tile .tmeta{color:var(--muted);font-size:14px;margin-top:3px}
+.tile.selected{outline:3px solid var(--accent);background:#1e3320;border-color:var(--accent)}
+.star{min-width:56px;min-height:56px;font-size:24px;border-radius:14px;background:#162029}
+.star.on{color:var(--warn)}
+.adv label{display:block;color:var(--muted);font-size:16px;margin-top:16px}
+.adv .note,.honesty,.footnote{font-size:15px;color:var(--muted);line-height:1.5}
+.honesty{margin:10px 0}
+.gpsbox{border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:12px}
+.gpsbox button{width:100%;min-height:64px;font-size:18px}
+.diag{margin-top:10px;font-size:15px;color:var(--muted)}
+.diag summary{cursor:pointer;color:var(--text);min-height:48px;display:flex;align-items:center;font-size:17px}
+.diag dl{display:grid;grid-template-columns:auto 1fr;gap:6px 12px;margin:8px 0 0}
+.diag dt{color:var(--muted)}.diag dd{margin:0;color:var(--text);font-variant-numeric:tabular-nums;word-break:break-word}
+#profileHint{margin-top:8px;color:var(--text);font-size:16px}
+.toggle{display:flex;align-items:center;gap:12px;margin-top:12px;color:var(--text);font-size:18px;cursor:pointer;min-height:56px}
+.toggle input{width:28px;height:28px;accent-color:var(--accent);flex-shrink:0}
+@media(max-width:900px){
+  body{overflow:auto}
+  .app{height:auto;min-height:100%}
+  .main{grid-template-columns:1fr}
+  .speed{font-size:64px}
+  #start,#rev{min-height:96px;font-size:22px}
+  .readout{grid-template-columns:1fr 1fr;grid-template-rows:auto auto}
+  .speedbox{grid-column:1/-1}
+}
+@media(max-height:820px) and (min-width:900px){
+  .speed{font-size:60px}
+  #start,#rev{min-height:110px}
+  .app{padding:8px 12px}
+}
+
+</style></head><body>
+<div class="app" role="application" aria-label="Impulso condução">
+<header class="topbar">
+ <div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.14</span></div>
+ <div class="pill off" id="gpsPill" role="status" aria-live="polite" aria-label="Estado GPS: Simulação"><span class="dot" aria-hidden="true"></span><span id="gpsPillText">Simulação</span></div>
+ <button type="button" class="iconbtn" id="openSettings" aria-label="Abrir definições e avançado">⚙</button>
+</header>
+
+<div class="main">
+ <section class="panel" aria-label="Condução">
+  <div class="seg" role="group" aria-label="Modo">
+   <button type="button" id="simMode" class="active" aria-pressed="true">Simulação</button>
+   <button type="button" id="gpsMode" aria-pressed="false">GPS</button>
+  </div>
+  <div class="readout" aria-live="polite">
+   <div class="speedbox"><div class="speed" id="speed">0</div><div class="unit">km/h</div><div class="source" id="source">Velocidade simulada · sem ligação ao carro</div></div>
+   <div class="statbox"><div class="lbl">MARCHA</div><b id="gear">N</b></div>
+   <div class="statbox"><div class="lbl">ÁUDIO</div><b id="audioState">Desligado</b></div>
+  </div>
+  <div class="rpmwrap">
+   <div class="rpmrow"><span id="rpm">800 rpm</span><span id="redline">6 800 máx.</span></div>
+   <div class="track" role="meter" aria-label="Rotações do motor" aria-valuemin="0" aria-valuemax="6800" aria-valuenow="800" id="rpmMeter"><div class="fill" id="rpmFill"></div></div>
+  </div>
+  <div class="actions">
+   <button type="button" id="start" aria-label="Iniciar ou parar o som">▶ Iniciar som</button>
+   <div id="revWrap"><button type="button" id="rev" aria-label="Manter premido para acelerar o motor em vazio">REV · manter</button></div>
+  </div>
+  <div class="volrow" aria-label="Volume">
+   <button type="button" id="volDown" aria-label="Baixar volume">−</button>
+   <input id="volume" type="range" min="0" max="70" value="15">
+   <button type="button" id="volUp" aria-label="Subir volume">+</button>
+   <output id="volumeValue" for="volume">15%</output>
+  </div>
+  <div class="notice" role="status" aria-live="polite" id="status">Começa com volume baixo. O som só é ativado por ti.</div>
+ </section>
+
+ <section class="panel" aria-label="Controlos rápidos">
+  <div class="seg" role="group" aria-label="Caixa virtual">
+   <button type="button" id="gearComfort" class="active" aria-pressed="true">Conforto</button>
+   <button type="button" id="gearSport" aria-pressed="false">Desportiva</button>
+  </div>
+  <select id="gearStyle" class="sr-select" aria-hidden="true" tabindex="-1"><option value="comfort" selected>Conforto · cruzeiro calmo</option><option value="sport">Desportiva · mantém rotação</option></select>
+  <div class="seg" role="group" aria-label="Estalos e pops">
+   <button type="button" id="popsOff" class="active" aria-pressed="true">Pops off</button>
+   <button type="button" id="popsOn" aria-pressed="false">Pops on</button>
+  </div>
+  <label class="toggle sr-only" for="popsEnable"><input id="popsEnable" type="checkbox"> Estalos e pops (opcional)</label>
+  <div id="popsIntensityRow" hidden>
+   <div class="labelrow"><span>Intensidade pops</span><output id="popsIntensityValue">50%</output></div>
+   <div class="volrow">
+    <button type="button" id="popsDown" aria-label="Baixar intensidade dos pops">−</button>
+    <input id="popsIntensity" type="range" min="5" max="100" value="50">
+    <button type="button" id="popsUp" aria-label="Subir intensidade dos pops">+</button>
+    <span></span>
+   </div>
+  </div>
+  <div id="popsControls" hidden></div>
+  <button type="button" id="openEngines" aria-label="Escolher motor">
+   <span class="name" id="engineName">V8 · grave e irregular</span>
+   <span class="hint" id="engineMeta">V8 · 6 800 rpm</span>
+  </button>
+  <select id="engine" class="sr-select" aria-hidden="true" tabindex="-1">
 <optgroup label="Inspirações de modelos">
 <option value="gt3rs">911 GT3 RS · boxer</option>
 <option value="gtr">Nissan GT-R · V6</option>
@@ -46,24 +199,64 @@
 <option value="v12">V12 · suave e agudo</option>
 </optgroup>
 </select>
-<p class="note" id="profileHint"></p>
-<p class="honesty">Síntese original, não oficial — não é uma gravação nem uma cópia autêntica. A afinação é uma escolha de design.</p>
-<div id="simControls"><label for="target"><span class="labelrow"><span>Velocidade alvo simulada</span><output id="targetValue">0 km/h</output></span></label><input id="target" type="range" min="0" max="160" value="0" step="1"><label for="throttle"><span class="labelrow"><span>Resposta à aceleração</span><output id="throttleValue">45%</output></span></label><input id="throttle" type="range" min="5" max="100" value="45"><div class="note">Sobe a velocidade alvo para ouvir a aceleração e as mudanças virtuais. REV acelera em vazio; não altera a velocidade.</div></div>
-<div id="gpsControls" class="gpsbox" hidden><button id="gpsEnable">Autorizar localização</button><div class="note" id="gpsInfo">GPS desligado. Sem acesso ao pedal, ao motor ou à telemetria.</div><details class="diag" id="gpsDiag"><summary>Diagnóstico GPS</summary><dl><dt>Contexto seguro</dt><dd id="dgSecure">—</dd><dt>Permissão</dt><dd id="dgPerm">—</dd><dt>Desvio do timestamp</dt><dd id="dgOffset">—</dd><dt>Precisão</dt><dd id="dgAcc">—</dd><dt>Velocidade nativa</dt><dd id="dgNative">—</dd><dt>Origem</dt><dd id="dgSource">—</dd><dt>Última posição</dt><dd id="dgAge">—</dd><dt>Aceites / rejeitadas / repetidas</dt><dd id="dgCounts">0 / 0 / 0</dd><dt>Último motivo</dt><dd id="dgReason">—</dd><dt>Último erro</dt><dd id="dgError">—</dd></dl><p class="note">O desvio compara o timestamp do browser com o relógio do dispositivo. É só informativo: a idade é medida pela hora de receção.</p></details></div>
-<label for="volume"><span class="labelrow"><span>Volume</span><output id="volumeValue">15%</output></span></label><input id="volume" type="range" min="0" max="70" value="15"><label for="character"><span class="labelrow"><span>Caráter · suave → agressivo</span><output id="characterValue">40%</output></span></label><input id="character" type="range" min="0" max="100" value="40"><label for="gearStyle">Caixa virtual</label><select id="gearStyle"><option value="comfort" selected>Conforto · cruzeiro calmo</option><option value="sport">Desportiva · mantém rotação</option></select>
-<div class="popsbox">
-<label class="toggle" for="popsEnable"><input id="popsEnable" type="checkbox"> Estalos e pops (opcional)</label>
-<div id="popsControls" hidden>
-<label for="popsIntensity"><span class="labelrow"><span>Intensidade dos estalos</span><output id="popsIntensityValue">50%</output></span></label>
-<input id="popsIntensity" type="range" min="5" max="100" value="50">
-<p class="note">Desligado por omissão. Só em desaceleração, ao largar o REV com rotação alta, ou numa mudança virtual / desaceleração GPS válida. Não lê o pedal e não dispara se o sinal se perder.</p>
+  <div id="simInline" class="sim-inline">
+   <div id="simControls">
+    <label for="target"><span class="labelrow"><span>Velocidade alvo</span><output id="targetValue">0 km/h</output></span></label>
+    <input id="target" type="range" min="0" max="160" value="0" step="1" aria-label="Velocidade alvo simulada">
+    <label for="throttle"><span class="labelrow"><span>Resposta</span><output id="throttleValue">45%</output></span></label>
+    <input id="throttle" type="range" min="5" max="100" value="45" aria-label="Resposta à aceleração">
+   </div>
+  </div>
+    <div id="gpsControls" class="gpsbox" hidden>
+    <button type="button" id="gpsEnable">Autorizar localização</button>
+    <div class="note" id="gpsInfo">GPS desligado. Sem acesso ao pedal, ao motor ou à telemetria.    <details class="diag" id="gpsDiag"><summary>Diagnóstico GPS</summary><dl><dt>Contexto seguro</dt><dd id="dgSecure">—</dd><dt>Permissão</dt><dd id="dgPerm">—</dd><dt>Desvio do timestamp</dt><dd id="dgOffset">—</dd><dt>Precisão</dt><dd id="dgAcc">—</dd><dt>Velocidade nativa</dt><dd id="dgNative">—</dd><dt>Origem</dt><dd id="dgSource">—</dd><dt>Última posição</dt><dd id="dgAge">—</dd><dt>Aceites / rejeitadas / repetidas</dt><dd id="dgCounts">0 / 0 / 0</dd><dt>Último motivo</dt><dd id="dgReason">—</dd><dt>Último erro</dt><dd id="dgError">—</dd></dl><p class="note">O desvio compara o timestamp do browser com o relógio do dispositivo. É só informativo: a idade é medida pela hora de receção.</p></details>
+   </div>
+   </div>
+<div class="statbox" style="display:flex;justify-content:space-around;align-items:center;min-height:64px">
+   <div><div class="lbl">CARGA</div><b id="load" style="font-size:24px">0%</b></div>
+   <div class="badge" id="modeBadge" style="border:1px solid var(--line);border-radius:30px;padding:10px 14px;font-size:14px;color:var(--accent)">SIMULAÇÃO · PARADO</div>
+  </div>
+ </section>
 </div>
 </div>
-</section></div><footer class="foot">Impulso v3.13. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Saída pelos altifalantes do carro e o browser Tesla em movimento não estão validados. Síntese original, não oficial.</footer>
-</main><script>
+
+<div class="sheet" id="engineSheet" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="Escolher motor">
+ <div class="sheet-panel">
+  <div class="sheet-head"><h2>Motores</h2><button type="button" class="iconbtn" data-close="engineSheet" aria-label="Fechar motores">✕</button></div>
+  <div class="sheet-body">
+   <div class="filters" id="engineFilters" role="group" aria-label="Filtro de motores">
+    <button type="button" data-filter="todos" class="active" aria-pressed="true">Todos</button>
+    <button type="button" data-filter="fav" aria-pressed="false">★ Favoritos</button>
+    <button type="button" data-filter="v8" aria-pressed="false">V8</button>
+    <button type="button" data-filter="v6-i6" aria-pressed="false">V6 / I6</button>
+    <button type="button" data-filter="i4-i5" aria-pressed="false">I3–I5</button>
+    <button type="button" data-filter="v10-v12" aria-pressed="false">V10 / V12</button>
+    <button type="button" data-filter="rotativo" aria-pressed="false">Rotativo</button>
+   </div>
+   <div class="tiles" id="engineTiles"></div>
+   <p class="honesty">Síntese original, não oficial — não é uma gravação nem uma cópia autêntica. A afinação é uma escolha de design.</p>
+  </div>
+ </div>
+</div>
+
+<div class="sheet" id="settingsSheet" hidden aria-hidden="true" role="dialog" aria-modal="true" aria-label="Definições">
+ <div class="sheet-panel">
+  <div class="sheet-head"><h2>Definições</h2><button type="button" class="iconbtn" data-close="settingsSheet" aria-label="Fechar definições">✕</button></div>
+  <div class="sheet-body adv">
+   <p id="profileHint" class="note"></p>
+   <label for="character"><span class="labelrow"><span>Caráter · suave → agressivo</span><output id="characterValue">40%</output></span></label>
+   <input id="character" type="range" min="0" max="100" value="40" aria-label="Caráter do som">
+
+   <p class="honesty">Síntese original, não oficial — não é uma gravação nem uma cópia autêntica.</p>
+   <p class="footnote">Impulso v3.14. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Interface pensada para o browser do Tesla em landscape. Síntese original, não oficial.</p>
+  </div>
+ </div>
+</div>
+
+<script>
 'use strict';
 const Core=(()=>{
- const VERSION='3.13';
+ const VERSION='3.14';
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  const POP_LIMITS={maxGain:.38,maxVoices:8,decelThresh:-.28,maxNodesPerEvent:3,crackleDur:.09,shiftDur:.14,burstCooldown:4,liftDv:2,liftWindow:2.5,minSpeed:28,popBus:.65,popCeil:-3,duckDepth:.22,duckMs:.028};
  // Per-profile pop & bang character (v3.10+). bodyHz is a bias; v3.11 blends it with firingHz so pops sit in the engine.
@@ -713,6 +906,104 @@ const Core=(()=>{
  return {VERSION,CF,lsTrend,comfortKickDv,comfortDecelRpm,gearboxComfort,gearboxV36,clamp,engines,mapping,gearbox,gearRpm,cruiseGear,demandFromAccel,popTriggers,kickThresholds,GEAR_PERSONA,KICK_LEVELS,GEAR_RATIOS,GEARBOX_STYLES,distance,gpsSample,gpsFix,gpsStep,formatOffset,harmonicPartial,profileFingerprint,firingMul,firingHz,bodySubHz,bodySubGain,bodyPulse,bodyExhaustTone,vtecAmount,whineHz,whineGainAt,evaluatePop,popEnvelope,POP_LIMITS,POP_PROFILES,popProfileOf,popFallback,popFingerprint};
 })();
 const $=id=>document.getElementById(id),{clamp,engines,mapping,gpsSample}=Core;
+
+/* ---- v3.14 in-car UI wiring (no audio/Core changes) ---- */
+const ENGINE_FILTERS={
+ todos:()=>true,
+ fav:(id)=>favSet.has(id),
+ v8:(id)=>{const e=engines[id];return e&&e.kind==='piston'&&e.cyl===8;},
+ 'v6-i6':(id)=>{const e=engines[id];return e&&e.kind==='piston'&&e.cyl===6;},
+ 'i4-i5':(id)=>{const e=engines[id];return e&&e.kind==='piston'&&(e.cyl===4||e.cyl===5||e.cyl===3);},
+ 'v10-v12':(id)=>{const e=engines[id];return e&&e.kind==='piston'&&(e.cyl===10||e.cyl===12);},
+ rotativo:(id)=>{const e=engines[id];return e&&e.kind==='rotary';}
+};
+let favSet=new Set();
+try{favSet=new Set(JSON.parse((typeof localStorage!=='undefined'&&localStorage.getItem('impulso.favs.v1'))||'[]'));}catch(_){favSet=new Set();}
+let engineFilter='todos';
+function saveFavs(){try{if(typeof localStorage!=='undefined')localStorage.setItem('impulso.favs.v1',JSON.stringify([...favSet]));}catch(_){}}
+function engineLabel(id){const opt=[...$('engine').options].find(o=>o.value===id);return opt?opt.textContent:id;}
+function engineGroup(id){const e=engines[id];if(!e)return '';if(e.kind==='rotary')return 'Rotativo';if(e.cyl===8)return 'V8';if(e.cyl===6)return e.fireMul===3&&(id==='gt3rs'||id==='wrx'||id==='flat6')?'Boxer/I6·V6':'V6 / I6';if(e.cyl===4||e.cyl===5||e.cyl===3)return 'I3–I5';if(e.cyl===10||e.cyl===12)return 'V10 / V12';return 'Outro';}
+function refreshEngineChrome(){
+ const id=$('engine').value;const e=engines[id];
+ const name=engineLabel(id);
+ if($('engineName')) $('engineName').textContent=name;
+ if($('engineMeta')) $('engineMeta').textContent=e?(engineGroup(id)+' · '+e.max.toLocaleString('pt-PT')+' rpm'):'';
+ if($('profileHint')) $('profileHint').textContent=e?e.hint:'';
+ const tiles=typeof document.querySelectorAll==='function'?document.querySelectorAll('.tile[data-engine]'):[];
+ tiles.forEach(t=>{
+  t.classList.toggle('selected',t.dataset.engine===id);
+  t.setAttribute('aria-pressed',t.dataset.engine===id?'true':'false');
+ });
+}
+function buildEngineTiles(){
+ const host=$('engineTiles');if(!host||typeof document.createElement!=='function') return;
+ const ids=Object.keys(engines);
+ const ordered=[...ids].sort((a,b)=>{
+  const af=favSet.has(a)?0:1,bf=favSet.has(b)?0:1;
+  if(af!==bf) return af-bf;
+  return engineLabel(a).localeCompare(engineLabel(b),'pt');
+ });
+ const pred=ENGINE_FILTERS[engineFilter]||ENGINE_FILTERS.todos;
+ host.innerHTML='';
+ for(const id of ordered){
+  if(!pred(id)) continue;
+  const btn=document.createElement('button');
+  btn.type='button';btn.className='tile'+(id===$('engine').value?' selected':'');
+  btn.dataset.engine=id;btn.setAttribute('aria-pressed',id===$('engine').value?'true':'false');
+  btn.setAttribute('aria-label','Motor '+engineLabel(id));
+  const star=document.createElement('button');
+  star.type='button';star.className='star'+(favSet.has(id)?' on':'');
+  star.setAttribute('aria-label',favSet.has(id)?'Remover dos favoritos':'Adicionar aos favoritos');
+  star.textContent=favSet.has(id)?'★':'☆';
+  star.addEventListener('click',ev=>{if(ev&&ev.stopPropagation)ev.stopPropagation();if(favSet.has(id))favSet.delete(id);else favSet.add(id);saveFavs();buildEngineTiles();});
+  const left=document.createElement('div');
+  const tname=document.createElement('div');tname.className='tname';tname.textContent=engineLabel(id);
+  const tmeta=document.createElement('div');tmeta.className='tmeta';tmeta.textContent=engineGroup(id)+(engines[id]?' · '+engines[id].max.toLocaleString('pt-PT')+' rpm':'');
+  left.appendChild(tname);left.appendChild(tmeta);
+  btn.appendChild(left);btn.appendChild(star);
+  btn.addEventListener('click',()=>{
+   $('engine').value=id;
+   if(typeof Event==='function') $('engine').dispatchEvent(new Event('change'));
+   else {describeProfile();refreshEngineChrome();}
+   refreshEngineChrome();
+   closeSheet('engineSheet');
+  });
+  host.appendChild(btn);
+ }
+ if(!(host.children&&host.children.length)){
+  const empty=document.createElement('p');empty.className='note';empty.textContent='Nenhum motor neste filtro.';host.appendChild(empty);
+ }
+}
+function openSheet(id){const el=$(id);if(!el)return;el.hidden=false;el.setAttribute('aria-hidden','false');const focus=el.querySelector('[data-close],button');if(focus)focus.focus();}
+function closeSheet(id){const el=$(id);if(!el)return;el.hidden=true;el.setAttribute('aria-hidden','true');}
+function setGpsPill(state,text){
+ const p=$('gpsPill');if(!p)return;
+ p.className='pill '+state;
+ $('gpsPillText').textContent=text;
+ p.setAttribute('aria-label','Estado GPS: '+text);
+}
+function syncGearSeg(){
+ const v=$('gearStyle').value;
+ if($('gearComfort')){$('gearComfort').classList.toggle('active',v==='comfort');$('gearComfort').setAttribute('aria-pressed',v==='comfort');}
+ if($('gearSport')){$('gearSport').classList.toggle('active',v==='sport');$('gearSport').setAttribute('aria-pressed',v==='sport');}
+}
+function syncPopsSeg(){
+ const on=$('popsEnable').checked;
+ if($('popsOn')){$('popsOn').classList.toggle('active',on);$('popsOn').setAttribute('aria-pressed',on);}
+ if($('popsOff')){$('popsOff').classList.toggle('active',!on);$('popsOff').setAttribute('aria-pressed',!on);}
+ $('popsControls').hidden=!on;
+ if($('popsIntensityRow')) $('popsIntensityRow').hidden=!on;
+}
+function bumpVolume(d){
+ const el=$('volume');const v=Math.max(0,Math.min(70,+el.value+d));
+ el.value=String(v);el.dispatchEvent(new Event('input'));
+}
+function bumpPops(d){
+ const el=$('popsIntensity');const v=Math.max(5,Math.min(100,+el.value+d));
+ el.value=String(v);el.dispatchEvent(new Event('input'));
+}
+/* wrap setMode to refresh pills — patch after original setMode exists via monkey at end */
+
 let gbState=null,sinceDecelPop=9,gpsTrack=null,gpsStats={ok:0,bad:0,dup:0},gpsLastOffset=null,gpsLastAcc=null,gpsLastNative=null,gpsLastSource='—',gpsLastReason='—',gpsLastError='—',gpsPerm='—',diagTimer=0,mode='sim',speed=0,rpm=800,load=0,drive=0,gear=0,rev=false,running=false,audio=null,watch=null,previous=null,lastFix=0,gpsSpeed=null,gpsAcceleration=0,gpsFixSpeed=null,gpsFixAccel=0,gpsExtrap=null,shiftGlideUntil=0,lastFrame=performance.now(),frame=0,hiddenPause=false,prevGear=0,prevValid=false,popSuppress=false,lastPopAt=null;
 function message(t){$('status').textContent=t;}
 function describeProfile(){
@@ -1043,7 +1334,7 @@ async function start(){
   await audio.ctx.resume();
   running=true;
   lastPopAt=null;
-  $('start').textContent=audio.ctx.state==='running'?'■ Parar som':'↻ Retomar som';
+  $('start').textContent=audio.ctx.state==='running'?'■ Parar som':'↻ Retomar som';$('start').classList.toggle('running',audio.ctx.state==='running');
   $('audioState').textContent=audio.ctx.state==='running'?'Ativo':'Pausado';
   message('Som sintetizado no browser. Ajusta o volume com cuidado.');
  }catch(err){message('Não foi possível iniciar o áudio: '+err.message);stop();}
@@ -1057,7 +1348,7 @@ function stop(){
   setTimeout(()=>old.ctx.close().catch(()=>{}),160);
  }
  lastPopAt=null;
- $('start').textContent='▶ Iniciar som';
+ $('start').textContent='▶ Iniciar som';$('start').classList.remove('running');
  $('audioState').textContent='Desligado';
 }
 function clearGPS(){
@@ -1095,7 +1386,11 @@ function setMode(next){
  $('gpsMode').setAttribute('aria-pressed',mode==='gps');
  $('modeBadge').textContent=mode==='sim'?'SIMULAÇÃO · PARADO':'GPS · VELOCIDADE REAL';
  $('rev').disabled=mode==='gps';
+ if($('revWrap')) $('revWrap').hidden=mode!=='sim';
+ if($('simInline')) $('simInline').hidden=mode!=='sim';
  $('gpsInfo').textContent='GPS desligado. Autoriza a localização para começar.';
+ if(mode==='sim') setGpsPill('off','Simulação');
+ else setGpsPill('warn','GPS a autorizar');
  message(mode==='sim'?'Modo de teste: velocidade e mudanças simuladas.':'GPS não lê o acelerador. Sem localização válida, não é apresentada velocidade.');
 }
 function enableGPS(){
@@ -1212,6 +1507,7 @@ function tick(now){
  prevValid=valid;prevGear=nextGear;gear=nextGear;
  $('speed').textContent=valid?Math.round(speed):'—';
  $('source').textContent=mode==='sim'?'Velocidade simulada · sem ligação ao carro':valid?'GPS · não mede o pedal':'GPS · sem velocidade válida';
+ if(mode==='gps'){if(valid) setGpsPill('ok','GPS ativo');else if(watch===null) setGpsPill('bad','GPS desligado');else setGpsPill('warn','GPS a aguardar');}
  $('rpm').textContent=Math.round(rpm).toLocaleString('pt-PT')+' rpm';
  $('redline').textContent=e.max.toLocaleString('pt-PT')+' máx.';
  $('rpmFill').style.width=(rpm/e.max*100)+'%';
@@ -1229,10 +1525,11 @@ $('gpsMode').onclick=()=>setMode('gps');
 $('gpsEnable').onclick=enableGPS;
 $('engine').addEventListener('change',()=>{
  describeProfile();
+ refreshEngineChrome();
  cancelPops(audio);popSuppress=true;lastPopAt=null;
 });
 $('popsEnable').addEventListener('change',()=>{
- $('popsControls').hidden=!$('popsEnable').checked;
+ syncPopsSeg();
  if(!$('popsEnable').checked){cancelPops(audio);lastPopAt=null;}
 });
 $('rev').addEventListener('pointerdown',ev=>{if(mode!=='sim')return;ev.preventDefault();$('rev').setPointerCapture(ev.pointerId);rev=true;$('rev').classList.add('held');});
@@ -1255,6 +1552,35 @@ document.addEventListener('visibilitychange',()=>{
 });
 window.addEventListener('pagehide',()=>{clearGPS();stop();cancelAnimationFrame(frame);});
 window.addEventListener('pageshow',e=>{if(e.persisted){lastFrame=performance.now();frame=requestAnimationFrame(tick);}});
+
+/* v3.14 UI controls */
+if($('volDown')) $('volDown').onclick=()=>bumpVolume(-5);
+if($('volUp')) $('volUp').onclick=()=>bumpVolume(5);
+if($('popsDown')) $('popsDown').onclick=()=>bumpPops(-5);
+if($('popsUp')) $('popsUp').onclick=()=>bumpPops(5);
+if($('gearComfort')) $('gearComfort').onclick=()=>{$('gearStyle').value='comfort';syncGearSeg();};
+if($('gearSport')) $('gearSport').onclick=()=>{$('gearStyle').value='sport';syncGearSeg();};
+if($('popsOn')) $('popsOn').onclick=()=>{$('popsEnable').checked=true;$('popsEnable').dispatchEvent(new Event('change'));};
+if($('popsOff')) $('popsOff').onclick=()=>{$('popsEnable').checked=false;$('popsEnable').dispatchEvent(new Event('change'));};
+if($('openEngines')) $('openEngines').onclick=()=>{buildEngineTiles();openSheet('engineSheet');};
+if($('openSettings')) $('openSettings').onclick=()=>openSheet('settingsSheet');
+const qsa=(sel)=>typeof document.querySelectorAll==='function'?[...document.querySelectorAll(sel)]:[];
+qsa('[data-close]').forEach(btn=>btn.addEventListener('click',()=>closeSheet(btn.getAttribute('data-close'))));
+qsa('.sheet').forEach(sheet=>{
+ sheet.addEventListener('click',ev=>{if(ev.target===sheet) closeSheet(sheet.id);});
+});
+qsa('#engineFilters [data-filter]').forEach(btn=>{
+ btn.addEventListener('click',()=>{
+  engineFilter=btn.getAttribute('data-filter');
+  qsa('#engineFilters [data-filter]').forEach(b=>{b.classList.toggle('active',b===btn);b.setAttribute('aria-pressed',b===btn?'true':'false');});
+  buildEngineTiles();
+ });
+});
+syncGearSeg();syncPopsSeg();refreshEngineChrome();buildEngineTiles();
+if(mode==='sim') setGpsPill('off','Simulação');
+
 describeProfile();
+refreshEngineChrome();
 frame=requestAnimationFrame(tick);
+
 </script></body></html>
