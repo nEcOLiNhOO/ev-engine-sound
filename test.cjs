@@ -42,7 +42,7 @@ test('stateless cruise mapping: gear never decreases with speed and RPM drops at
 test('all engines map finite bounded RPM/load over speed sweep',()=>{for(const key of Object.keys(core.engines))for(let s=-10;s<=300;s++){const m=core.mapping(s,key,4),e=core.engines[key];assert(m.rpm>=e.idle&&m.rpm<=e.max);assert(m.load>=0&&m.load<=1);assert(m.gear>=0&&m.gear<=7);}});
 test('positive acceleration increases synthetic load',()=>assert(core.mapping(40,'v6',2).load>core.mapping(40,'v6',0).load));
 // v3.14: UI redesign; Core audio unchanged from 3.13 aside from VERSION.
-test('visible version 3.14 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.14');assert.match(html,/data-version="3\.14"/);assert.match(html,/>v3\.14</);assert.match(html,/Impulso v3\.14/);});
+test('visible version 3.15 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.15');assert.match(html,/data-version="3\.15"/);assert.match(html,/>v3\.15</);assert.match(html,/Impulso v3\.15/);});
 test('30 presets: 22 legacy + 8 new inspirations',()=>{
  const keys=Object.keys(core.engines);
  assert.equal(keys.length,30);
@@ -508,8 +508,8 @@ const SEEDS=Array.from({length:20},(_,i)=>100+i*17);
 const CRUISE={name:'cruise',dur:25,a:0};
 function firstDown(log){const acc=log.filter(x=>x.ph==='acc'),t0=acc[0].t-.05,fd=acc.find(x=>x.shift==='down');return fd?fd.t-t0:Infinity;}
 const gearDrop=log=>log.filter(x=>x.ph==='cruise').pop().gear-Math.min(...log.filter(x=>x.ph==='acc').map(x=>x.gear));
-test('per-profile gearbox personality covers all 30 profiles (version now 3.14)',()=>{
- assert.equal(core.VERSION,'3.14');assert.equal(KEYS.length,30);
+test('per-profile gearbox personality covers all 30 profiles (version now 3.15)',()=>{
+ assert.equal(core.VERSION,'3.15');assert.equal(KEYS.length,30);
  assert.deepEqual(Object.keys(core.GEAR_PERSONA).sort(),KEYS.slice().sort());
  for(const k of KEYS){const p=core.GEAR_PERSONA[k];
   assert.equal(core.engines[k].persona,p,k);
@@ -868,15 +868,15 @@ test('updateAudio wires VTEC and optional whine without changing cruise path mar
 });
 
 
-test('v3.14 Core audio module matches v3.13 byte-for-byte except VERSION',()=>{
- const prev=fs.readFileSync(__dirname+'/../ev-engine-sound-v3.13/index.html','utf8');
+test('v3.15 Core audio module matches v3.14 byte-for-byte except VERSION',()=>{
+ const prev=fs.readFileSync(__dirname+'/../ev-engine-sound-v3.14/index.html','utf8');
  const ps=prev.match(/<script>([\s\S]*?)<\/script>/)[1];
  const cs=script;
  const pCore=ps.slice(0,ps.indexOf("const $=")).replace(/VERSION='3\.\d+'/,"VERSION='X'");
  const cCore=cs.slice(0,cs.indexOf("const $=")).replace(/VERSION='3\.\d+'/,"VERSION='X'");
  assert.equal(cCore,pCore);
 });
-test('v3.14 in-car UI: engine tiles, filters, sheets, large start/volume, GPS pill',()=>{
+test('v3.14/3.15 in-car UI: engine tiles, filters, sheets, large start/volume, GPS pill',()=>{
  assert.match(html,/id="engineTiles"/);
  assert.match(html,/id="engineFilters"/);
  assert.match(html,/id="engineSheet"/);
@@ -890,22 +890,62 @@ test('v3.14 in-car UI: engine tiles, filters, sheets, large start/volume, GPS pi
  assert.match(html,/id="gearSport"/);
  assert.match(html,/id="popsOn"/);
  assert.match(html,/id="popsOff"/);
- // CSS min sizes for Tesla touch
  assert.match(html,/#start\{[^}]*min-height:120px/);
  assert.match(html,/--tile:76px/);
  assert.match(html,/--touch:64px/);
  assert.match(html,/min-height:var\(--tile\)/);
  assert.match(html,/font:18px/);
  assert.match(html,/prefers-reduced-motion/);
- // all 30 profile values still present for tiles/select
  for(const id of Object.keys(core.engines)) assert.match(html,new RegExp('value="'+id+'"'));
 });
-test('v3.14 page builds a tile per profile and syncs favorites key',()=>{
+test('v3.15 brands: every profile mapped; chips by brand; favourites + Genéricos',()=>{
+ assert.match(script,/const ENGINE_BRAND=/);
+ assert.match(script,/buildEngineFilterChips/);
+ assert.match(script,/brandList\(\)/);
+ assert.match(script,/brand-head/);
+ assert.match(script,/Genéricos/);
+ assert.match(script,/Toyota \/ Lexus/);
+ assert.match(script,/Mercedes-AMG/);
+ assert.match(html,/overflow-x:auto/);
+ // Parse ENGINE_BRAND from page script (outside Core)
+ const m=script.match(/const ENGINE_BRAND=\{([\s\S]*?)\};/);
+ assert(m,'ENGINE_BRAND present');
+ const map=Function('return {'+m[1]+'}')();
+ for(const id of Object.keys(core.engines)){
+  assert(map[id],id+' missing brand');
+  assert.equal(typeof map[id],'string');
+  assert(map[id].length>=3,id+' brand too short');
+ }
+ assert.equal(map.gt3rs,'Porsche');
+ assert.equal(map.flat6,'Genéricos');
+ assert.equal(map.m3,'BMW');
+ assert.equal(map.f458,'Ferrari');
+ assert.equal(map.aventador,'Lamborghini');
+ assert.equal(map.diablo,'Lamborghini');
+ assert.equal(map.lfa,'Toyota / Lexus');
+ assert.equal(map.supra2jz,'Toyota / Lexus');
+ assert.equal(map.gtr,'Nissan');
+ assert.equal(map.rb26,'Nissan');
+ assert.equal(map.nsx,'Honda');
+ assert.equal(map.vtec,'Honda');
+ assert.equal(map.rx7,'Mazda');
+ assert.equal(map.rotary4,'Mazda');
+ assert.equal(map.wrx,'Subaru');
+ assert.equal(map.evo,'Mitsubishi');
+ assert.equal(map.c63,'Mercedes-AMG');
+ assert.equal(map.amg62,'Mercedes-AMG');
+ assert.equal(map.r8v10,'Audi');
+ assert.equal(map.rs3,'Audi');
+ assert.equal(map.mustang,'Ford');
+ assert.equal(map.hellcat,'Dodge');
+ assert.equal(Object.keys(map).length,Object.keys(core.engines).length);
+});
+test('v3.15 page builds tiles/chips and syncs favorites key',()=>{
  assert.match(script,/buildEngineTiles/);
  assert.match(script,/impulso\.favs\.v1/);
- assert.match(script,/ENGINE_FILTERS/);
  assert.match(script,/openSheet\('engineSheet'\)/);
  assert.match(script,/data-filter/);
+ assert.match(script,/engineTypeTag/);
 });
 
 async function pageAudioTest(){

@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-PT" data-version="3.14"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b10"><title>Impulso · Motor virtual v3.14</title>
+<html lang="pt-PT" data-version="3.15"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b10"><title>Impulso · Motor virtual v3.15</title>
 <style>
 
 :root{color-scheme:dark;--bg:#070b10;--panel:#121a22;--panel2:#18232e;--line:#2c3a48;--text:#f2f6f8;--muted:#9aafbf;--accent:#c4f46c;--blue:#7bd9e7;--warn:#ffd170;--bad:#fc806d;--ok:#6fe3a1;--touch:64px;--tile:76px;--gap:12px;--radius:18px}
@@ -66,8 +66,11 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
 .sheet-head{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:12px 14px;border-bottom:1px solid var(--line);flex-shrink:0}
 .sheet-head h2{margin:0;font-size:24px}
 .sheet-body{padding:12px 14px;overflow:auto;-webkit-overflow-scrolling:touch;flex:1;min-height:0}
-.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
-.filters button{min-height:56px;padding:10px 14px;font-size:17px}
+.filters{display:flex;flex-wrap:nowrap;gap:8px;margin-bottom:12px;overflow-x:auto;-webkit-overflow-scrolling:touch;scrollbar-width:thin;padding-bottom:4px}
+.filters button{min-height:56px;padding:10px 14px;font-size:17px;flex:0 0 auto;white-space:nowrap}
+.brand-head{margin:16px 0 8px;font-size:15px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:800}
+.brand-head:first-child{margin-top:4px}
+.ttag{display:inline-block;margin-left:6px;padding:2px 8px;border-radius:999px;border:1px solid var(--line);font-size:12px;color:var(--muted);vertical-align:middle;font-weight:700;letter-spacing:.04em}
 .tiles{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px}
 .tile{min-height:var(--tile);text-align:left;padding:12px 14px;display:grid;grid-template-columns:1fr auto;gap:8px;align-items:center;border-radius:16px;font-size:18px}
 .tile .tname{font-weight:800;font-size:18px;line-height:1.2}
@@ -102,10 +105,12 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
   .app{padding:8px 12px}
 }
 
+.engine-list{display:flex;flex-direction:column;gap:4px;min-height:0}
+.engine-list .tiles{margin-bottom:4px}
 </style></head><body>
 <div class="app" role="application" aria-label="Impulso condução">
 <header class="topbar">
- <div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.14</span></div>
+ <div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.15</span></div>
  <div class="pill off" id="gpsPill" role="status" aria-live="polite" aria-label="Estado GPS: Simulação"><span class="dot" aria-hidden="true"></span><span id="gpsPillText">Simulação</span></div>
  <button type="button" class="iconbtn" id="openSettings" aria-label="Abrir definições e avançado">⚙</button>
 </header>
@@ -224,16 +229,8 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
  <div class="sheet-panel">
   <div class="sheet-head"><h2>Motores</h2><button type="button" class="iconbtn" data-close="engineSheet" aria-label="Fechar motores">✕</button></div>
   <div class="sheet-body">
-   <div class="filters" id="engineFilters" role="group" aria-label="Filtro de motores">
-    <button type="button" data-filter="todos" class="active" aria-pressed="true">Todos</button>
-    <button type="button" data-filter="fav" aria-pressed="false">★ Favoritos</button>
-    <button type="button" data-filter="v8" aria-pressed="false">V8</button>
-    <button type="button" data-filter="v6-i6" aria-pressed="false">V6 / I6</button>
-    <button type="button" data-filter="i4-i5" aria-pressed="false">I3–I5</button>
-    <button type="button" data-filter="v10-v12" aria-pressed="false">V10 / V12</button>
-    <button type="button" data-filter="rotativo" aria-pressed="false">Rotativo</button>
-   </div>
-   <div class="tiles" id="engineTiles"></div>
+   <div class="filters" id="engineFilters" role="group" aria-label="Filtro por marca"></div>
+   <div class="engine-list" id="engineTiles"></div>
    <p class="honesty">Síntese original, não oficial — não é uma gravação nem uma cópia autêntica. A afinação é uma escolha de design.</p>
   </div>
  </div>
@@ -248,7 +245,7 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
    <input id="character" type="range" min="0" max="100" value="40" aria-label="Caráter do som">
 
    <p class="honesty">Síntese original, não oficial — não é uma gravação nem uma cópia autêntica.</p>
-   <p class="footnote">Impulso v3.14. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Interface pensada para o browser do Tesla em landscape. Síntese original, não oficial.</p>
+   <p class="footnote">Impulso v3.15. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Interface pensada para o browser do Tesla em landscape. Síntese original, não oficial.</p>
   </div>
  </div>
 </div>
@@ -256,7 +253,7 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
 <script>
 'use strict';
 const Core=(()=>{
- const VERSION='3.14';
+ const VERSION='3.15';
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  const POP_LIMITS={maxGain:.38,maxVoices:8,decelThresh:-.28,maxNodesPerEvent:3,crackleDur:.09,shiftDur:.14,burstCooldown:4,liftDv:2,liftWindow:2.5,minSpeed:28,popBus:.65,popCeil:-3,duckDepth:.22,duckMs:.028};
  // Per-profile pop & bang character (v3.10+). bodyHz is a bias; v3.11 blends it with firingHz so pops sit in the engine.
@@ -907,27 +904,67 @@ const Core=(()=>{
 })();
 const $=id=>document.getElementById(id),{clamp,engines,mapping,gpsSample}=Core;
 
-/* ---- v3.14 in-car UI wiring (no audio/Core changes) ---- */
-const ENGINE_FILTERS={
- todos:()=>true,
- fav:(id)=>favSet.has(id),
- v8:(id)=>{const e=engines[id];return e&&e.kind==='piston'&&e.cyl===8;},
- 'v6-i6':(id)=>{const e=engines[id];return e&&e.kind==='piston'&&e.cyl===6;},
- 'i4-i5':(id)=>{const e=engines[id];return e&&e.kind==='piston'&&(e.cyl===4||e.cyl===5||e.cyl===3);},
- 'v10-v12':(id)=>{const e=engines[id];return e&&e.kind==='piston'&&(e.cyl===10||e.cyl===12);},
- rotativo:(id)=>{const e=engines[id];return e&&e.kind==='rotary';}
+/* ---- v3.14/v3.15 in-car UI wiring (no audio/Core changes) ---- */
+const ENGINE_BRAND={
+ gt3rs:'Porsche',
+ gtr:'Nissan',
+ lfa:'Toyota / Lexus',
+ r8v10:'Audi',
+ wrx:'Subaru',
+ mustang:'Ford',
+ m3:'BMW',
+ c63:'Mercedes-AMG',
+ rs3:'Audi',
+ aventador:'Lamborghini',
+ f458:'Ferrari',
+ rx7:'Mazda',
+ supra2jz:'Toyota / Lexus',
+ vtec:'Honda',
+ hellcat:'Dodge',
+ amg62:'Mercedes-AMG',
+ rotary4:'Mazda',
+ rb26:'Nissan',
+ evo:'Mitsubishi',
+ nsx:'Honda',
+ diablo:'Lamborghini',
+ i3:'Genéricos',i4:'Genéricos',i5:'Genéricos',i6:'Genéricos',
+ v6:'Genéricos',flat6:'Genéricos',v8:'Genéricos',v10:'Genéricos',v12:'Genéricos'
 };
+const GENERIC_BRAND='Genéricos';
+function brandOf(id){return ENGINE_BRAND[id]||GENERIC_BRAND;}
+function brandList(){
+ const set=new Set(Object.keys(engines).map(brandOf));
+ const brands=[...set].filter(b=>b!==GENERIC_BRAND).sort((a,b)=>a.localeCompare(b,'pt'));
+ if(set.has(GENERIC_BRAND)) brands.push(GENERIC_BRAND);
+ return brands;
+}
+function engineTypeTag(id){
+ const e=engines[id];if(!e) return '';
+ if(e.kind==='rotary') return e.rotors>=4?'4-rotor':'Rotativo';
+ if(e.cyl===3) return 'I3';
+ if(e.cyl===4) return 'I4';
+ if(e.cyl===5) return 'I5';
+ if(e.cyl===6){
+  if(id==='gt3rs'||id==='wrx'||id==='flat6') return 'Boxer';
+  if(id==='m3'||id==='i6'||id==='supra2jz'||id==='rb26') return 'I6';
+  return 'V6';
+ }
+ if(e.cyl===8) return 'V8';
+ if(e.cyl===10) return 'V10';
+ if(e.cyl===12) return 'V12';
+ return '';
+}
 let favSet=new Set();
 try{favSet=new Set(JSON.parse((typeof localStorage!=='undefined'&&localStorage.getItem('impulso.favs.v1'))||'[]'));}catch(_){favSet=new Set();}
 let engineFilter='todos';
 function saveFavs(){try{if(typeof localStorage!=='undefined')localStorage.setItem('impulso.favs.v1',JSON.stringify([...favSet]));}catch(_){}}
 function engineLabel(id){const opt=[...$('engine').options].find(o=>o.value===id);return opt?opt.textContent:id;}
-function engineGroup(id){const e=engines[id];if(!e)return '';if(e.kind==='rotary')return 'Rotativo';if(e.cyl===8)return 'V8';if(e.cyl===6)return e.fireMul===3&&(id==='gt3rs'||id==='wrx'||id==='flat6')?'Boxer/I6·V6':'V6 / I6';if(e.cyl===4||e.cyl===5||e.cyl===3)return 'I3–I5';if(e.cyl===10||e.cyl===12)return 'V10 / V12';return 'Outro';}
+function engineGroup(id){return engineTypeTag(id);} // small type tag label
 function refreshEngineChrome(){
  const id=$('engine').value;const e=engines[id];
  const name=engineLabel(id);
  if($('engineName')) $('engineName').textContent=name;
- if($('engineMeta')) $('engineMeta').textContent=e?(engineGroup(id)+' · '+e.max.toLocaleString('pt-PT')+' rpm'):'';
+ if($('engineMeta')) $('engineMeta').textContent=e?((engineTypeTag(id)||brandOf(id))+' · '+e.max.toLocaleString('pt-PT')+' rpm'):'';
  if($('profileHint')) $('profileHint').textContent=e?e.hint:'';
  const tiles=typeof document.querySelectorAll==='function'?document.querySelectorAll('.tile[data-engine]'):[];
  tiles.forEach(t=>{
@@ -935,18 +972,7 @@ function refreshEngineChrome(){
   t.setAttribute('aria-pressed',t.dataset.engine===id?'true':'false');
  });
 }
-function buildEngineTiles(){
- const host=$('engineTiles');if(!host||typeof document.createElement!=='function') return;
- const ids=Object.keys(engines);
- const ordered=[...ids].sort((a,b)=>{
-  const af=favSet.has(a)?0:1,bf=favSet.has(b)?0:1;
-  if(af!==bf) return af-bf;
-  return engineLabel(a).localeCompare(engineLabel(b),'pt');
- });
- const pred=ENGINE_FILTERS[engineFilter]||ENGINE_FILTERS.todos;
- host.innerHTML='';
- for(const id of ordered){
-  if(!pred(id)) continue;
+function makeTile(id){
   const btn=document.createElement('button');
   btn.type='button';btn.className='tile'+(id===$('engine').value?' selected':'');
   btn.dataset.engine=id;btn.setAttribute('aria-pressed',id===$('engine').value?'true':'false');
@@ -957,8 +983,12 @@ function buildEngineTiles(){
   star.textContent=favSet.has(id)?'★':'☆';
   star.addEventListener('click',ev=>{if(ev&&ev.stopPropagation)ev.stopPropagation();if(favSet.has(id))favSet.delete(id);else favSet.add(id);saveFavs();buildEngineTiles();});
   const left=document.createElement('div');
-  const tname=document.createElement('div');tname.className='tname';tname.textContent=engineLabel(id);
-  const tmeta=document.createElement('div');tmeta.className='tmeta';tmeta.textContent=engineGroup(id)+(engines[id]?' · '+engines[id].max.toLocaleString('pt-PT')+' rpm':'');
+  const tname=document.createElement('div');tname.className='tname';
+  tname.textContent=engineLabel(id)+' ';
+  const tag=document.createElement('span');tag.className='ttag';tag.textContent=engineTypeTag(id);
+  if(tag.textContent) tname.appendChild(tag);
+  const tmeta=document.createElement('div');tmeta.className='tmeta';
+  tmeta.textContent=brandOf(id)+(engines[id]?' · '+engines[id].max.toLocaleString('pt-PT')+' rpm':'');
   left.appendChild(tname);left.appendChild(tmeta);
   btn.appendChild(left);btn.appendChild(star);
   btn.addEventListener('click',()=>{
@@ -968,7 +998,61 @@ function buildEngineTiles(){
    refreshEngineChrome();
    closeSheet('engineSheet');
   });
+  return btn;
+}
+function appendHeading(host,title){
+  const h=document.createElement('div');
+  h.className='brand-head';h.textContent=title;h.setAttribute('role','heading');h.setAttribute('aria-level','3');
+  host.appendChild(h);
+}
+function appendTileRow(host,ids){
+  if(!ids.length) return;
+  const row=document.createElement('div');row.className='tiles';
+  for(const id of ids) row.appendChild(makeTile(id));
+  host.appendChild(row);
+}
+function buildEngineFilterChips(){
+ const host=$('engineFilters');if(!host||typeof document.createElement!=='function') return;
+ const chips=[['todos','Todos'],['fav','★ Favoritos'],...brandList().map(b=>['brand:'+b,b])];
+ host.innerHTML='';
+ for(const [key,label] of chips){
+  const btn=document.createElement('button');
+  btn.type='button';btn.setAttribute('data-filter',key);
+  btn.textContent=label;
+  const on=engineFilter===key;
+  btn.classList.toggle('active',on);btn.setAttribute('aria-pressed',on?'true':'false');
+  btn.addEventListener('click',()=>{
+   engineFilter=key;
+   buildEngineFilterChips();
+   buildEngineTiles();
+  });
   host.appendChild(btn);
+ }
+}
+function buildEngineTiles(){
+ const host=$('engineTiles');if(!host||typeof document.createElement!=='function') return;
+ const ids=Object.keys(engines);
+ host.innerHTML='';
+ const byName=(a,b)=>engineLabel(a).localeCompare(engineLabel(b),'pt');
+ if(engineFilter==='fav'){
+  const favs=ids.filter(id=>favSet.has(id)).sort(byName);
+  if(!favs.length){const empty=document.createElement('p');empty.className='note';empty.textContent='Ainda sem favoritos. Toca na estrela de um motor.';host.appendChild(empty);return;}
+  appendTileRow(host,favs);return;
+ }
+ if(engineFilter.startsWith('brand:')){
+  const brand=engineFilter.slice(6);
+  const list=ids.filter(id=>brandOf(id)===brand).sort(byName);
+  if(!list.length){const empty=document.createElement('p');empty.className='note';empty.textContent='Nenhum motor nesta marca.';host.appendChild(empty);return;}
+  appendTileRow(host,list);return;
+ }
+ // Todos: favourites first, then brands A–Z, Genéricos last
+ const favs=ids.filter(id=>favSet.has(id)).sort(byName);
+ if(favs.length){appendHeading(host,'★ Favoritos');appendTileRow(host,favs);}
+ for(const brand of brandList()){
+  const list=ids.filter(id=>brandOf(id)===brand).sort(byName);
+  if(!list.length) continue;
+  appendHeading(host,brand);
+  appendTileRow(host,list);
  }
  if(!(host.children&&host.children.length)){
   const empty=document.createElement('p');empty.className='note';empty.textContent='Nenhum motor neste filtro.';host.appendChild(empty);
@@ -1562,21 +1646,14 @@ if($('gearComfort')) $('gearComfort').onclick=()=>{$('gearStyle').value='comfort
 if($('gearSport')) $('gearSport').onclick=()=>{$('gearStyle').value='sport';syncGearSeg();};
 if($('popsOn')) $('popsOn').onclick=()=>{$('popsEnable').checked=true;$('popsEnable').dispatchEvent(new Event('change'));};
 if($('popsOff')) $('popsOff').onclick=()=>{$('popsEnable').checked=false;$('popsEnable').dispatchEvent(new Event('change'));};
-if($('openEngines')) $('openEngines').onclick=()=>{buildEngineTiles();openSheet('engineSheet');};
+if($('openEngines')) $('openEngines').onclick=()=>{buildEngineFilterChips();buildEngineTiles();openSheet('engineSheet');};
 if($('openSettings')) $('openSettings').onclick=()=>openSheet('settingsSheet');
 const qsa=(sel)=>typeof document.querySelectorAll==='function'?[...document.querySelectorAll(sel)]:[];
 qsa('[data-close]').forEach(btn=>btn.addEventListener('click',()=>closeSheet(btn.getAttribute('data-close'))));
 qsa('.sheet').forEach(sheet=>{
  sheet.addEventListener('click',ev=>{if(ev.target===sheet) closeSheet(sheet.id);});
 });
-qsa('#engineFilters [data-filter]').forEach(btn=>{
- btn.addEventListener('click',()=>{
-  engineFilter=btn.getAttribute('data-filter');
-  qsa('#engineFilters [data-filter]').forEach(b=>{b.classList.toggle('active',b===btn);b.setAttribute('aria-pressed',b===btn?'true':'false');});
-  buildEngineTiles();
- });
-});
-syncGearSeg();syncPopsSeg();refreshEngineChrome();buildEngineTiles();
+syncGearSeg();syncPopsSeg();refreshEngineChrome();buildEngineFilterChips();buildEngineTiles();
 if(mode==='sim') setGpsPill('off','Simulação');
 
 describeProfile();

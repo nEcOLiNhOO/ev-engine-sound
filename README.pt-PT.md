@@ -1,12 +1,16 @@
-# Impulso · Motor virtual v3.14
+# Impulso · Motor virtual v3.15
 
 Aplicação original, num único `index.html`, sem bibliotecas, fontes, gravações ou pedidos de rede (exceto o serviço de localização do próprio browser, se autorizado).
 
-Esta pasta é a entrega autónoma v3.14 (som/Core idênticos à v3.13; interface redesenhada para o browser do Tesla): trinta assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação.
+Esta pasta é a entrega autónoma v3.15 (som/Core idênticos à v3.14; motores organizados por marca): trinta assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação.
 
-O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.14 ainda pode não corresponder ao que está online.
+O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.15 ainda pode não corresponder ao que está online.
 
 A publicação HTTPS permite testar num browser normal, mas não garante que resolva a ausência de áudio numa pré-visualização móvel. Toca em **Iniciar som** na página aberta diretamente no browser.
+
+## Alterações na v3.15
+- **Motores por marca.** O seletor agrupa e filtra por marca (BMW, Porsche, Ferrari, Lamborghini, …); arquiteturas genéricas em «Genéricos». Em «Todos»: ★ Favoritos primeiro, depois marcas A–Z, Genéricos no fim. Chips com scroll horizontal. Etiqueta pequena de tipo (V8, I6…) em cada mosaico.
+- **UI only** — Core/áudio byte-idênticos à v3.14 excepto `VERSION`.
 
 ## Alterações na v3.14
 - **UI para condução no Tesla.** Ecrã principal «Condução» em landscape, contraste alto, sem scroll em ~1180×800: Start/Stop ≥120 px, velocidade/marcha/rpm grandes, pill GPS (verde/âmbar/vermelho), volume com −/+, segmentos Modo / Caixa / Pops.
