@@ -1,10 +1,10 @@
-# Impulso · Motor virtual v3.4
+# Impulso · Motor virtual v3.5
 
 Aplicação original, num único `index.html`, sem bibliotecas, fontes, gravações ou pedidos de rede (exceto o serviço de localização do próprio browser, se autorizado).
 
-Esta pasta é a entrega autónoma v3.4 (novo perfil SupraMotor 2JZ sobre a v3.3, com kick-down, blips e pops por perfil): vinte e duas assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação: a integração e o eventual GitHub Pages ficam a cargo de quem autorizar o envio.
+Esta pasta é a entrega autónoma v3.5 (áudio limpo para as colunas do carro, sobre a v3.4 com o SupraMotor 2JZ, kick-down, blips e pops por perfil): vinte e duas assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação: a integração e o eventual GitHub Pages ficam a cargo de quem autorizar o envio.
 
-O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.4 ainda pode não corresponder ao que está online.
+O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.5 ainda pode não corresponder ao que está online.
 
 A publicação HTTPS permite testar num browser normal, mas não garante que resolva a ausência de áudio numa pré-visualização móvel. Toca em **Iniciar som** na página aberta diretamente no browser.
 
@@ -35,7 +35,7 @@ O seletor está dividido em **Inspirações de modelos** e **Arquiteturas de mot
 As inspirações não são gravações nem cópias autênticas. Limites de rotação, harmónicos, filtros e irregularidade são escolhas de design para distinguir os timbres — não fichas técnicas. O Mazda RX-7 usa uma cadência de ignição de motor rotativo de dois rotores (um pulso por revolução do veio excêntrico, por rotor), sem o rotular como I4 ou como um motor de quatro cilindros.
 
 ## Estalos e pops
-Efeito opcional, desligado por defeito, com intensidade ajustável. São ruídos curtos filtrados e um bate-estaca grave suave, sempre a passar pelo volume principal e pelo limitador.
+Efeito opcional, desligado por defeito, com intensidade ajustável. São ruídos curtos filtrados e um bate-estaca grave suave, sempre a passar pelo volume principal e pela cadeia final (filtros, compressor suave e saturação suave).
 
 Disparam apenas quando o som já está a correr e numa destas situações:
 - desaceleração simulada com rotação suficientemente alta;
@@ -101,10 +101,33 @@ No modo GPS, abre **Diagnóstico GPS** para ver: contexto seguro, permissão, **
 
 Outras correções: `maximumAge:0` (sem posições em cache), tempo de espera de 15 s, e a estimativa por posições usa uma referência estável, por isso funciona mesmo quando o browser envia posições mais de uma vez por segundo sem velocidade nativa.
 
+## Áudio no Tesla (v3.5)
+**Porque havia chiado a volume alto (v3.4):** medição offline da cadeia de áudio (reimplementação em Node dos filtros e osciladores Web Audio; não é uma escuta):
+- o ruído de admissão (ruído branco num passa-banda largo) estava **sempre ligado**, mesmo ao ralenti e em cruzeiro, só 13–28 dB(A) abaixo do tom do motor;
+- a saída era baixa: no volume por omissão (15 %) cerca de −37 dBFS RMS, e mesmo a 70 % só −20 a −26 dBFS, 10–25 dB abaixo de música normal. Para ouvir o motor, era preciso subir muito o volume do carro, o que também amplifica o ruído de fundo;
+- 25–59 % da energia do tom ao ralenti/cruzeiro era um subgrave a 6–20 Hz, que as colunas quase não reproduzem: ocupava margem sem se ouvir;
+- o limitador (−16 dB, 12:1) nunca chegava a comprimir; funcionava apenas como um ganho fixo de +6,6 dB.
+
+**O que mudou:**
+- ruído de admissão/turbo **só em carga real**: ao ralenti e em cruzeiro fica 55–74 dB(A) abaixo do tom; em aceleração forte 29–36 dB abaixo (com o novo controlo a 25 %). Filtrado entre 150 Hz e 2,5 kHz, sem chiado de banda larga;
+- novo controlo **Ruído de admissão · só em carga** (0–100 %, 25 % por omissão, guardado neste dispositivo). A 0 % não há ruído; sobe-o se quiseres mais textura;
+- cadeia final: passa-alto 35 Hz (sem ronco inaudível nem DC) → passa-baixo suave 7 kHz → compressor suave (3:1) → saturação suave com sobreamostragem 4×, em vez do limitador 12:1;
+- harmónicos limitados por gama de rotação: nenhum parcial acima de min(taxa de amostragem/4, 12 kHz), para não haver aspereza perto de Nyquist; o vibrato (flutter) tem profundidade limitada;
+- subgrave uma oitava abaixo da frequência de ignição (38–160 Hz), audível nas colunas;
+- ganho: no mesmo volume da aplicação o motor soa cerca de 7 dB mais alto (ponderação A); a 70 % os picos ficam por volta de −1,5 dBFS, sem corte duro. Os estalos continuam com os mesmos limites (pico ≤ 0,22 antes do volume, máx. 3 vozes, intervalo mínimo).
+
+**Dicas no carro:**
+1. Começa com o volume do Tesla moderado (por exemplo um terço) e sobe primeiro o **volume da aplicação** (50–70 %). Assim o sinal fica bem acima do ruído do sistema de som.
+2. Se ainda ouvires sopro, baixa o **Ruído de admissão** (0–15 %). A 0 % o som é só tonal.
+3. Evita o volume do Tesla no máximo com a aplicação baixa: isso amplifica o ruído de fundo do próprio sistema.
+4. Música e motor ao mesmo tempo: baixa um pouco a música, em vez de subir tudo.
+
+**Comparação com o teslasound.io (só pelo que é público):** o site diz que o som é sintetizado ao vivo, sem gravações nem loops ("firing order", pulsos de escape, tubos, admissão que "ruge em carga", crackle a 0 % = motor limpo). Os ficheiros públicos usam um AudioWorklet (síntese amostra a amostra), um WaveShaper com sobreamostragem e um compressor. Não li nem copiei o código; a afinação e os níveis deles não foram verificados. A v3.5 segue a mesma ideia geral: ruído só em carga e nível de saída alto e limpo.
+
 ## Som e compatibilidade
 Web Audio gera pulsos harmónicos, um subgrave, ruído filtrado de admissão/escape e modulação irregular. Cada perfil altera a forma de onda, a filtragem, o ruído e a irregularidade. A troca de perfil usa duas vozes com cruzamento. RPM/carga são suavizadas. Isto é síntese estilizada, não uma gravação nem um modelo físico fiel. As mudanças são simuladas por escalões de relação, não por uma caixa real.
 
-Ganho inicial baixo, envelopes curtos nos estalos, alterações suaves e compressor/limitador reduzem picos, mas não garantem um nível acústico seguro. O som vem do browser/dispositivo; saída pelo sistema de som do carro **não garantida**. O browser pode suspender o áudio: toca em **Retomar som**. Ao ocultar a página, o som para.
+Ganho inicial baixo, envelopes curtos nos estalos, alterações suaves, compressor suave e saturação suave reduzem picos, mas não garantem um nível acústico seguro. O som vem do browser/dispositivo; saída pelo sistema de som do carro **não garantida**. O browser pode suspender o áudio: toca em **Retomar som**. Ao ocultar a página, o som para.
 
 Interface pensada para ecrãs largos e telemóveis. **Não houve teste físico num Tesla, nem teste de escuta nesta entrega.** Disponibilidade de Web Audio, geolocalização, estalos, saída áudio e funcionamento em movimento no Tesla precisam de validação. Não existe qualquer contorno de restrições do veículo. Configura estacionado; em viagem, só um passageiro deve testar a interface.
 
@@ -112,12 +135,13 @@ Interface pensada para ecrãs largos e telemóveis. **Não houve teste físico n
 Executar `node test.cjs` (Node.js, sem dependências):
 - análise sintática de todo o JavaScript inline com `vm.Script`;
 - testes determinísticos de GPS (conversão, ausência, ruído, saltos, precisão, ordem temporal, aceleração implausível);
+- v3.5: ruído quase nulo ao ralenti e em cruzeiro para os 22 perfis (também com o controlo a 100 %); o ruído sobe com a carga e com o controlo, e é zero a 0 %; constantes da cadeia (passa-alto 30–40 Hz, passa-baixo 6–8 kHz, ruído 150 Hz–2,5 kHz, compressor ≤ 4:1, sem 12:1, saturação 4× limitada); limite de harmónicos abaixo de Nyquist a 44,1 e 48 kHz, à rotação máxima, em todos os perfis; subgrave audível e flutter limitado; controlo Ruído de admissão (25 % por omissão, guardado, valores inválidos ignorados); página com AudioContext simulado: master → passa-alto → passa-baixo → compressor → saturação, ruído baixo ao ralenti e mais alto em aceleração, ondas limitadas por gama.
 - v3.4: SupraMotor 2JZ existe com esse nome no grupo das inspirações, ignição de I6, limites válidos, cruzeiro a 120 km/h em 7.ª entre 1 500 e 3 000 rpm, kick-down a 0,6/1,2 m/s², pops ao levantar com estalos ligados e nenhum com desligados, passagens exigentes como candidatas a pop; contagem de perfis passa de 21 para 22.
 - v3.3: personalidade de caixa para os 21 perfis (Desportiva por cima); 0,6 m/s² durante 4 s desde 120 km/h com GPS ruidoso a 1 Hz reduz ≥1 marcha em todos os perfis (≤1,5 s em ≥15 de 20 sementes, sempre ≤2,5 s); 1,2 m/s² reduz ≥2 marchas; 60 s de cruzeiro ruidoso sem trocas em todos os perfis e estilos; regresso à 7.ª depois da aceleração; desaceleração com reduções, blips e rotação limitada; acelerar e levantar com pops ligados estala nos desportivos, pouco ou nada nos suaves e nunca com pops desligados; regras de segurança do overrun e limite de rotação por perfil; simulação com alvo/resposta provoca kick-down.
 - v3.2: caixa virtual — 120 km/h constantes com ruído tipo GPS chega à 7.ª entre 1 800 e 3 000 rpm, sem oscilar e sem candidatos a pops; 60 s de cruzeiro ruidoso sem trocas; os 21 perfis em cruzeiro dentro de ralenti…máx×0,94; aceleração forte provoca kick-down e mais rotação/carga; desaceleração reduz sem subir e termina em 1.ª; parado = N; intervalo mínimo entre trocas; Desportiva com mais rotação do que Conforto; ligação da página ao seletor e aos pops.
 - v3.1: timestamps desviados −60 s, −1 h e +1 h continuam a dar velocidade válida (nativa e estimada); posições a mais de 1 Hz sem velocidade nativa; timestamps repetidos; formatação do desvio no diagnóstico; ausência da rejeição por idade do timestamp.
 - limites de RPM/carga para todos os perfis, mudanças virtuais e mapeamento seguro de uma chave desconhecida;
-- versão visível 3.4; pelo menos 22 assinaturas; agrupamento; notas curtas de carácter; honestidade sem repetir o aviso em cada opção;
+- versão visível 3.5; pelo menos 22 assinaturas; agrupamento; notas curtas de carácter; honestidade sem repetir o aviso em cada opção;
 - unicidade da afinação, incluindo as novas inspirações face às arquiteturas aparentadas;
 - o RX-7 é tratado como rotativo (2 rotores), não como um I4 de pistões;
 - estalos: desligados/mute/parado não disparam; perda de sinal, modo, reinício, página oculta e troca de perfil são eventos proibidos; desaceleração, largar o REV e mudança virtual têm condições e intervalo; propensão diferente entre perfis; amplitude e duração limitadas.
