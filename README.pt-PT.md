@@ -1,10 +1,10 @@
-# Impulso · Motor virtual v3.6
+# Impulso · Motor virtual v3.7
 
 Aplicação original, num único `index.html`, sem bibliotecas, fontes, gravações ou pedidos de rede (exceto o serviço de localização do próprio browser, se autorizado).
 
-Esta pasta é a entrega autónoma v3.6 (timbre intermédio entre a v3.4 e a v3.5, mantendo o áudio sem chiado; SupraMotor 2JZ, kick-down, blips e pops por perfil): vinte e duas assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação: a integração e o eventual GitHub Pages ficam a cargo de quem autorizar o envio.
+Esta pasta é a entrega autónoma v3.7 (caixa Conforto baseada na velocidade ganha/perdida nos últimos segundos; Desportiva igual à v3.6; timbre intermédio e áudio sem chiado da v3.6; SupraMotor 2JZ, kick-down, blips e pops por perfil): vinte e duas assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação: a integração e o eventual GitHub Pages ficam a cargo de quem autorizar o envio.
 
-O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.6 ainda pode não corresponder ao que está online.
+O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.7 ainda pode não corresponder ao que está online.
 
 A publicação HTTPS permite testar num browser normal, mas não garante que resolva a ausência de áudio numa pré-visualização móvel. Toca em **Iniciar som** na página aberta diretamente no browser.
 
@@ -87,6 +87,30 @@ Valores medidos nos testes (GPS simulado a 1 Hz, ruído ~0,3 km/h, Conforto; a m
 
 **Limites honestos:** com posições a 1 Hz a primeira redução surge normalmente 1–1,5 s depois de começar a acelerar (até ~2,5 s se a aceleração começar logo a seguir a uma posição ou se o GPS for ruidoso). Com GPS muito ruidoso, pequenas acelerações (≈0,6 m/s²) podem não ser detetadas: é a troca escolhida para não haver trocas falsas em cruzeiro. Relações, pontos de passagem e personalidades são escolhas de design sintético, não dados de caixas ou motores reais.
 
+### Conforto na v3.7: decide pela velocidade ganha ou perdida
+Na v3.7, a caixa **Conforto** deixa de reagir a um toque ou a uma única leitura do GPS. Decide pela velocidade ganha ou perdida nos últimos segundos. A **Desportiva não mudou**: é exatamente a caixa da v3.6, e há um teste que o confirma.
+- **Histórico de ~12 s** da velocidade (posições GPS a 1 Hz, ou a velocidade simulada). Calcula a variação ao longo de **3 s** e de **9 s** por mínimos quadrados, o que é robusto ao ruído.
+- **Aceleração lenta** (por exemplo 100→110 km/h em 8–10 s, ≈0,3 m/s²): **mantém a 7.ª**; só aumenta a carga no som.
+- **Aceleração rápida** (+10 km/h em 2–3 s): reduz 1–2 marchas (3 só em acelerações muito fortes, ≈19 km/h em 3 s). **Segura a marcha** enquanto a velocidade continua a subir; quando estabiliza (variação em 3 s perto de zero), volta a subir como antes.
+- **Intermédia** (+10 km/h em ~5 s): no máximo 1 marcha. Os perfis mais vivos reduzem; os calmos normalmente não.
+- **Limiares por perfil:** 7 / 10,5 / 19 km/h ganhos em 3 s para 1 / 2 / 3 marchas, vezes o fator do perfil (GT3 RS 0,80 … I6/V12 1,05). Com GPS ruidoso, sobem automaticamente.
+- **A abrandar:** só reduz quando a velocidade cai de facto (pelo menos 5 km/h perdidos em 3 s, ou 8 km/h numa desaceleração lenta em 9 s). Depois, a marcha acompanha a velocidade: reduz uma de cada vez quando a rotação da marcha atual desce abaixo do ponto do perfil, sempre com toque de acelerador (blip) e pops de overrun se os estalos estiverem ligados. Um levantar breve (−2 km/h em 1,5 s) não provoca redução.
+- **Simulação:** usa a mesma lógica a partir da velocidade simulada.
+- **Sem oscilações:** 60 s de cruzeiro com GPS ruidoso continuam sem trocas (também com ruído forte).
+
+Comportamento medido (GPS simulado a 1 Hz com ruído ~0,5 km/h, 10 sementes; "−1 ×9" = reduz 1 marcha em 9 de 10):
+
+Conforto steady 60 s, noise 0.5 km/h: shifts 0 in 66 runs
+Conforto steady 60 s, noise 0.8 km/h: shifts 0 in 66 runs
+Conforto steady 60 s, noise 1.2 km/h: shifts 0 in 66 runs
+| perfil | lento 100→110 em 9 s | intermédio +10 em 5 s | rápido +10 em 2,5 s | regresso à 7.ª (após estabilizar) | 0,6 m/s² 4 s | 1,2 m/s² 4 s | levantar −2 km/h | travagem 120→60: velocidades das reduções |
+|---|---|---|---|---|---|---|---|---|
+| v8 | −0 ×10 | −0 ×10 | −1 ×9,2 ×1 (1.ª redução 2.0 s) | 5.7 s | −0 ×6,1 ×4 (1.ª redução 4.0 s) | −2 ×10 (1.ª redução 2.0 s) | −0 ×10 | 98 → 70 km/h (perdidos 22 km/h na 1.ª) |
+| gt3rs | −0 ×10 | −1 ×10 (1.ª redução 3.0 s) | −2 ×10 (1.ª redução 2.0 s) | 5.7 s | −1 ×10 (1.ª redução 3.0 s) | −2 ×10 (1.ª redução 2.0 s) | −0 ×10 | 113 → 98 → 70 km/h (perdidos 7 km/h na 1.ª) |
+| i4 | −0 ×10 | −0 ×10 | −1 ×9,2 ×1 (1.ª redução 2.0 s) | 6.1 s | −0 ×6,1 ×4 (1.ª redução 4.0 s) | −2 ×10 (1.ª redução 2.0 s) | −0 ×10 | 84 → 60 km/h (perdidos 36 km/h na 1.ª) |
+| supra2jz | −0 ×10 | −1 ×9,0 ×1 (1.ª redução 3.0 s) | −2 ×10 (1.ª redução 2.0 s) | 6.1 s | −1 ×10 (1.ª redução 3.0 s) | −2 ×10 (1.ª redução 2.0 s) | −0 ×10 | 113 → 88 → 62 km/h (perdidos 7 km/h na 1.ª) |
+| v12 | −0 ×10 | −0 ×10 | −1 ×10 (1.ª redução 2.0 s) | 6.5 s | −0 ×7,1 ×3 (1.ª redução 3.0 s) | −2 ×10 (1.ª redução 2.0 s) | −0 ×10 | 80 → 60 km/h (perdidos 40 km/h na 1.ª) |
+
 ## Modo GPS
 Seleciona **GPS real** e toca em **Autorizar localização**. Requer contexto seguro: HTTPS ou localhost e permissão do browser. Abrir um ficheiro local é recomendado para simulação; não se deve contar com GPS via `file://`.
 
@@ -166,6 +190,7 @@ Interface pensada para ecrãs largos e telemóveis. **Não houve teste físico n
 Executar `node test.cjs` (Node.js, sem dependências):
 - análise sintática de todo o JavaScript inline com `vm.Script`;
 - testes determinísticos de GPS (conversão, ausência, ruído, saltos, precisão, ordem temporal, aceleração implausível);
+- v3.7: Desportiva idêntica à v3.6 (mesmo código e mesmas saídas para as mesmas entradas); Conforto com GPS ruidoso a 1 Hz: 100→110 km/h em 9 s sem reduções; +10 km/h em 2,5 s reduz ≥1 marcha, segura enquanto acelera e volta à 7.ª depois de estabilizar; +10 km/h em 5 s no máximo 1 marcha (mais nos perfis vivos); levantar −2 km/h sem reduções; travagem 120→60 com reduções a acompanhar a velocidade, com blip e nenhuma antes de perder 5 km/h; simulação com a mesma lógica. Testes adaptados: 0,6 m/s² durante 4 s passa a ser "intermédio" no Conforto (no máximo 1 marcha, conforme o perfil) e mantém a expectativa original (≥1 marcha em ~1,5 s) na Desportiva; o mesmo no teste do SupraMotor 2JZ.
 - v3.6: parâmetros de áudio entre a v3.4 e a v3.5 (passa-alto, passa-baixo, limite de harmónicos e número de harmónicos por perfil, rácio/limiar do compressor, joelho da saturação, ganho efetivo ≈ metade do passo, flutter e subgrave); intervalos adaptados: passa-alto 20–30 Hz, passa-baixo 10–13 kHz, compressor ≤ 8:1, limite de harmónicos 0,72 × Nyquist/16 kHz, subgrave ≥ 30 Hz.
 - v3.5: ruído quase nulo ao ralenti e em cruzeiro para os 22 perfis (também com o controlo a 100 %); o ruído sobe com a carga e com o controlo, e é zero a 0 %; constantes da cadeia (passa-alto 30–40 Hz, passa-baixo 6–8 kHz, ruído 150 Hz–2,5 kHz, compressor ≤ 4:1, sem 12:1, saturação 4× limitada); limite de harmónicos abaixo de Nyquist a 44,1 e 48 kHz, à rotação máxima, em todos os perfis; subgrave audível e flutter limitado; controlo Ruído de admissão (25 % por omissão, guardado, valores inválidos ignorados); página com AudioContext simulado: master → passa-alto → passa-baixo → compressor → saturação, ruído baixo ao ralenti e mais alto em aceleração, ondas limitadas por gama.
 - v3.4: SupraMotor 2JZ existe com esse nome no grupo das inspirações, ignição de I6, limites válidos, cruzeiro a 120 km/h em 7.ª entre 1 500 e 3 000 rpm, kick-down a 0,6/1,2 m/s², pops ao levantar com estalos ligados e nenhum com desligados, passagens exigentes como candidatas a pop; contagem de perfis passa de 21 para 22.
@@ -173,7 +198,7 @@ Executar `node test.cjs` (Node.js, sem dependências):
 - v3.2: caixa virtual — 120 km/h constantes com ruído tipo GPS chega à 7.ª entre 1 800 e 3 000 rpm, sem oscilar e sem candidatos a pops; 60 s de cruzeiro ruidoso sem trocas; os 21 perfis em cruzeiro dentro de ralenti…máx×0,94; aceleração forte provoca kick-down e mais rotação/carga; desaceleração reduz sem subir e termina em 1.ª; parado = N; intervalo mínimo entre trocas; Desportiva com mais rotação do que Conforto; ligação da página ao seletor e aos pops.
 - v3.1: timestamps desviados −60 s, −1 h e +1 h continuam a dar velocidade válida (nativa e estimada); posições a mais de 1 Hz sem velocidade nativa; timestamps repetidos; formatação do desvio no diagnóstico; ausência da rejeição por idade do timestamp.
 - limites de RPM/carga para todos os perfis, mudanças virtuais e mapeamento seguro de uma chave desconhecida;
-- versão visível 3.6; pelo menos 22 assinaturas; agrupamento; notas curtas de carácter; honestidade sem repetir o aviso em cada opção;
+- versão visível 3.7; pelo menos 22 assinaturas; agrupamento; notas curtas de carácter; honestidade sem repetir o aviso em cada opção;
 - unicidade da afinação, incluindo as novas inspirações face às arquiteturas aparentadas;
 - o RX-7 é tratado como rotativo (2 rotores), não como um I4 de pistões;
 - estalos: desligados/mute/parado não disparam; perda de sinal, modo, reinício, página oculta e troca de perfil são eventos proibidos; desaceleração, largar o REV e mudança virtual têm condições e intervalo; propensão diferente entre perfis; amplitude e duração limitadas.

@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pt-PT" data-version="3.6"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual v3.6</title>
+<html lang="pt-PT" data-version="3.7"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual v3.7</title>
 <style>
 :root{color-scheme:dark;--bg:#0c1219;--panel:#141e28;--line:#293744;--text:#eef4f7;--muted:#a2b3c0;--accent:#c4f46c;--blue:#7bd9e7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% 0,#20303b,transparent 65%),var(--bg);font:16px system-ui,sans-serif;color:var(--text)}main{max-width:1220px;margin:auto;padding:28px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.brand{font-size:24px;letter-spacing:.2em;font-weight:800}.ver{font-size:11px;letter-spacing:.14em;color:var(--muted);font-weight:700;margin-left:8px;vertical-align:middle}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin:8px 0}.badge{border:1px solid var(--line);border-radius:30px;padding:10px 15px;font-size:12px;color:var(--accent)}.layout{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}.panel{background:linear-gradient(140deg,#18232e,#101922);border:1px solid var(--line);border-radius:24px;padding:25px}.modes{display:flex;gap:8px}button,select{font:inherit;color:inherit;background:#202d39;border:1px solid #3b4a58;border-radius:12px;min-height:48px;padding:10px 16px;cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:3px}button.active{background:var(--accent);color:#14200a;border-color:var(--accent)}button:disabled{opacity:.4;cursor:not-allowed}.dial{height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin:15px auto 0;max-width:380px}.dial:before{content:"";position:absolute;inset:5px 10px 0;border:12px solid #273641;border-bottom-color:transparent;border-radius:50% 50% 35% 35%;pointer-events:none}.dial:after{content:"";position:absolute;inset:5px 10px 0;border:12px solid transparent;border-left-color:var(--accent);border-radius:50% 50% 35% 35%;opacity:.7;pointer-events:none}.speed{font-size:88px;line-height:1.1;font-weight:250;font-variant-numeric:tabular-nums;z-index:1}.unit{color:var(--muted);font-size:13px}.source{margin-top:16px;font-size:12px;color:var(--blue);text-align:center;z-index:1}.rpmrow{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin:8px 0}.track{height:10px;background:#2b3741;border-radius:8px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ffd170,#fc806d);transition:width .12s}.stats{display:flex;justify-content:space-between;margin:22px 0;font-size:13px;color:var(--muted)}.stats b{display:block;font-size:20px;color:var(--text);margin-top:5px}.actions{display:flex;gap:12px}.actions button{flex:1;min-height:60px;font-weight:700}#start{background:var(--accent);color:#182312;border:0}#rev{touch-action:none;user-select:none;-webkit-user-select:none}#rev.held{background:var(--blue);color:#12212a}.controls h1{font-size:25px;margin:0 0 6px}.subtitle{color:var(--muted);font-size:14px;line-height:1.5}label{display:block;color:var(--muted);font-size:13px;margin-top:23px}.labelrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.labelrow output{color:var(--text)}select{width:100%}input[type=range]{accent-color:var(--accent);width:100%;min-height:32px;margin:0;cursor:pointer}.note{font-size:12px;color:var(--muted);line-height:1.6}.honesty{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5}#profileHint{margin-top:10px;color:var(--text)}.notice{min-height:45px;padding:12px 0 0;color:var(--blue);font-size:13px;line-height:1.5}.gpsbox{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:18px}.gpsbox button{width:100%}.diag{margin-top:10px;font-size:12px;color:var(--muted)}.diag summary{cursor:pointer;color:var(--text);min-height:32px;padding-top:6px}.diag dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:8px 0 0}.diag dt{color:var(--muted)}.diag dd{margin:0;color:var(--text);font-variant-numeric:tabular-nums;word-break:break-word}.toggle{display:flex;align-items:center;gap:10px;margin-top:20px;color:var(--text);font-size:14px;cursor:pointer}.toggle input{width:22px;height:22px;accent-color:var(--accent);flex-shrink:0}.popsbox{margin-top:4px}.foot{margin:20px 2px;color:var(--muted);font-size:12px;line-height:1.6} [hidden]{display:none!important}@media(max-width:760px){main{padding:16px}.layout{grid-template-columns:1fr}.panel{padding:20px}header{margin-bottom:16px}.brand{font-size:20px}.dial{height:230px}.speed{font-size:76px}.badge{font-size:10px;padding:8px}.controls h1{font-size:23px}}@media(min-width:900px) and (max-height:800px){main{padding-top:18px}.dial{height:225px}label{margin-top:16px}}
 </style></head><body><main>
-<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.6</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
+<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.7</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
 <div class="layout"><section class="panel" aria-label="Instrumentos e reprodução"><div class="modes" aria-label="Modo"><button id="simMode" class="active" aria-pressed="true">Simulação</button><button id="gpsMode" aria-pressed="false">GPS real</button></div>
 <div class="dial"><div class="speed" id="speed">0</div><div class="unit">km/h</div><div class="source" id="source">Velocidade simulada · sem ligação ao carro</div></div>
 <div class="rpmrow"><span id="rpm">800 rpm</span><span id="redline">6 800 máx.</span></div><div class="track" role="meter" aria-label="Rotações do motor" aria-valuemin="0" aria-valuemax="6800" aria-valuenow="800" id="rpmMeter"><div class="fill" id="rpmFill"></div></div>
@@ -51,11 +51,11 @@
 <p class="note">Desligado por omissão. Só em desaceleração, ao largar o REV com rotação alta, ou numa mudança virtual / desaceleração GPS válida. Não lê o pedal e não dispara se o sinal se perder.</p>
 </div>
 </div>
-</section></div><footer class="foot">Impulso v3.6. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Saída pelos altifalantes do carro e o browser Tesla em movimento não estão validados. Síntese original, não oficial.</footer>
+</section></div><footer class="foot">Impulso v3.7. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Saída pelos altifalantes do carro e o browser Tesla em movimento não estão validados. Síntese original, não oficial.</footer>
 </main><script>
 'use strict';
 const Core=(()=>{
- const VERSION='3.6';
+ const VERSION='3.7';
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  const POP_LIMITS={maxGain:.22,maxVoices:3,decelThresh:-.55,maxNodesPerEvent:2,crackleDur:.055,shiftDur:.09};
  const engines={
@@ -148,7 +148,8 @@ const Core=(()=>{
   for(let i=n-2;i>=0;i--) if(last.t-hist[i].t>=span) return (last.v-hist[i].v)/3.6/(last.t-hist[i].t);
   return null;
  }
- function gearbox(state,input){
+ // v3.6 gearbox, unchanged (used for Desportiva; kept verbatim so Desportiva behaves exactly as v3.6).
+ function gearboxV36(state,input){
   const e=input&&input.profile;
   const style=GEARBOX_STYLES[input&&input.style]||GEARBOX_STYLES.comfort;
   const s0=state||{};
@@ -266,6 +267,131 @@ const Core=(()=>{
   const popUpAff=clamp(pz.popUp+style.popUpAdd,0,1);
   const popWorthy=shift==='up'&&popUpAff>=.15&&demand>=1.05-popUpAff*.9&&fromRpm>=.55*e.max;
   return {gear:g,rpm,load,shift,popWorthy,liftoff:liftoff&&g>0,blip,blipping,demand,aEst,level,phase:st.phase,state:st};
+ }
+
+ // ---- v3.7 Conforto: decisions from speed gained/lost over the last seconds (windowed Δv), not single-fix jumps ----
+ const CF={HIST:12,W_SHORT:3,W_LONG:9,MIN_SPACING:.25,KICK_DV:[7,10.5,19],HOLD_DV:2,DROP_GATE:5,DECEL_DV:-2,NOISE_K:3.5,WARM_SPAN:2};
+ // Least-squares speed trend over the last `span` seconds of history: slope (km/h per s), fitted speed now, sample count, Σ(t−t̄)².
+ function lsTrend(hist,span){
+  const n0=hist.length;if(n0<2) return null;
+  const tN=hist[n0-1].t;let n=0,st=0,sv=0;
+  for(let i=n0-1;i>=0&&tN-hist[i].t<=span+1e-6;i--){n++;st+=hist[i].t;sv+=hist[i].v;}
+  if(n<2) return null;
+  const tm=st/n,vm=sv/n;let sxx=0,sxv=0;
+  for(let i=n0-n;i<n0;i++){const dt=hist[i].t-tm;sxx+=dt*dt;sxv+=dt*(hist[i].v-vm);}
+  if(sxx<=1e-9) return null;
+  const slope=sxv/sxx;let rss=0;
+  for(let i=n0-n;i<n0;i++){const r=hist[i].v-(vm+slope*(hist[i].t-tm));rss+=r*r;}
+  return {slope,vNow:vm+slope*(tN-tm),n,sxx,cover:tN-hist[n0-n].t,resVar:n>2?rss/(n-2):0};
+ }
+ function comfortKickDv(e){const k=personaOf(e).kick;return CF.KICK_DV.map(x=>x*k);}
+ // Decel downshift point (rpm) in Conforto: per profile, never below the cruise floor.
+ function comfortDecelRpm(e){const pz=personaOf(e),st=GEARBOX_STYLES.comfort;return Math.max(gearFloor(e,st)*1.05,clamp(pz.decelDown*.8,.2,.5)*e.max);}
+ function gearboxComfort(state,input){
+  const e=input&&input.profile;
+  const style=GEARBOX_STYLES.comfort;
+  const s0=state||{};
+  const st={gear:s0.gear??0,sinceShift:s0.sinceShift??99,cruiseTime:s0.cruiseTime??0,shifts:s0.shifts??0,t:s0.t??0,
+   whist:s0.whist?s0.whist.slice():[],lastSampleAt:s0.lastSampleAt??null,samples:s0.samples??0,
+   phase:s0.phase??'cruise',kickApplied:s0.kickApplied??0,phaseGear0:s0.phaseGear0??0,peakDemand:s0.peakDemand??0,
+   holdT:s0.holdT??0,blipT:s0.blipT??0,blipRpm:s0.blipRpm??0,aEst:s0.aEst??0,noiseVar:s0.noiseVar??.09,noiseN:s0.noiseN??0};
+  const none={gear:0,rpm:800,load:0,shift:null,popWorthy:false,liftoff:false,blip:false,blipping:false,demand:0,aEst:0,state:st};
+  if(!e) return none;
+  const pz=personaOf(e);
+  const dt=clamp(Number(input.dt)||0,0,.25);
+  const speed=clamp(Number(input.speed)||0,0,250);
+  st.t+=dt;st.sinceShift+=dt;
+  // --- speed history (12 s): GPS fixes as discrete samples at their receipt time; sim speed sampled every ≥0.25 s
+  const sampleAt=Number.isFinite(input.sampleAt)?input.sampleAt:null;
+  const lastH=st.whist[st.whist.length-1];
+  let tS=null;
+  if(sampleAt!==null){ if(sampleAt!==st.lastSampleAt){st.lastSampleAt=sampleAt;tS=sampleAt;} }
+  else if(!lastH||st.t-lastH.t>=CF.MIN_SPACING) tS=st.t;
+  if(tS!==null){
+   if(lastH&&tS<lastH.t) st.whist=[];
+   st.whist.push({t:tS,v:speed});st.samples++;
+   while(st.whist.length>2&&tS-st.whist[0].t>CF.HIST) st.whist.shift();
+   // speed noise σ² from second differences (zero for any constant acceleration); manoeuvre steps are skipped once warmed up
+   const H=st.whist,m=H.length;
+   if(m>=3){const d2=H[m-1].v-2*H[m-2].v+H[m-3].v,lim=3*Math.sqrt(6*st.noiseVar);
+    if(st.noiseN<8||Math.abs(d2)<=lim){st.noiseN++;const a=st.noiseN<8?1/st.noiseN:.06;st.noiseVar=clamp(st.noiseVar+(d2*d2/6-st.noiseVar)*a,.0004,4);}}
+  }
+  const sh=lsTrend(st.whist,CF.W_SHORT),lg=lsTrend(st.whist,CF.W_LONG);
+  const dv3=sh?sh.slope*CF.W_SHORT:0,dv9=lg?lg.slope*CF.W_LONG:dv3;
+  const aEst=sh?sh.slope/3.6:clamp(Number(input.accel)||0,-8,8)*.5;
+  st.aEst=aEst;
+  // noise of a 3 s Δv from the second-difference speed-noise estimate (≈0 for smooth sim speed)
+  const sigV=Math.sqrt(st.noiseVar);
+  const sigDv3=sh&&sh.sxx>0?sigV*CF.W_SHORT/Math.sqrt(sh.sxx):0;
+  const warm=!!(sh&&lg&&lg.cover>=CF.WARM_SPAN&&sh.n>=3);
+  const kdv=comfortKickDv(e).map((x,i)=>Math.max(x,CF.NOISE_K*sigDv3*(1+.25*i)));
+  let level=0; if(warm) for(let i=0;i<3;i++) if(dv3>=kdv[i]) level=i+1;
+  const dIn=Number.isFinite(input.demand)?clamp(input.demand,0,1):null;
+  const demand=dIn!==null?Math.max(dIn,demandFromAccel(aEst)*.6):demandFromAccel(aEst);
+  const holdDv=Math.max(CF.HOLD_DV,1.5*sigDv3);
+  // decel: only after speed has really dropped (≥5 km/h over 3 s, or a slow coast losing ≥8 km/h over 9 s)
+  const decelling=warm&&dv3<=CF.DECEL_DV&&(-dv3>=CF.DROP_GATE||-dv9>=CF.DROP_GATE*1.6);
+  // --- phase machine
+  let liftoff=false;
+  if(st.phase!=='accel'&&level>=1){st.phase='accel';st.phaseGear0=st.gear;st.kickApplied=0;st.peakDemand=0;}
+  if(st.phase==='accel'){
+   st.peakDemand=Math.max(st.peakDemand,demand);
+   // hold the lower gear until the speed has stabilised (Δv over 3 s near zero)
+   if(level===0&&dv3<holdDv&&(dIn===null||dIn<.1)){liftoff=st.peakDemand>=.2;st.phase='hold';st.holdT=pz.relax*style.relaxMul;st.kickApplied=0;}
+  }
+  if(decelling&&st.phase!=='accel') st.phase='decel';
+  if(st.phase==='decel'&&!decelling&&dv3>-holdDv){st.phase='hold';st.holdT=pz.relax*style.relaxMul;}
+  if(st.phase==='hold'){st.holdT-=dt;if(Math.abs(dv3)>=holdDv*1.5&&!decelling) st.holdT=Math.max(st.holdT,.5);if(st.holdT<=0) st.phase='cruise';}
+  if(Math.abs(dv3)<holdDv&&demand<.2) st.cruiseTime+=dt; else st.cruiseTime=0;
+  // --- shift decisions
+  const floor=gearFloor(e,style),top=topGear(e,style),gap=style.minGap;
+  const R=k=>rawGearRpm(e,speed,k);
+  let shift=null,fromRpm=0,g=st.gear,blip=false;
+  const shiftPt=clamp(pz.shift+style.shiftAdd,.6,.94),shiftLo=clamp(pz.shiftLo+style.shiftLoAdd,.3,shiftPt);
+  if(speed<1){ if(g!==0) shift='down'; g=0; st.phase='cruise'; }
+  else if(g===0){ g=1; st.sinceShift=gap; }
+  else{
+   const rpmNow=R(g);
+   if(st.phase==='accel'&&level>st.kickApplied&&g>1&&st.sinceShift>=gap*.5){
+    let want=Math.max(1,Math.min(g,st.phaseGear0-level));
+    while(want<g&&R(want)>shiftPt*.97*e.max) want++;
+    if(want<g){fromRpm=rpmNow;g=want;shift='down';}
+    st.kickApplied=level;
+   }
+   else if(rpmNow>=.92*e.max&&g<TOP_GEAR&&st.sinceShift>=gap*.5){fromRpm=rpmNow;g++;shift='up';}
+   else if(st.phase==='accel'){
+    const pt=(shiftLo+(shiftPt-shiftLo)*clamp(demand*1.4,0,1))*e.max;
+    if(g<top&&st.sinceShift>=gap&&rpmNow>=pt&&R(g+1)>=floor){fromRpm=rpmNow;g++;shift='up';}
+   }
+   else if(st.phase==='decel'){
+    // gear follows the falling speed: one gear at a time when the current gear drops below the decel point
+    if(g>1&&st.sinceShift>=gap&&(rpmNow<comfortDecelRpm(e)||rpmNow<floor*.85)&&R(g-1)<=clamp(pz.decelCap+style.decelAdd,.5,.8)*e.max){fromRpm=rpmNow;g--;shift='down';blip=true;}
+   }
+   else{
+    const upAt=style.upLow*e.max+(shiftPt-style.upLow)*e.max*Math.pow(demand,1.1);
+    if(g<top&&st.phase==='cruise'&&st.sinceShift>=gap&&R(g+1)>=floor&&(rpmNow>upAt||st.cruiseTime>=1.6)){
+     fromRpm=rpmNow;g++;shift='up';
+     if(st.cruiseTime>=1.6) st.cruiseTime=.8;
+    }
+    else if(g>1&&st.sinceShift>=gap&&(g>top||rpmNow<floor*.85)){fromRpm=rpmNow;g--;shift='down';}
+   }
+  }
+  if(shift&&g!==st.gear){st.sinceShift=0;st.shifts++;} else if(g===st.gear){shift=null;blip=false;}
+  st.gear=g;
+  if(blip){st.blipT=.22;st.blipRpm=clamp(pz.blip*style.blipMul,0,.2)*e.max;}
+  let rpm=g===0?e.idle:gearRpm(e,speed,g);
+  const blipping=st.blipT>0;
+  if(blipping){rpm=Math.min(e.max*.94,rpm+st.blipRpm*Math.sin(Math.PI*(1-st.blipT/.22)));st.blipT=Math.max(0,st.blipT-dt);}
+  const decel=st.phase==='decel'||aEst<-.3;
+  const load=g===0?.08:clamp(decel?.08+.04*speed/120:.14+.06*Math.min(1,speed/120)+.72*demand+style.loadBias,0,1);
+  const popUpAff=clamp(pz.popUp+style.popUpAdd,0,1);
+  const popWorthy=shift==='up'&&popUpAff>=.15&&demand>=1.05-popUpAff*.9&&fromRpm>=.55*e.max;
+  return {gear:g,rpm,load,shift,popWorthy,liftoff:liftoff&&g>0,blip,blipping,demand,aEst,level,phase:st.phase,dv3,dv9,state:st};
+ }
+ // Conforto → windowed-Δv gearbox (v3.7); Desportiva → v3.6 gearbox, unchanged.
+ function gearbox(state,input){
+  const key=input&&input.style;
+  return (GEARBOX_STYLES[key]&&key!=='comfort')?gearboxV36(state,input):gearboxComfort(state,input);
  }
  // Pop event candidates from a gearbox step (pure; the page and tests share it). evaluatePop still decides.
  function popTriggers(gb,ctx){
@@ -448,7 +574,7 @@ const Core=(()=>{
  function softClip(x){const {knee:k,ceiling:cl}=AUDIO.clip,a=Math.abs(x);return a<=k?x:Math.sign(x)*(k+(cl-k)*Math.tanh((a-k)/(cl-k)));}
  function softClipCurve(n=2049){const out=new Float32Array(n);for(let i=0;i<n;i++)out[i]=softClip(i/(n-1)*2-1);return out;}
  function readNoisePref(storage){try{const v=storage&&storage.getItem('impulso.intakeNoise');const n=v===null||v===undefined||v===''?NaN:Number(v);return Number.isFinite(n)?clamp(Math.round(n),0,100):AUDIO.noiseDefault;}catch(err){return AUDIO.noiseDefault;}}
- return {VERSION,AUDIO,WAVE_BANDS,noiseGate,partialLimit,flutterDepth,harmonicCount,waveBand,bandHarmonics,audioParams,softClip,softClipCurve,readNoisePref,clamp,engines,mapping,gearbox,gearRpm,cruiseGear,demandFromAccel,popTriggers,kickThresholds,GEAR_PERSONA,KICK_LEVELS,GEAR_RATIOS,GEARBOX_STYLES,distance,gpsSample,gpsFix,gpsStep,formatOffset,harmonicPartial,profileFingerprint,firingMul,firingHz,evaluatePop,popEnvelope,POP_LIMITS};
+ return {VERSION,CF,lsTrend,comfortKickDv,comfortDecelRpm,gearboxComfort,gearboxV36,AUDIO,WAVE_BANDS,noiseGate,partialLimit,flutterDepth,harmonicCount,waveBand,bandHarmonics,audioParams,softClip,softClipCurve,readNoisePref,clamp,engines,mapping,gearbox,gearRpm,cruiseGear,demandFromAccel,popTriggers,kickThresholds,GEAR_PERSONA,KICK_LEVELS,GEAR_RATIOS,GEARBOX_STYLES,distance,gpsSample,gpsFix,gpsStep,formatOffset,harmonicPartial,profileFingerprint,firingMul,firingHz,evaluatePop,popEnvelope,POP_LIMITS};
 })();
 const $=id=>document.getElementById(id),{clamp,engines,mapping,gpsSample}=Core;
 let gbState=null,sinceDecelPop=9,gpsTrack=null,gpsStats={ok:0,bad:0,dup:0},gpsLastOffset=null,gpsLastAcc=null,gpsLastNative=null,gpsLastSource='—',gpsLastReason='—',gpsLastError='—',gpsPerm='—',diagTimer=0,mode='sim',speed=0,rpm=800,load=0,gear=0,rev=false,running=false,audio=null,watch=null,previous=null,lastFix=0,gpsSpeed=null,gpsAcceleration=0,lastFrame=performance.now(),frame=0,hiddenPause=false,prevGear=0,prevValid=false,popSuppress=false,lastPopAt=null;
