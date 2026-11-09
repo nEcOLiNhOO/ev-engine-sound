@@ -1,12 +1,18 @@
-# Impulso · Motor virtual v3.9
+# Impulso · Motor virtual v3.10
 
 Aplicação original, num único `index.html`, sem bibliotecas, fontes, gravações ou pedidos de rede (exceto o serviço de localização do próprio browser, se autorizado).
 
-Esta pasta é a entrega autónoma v3.9 (timbre tonal idêntico à v3.4/v3.8; só o ruído de admissão é gated e limitado em banda; caixa Conforto da v3.7; Desportiva igual à v3.6; SupraMotor 2JZ, kick-down, blips e pops por perfil): vinte e duas assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação: a integração e o eventual GitHub Pages ficam a cargo de quem autorizar o envio.
+Esta pasta é a entrega autónoma v3.10 (timbre do motor idêntico à v3.9; pops & bangs reescritos, audíveis, com carácter por perfil e bus próprio; ruído de admissão da v3.9; caixa Conforto da v3.7; Desportiva igual à v3.6): vinte e duas assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação: a integração e o eventual GitHub Pages ficam a cargo de quem autorizar o envio.
 
-O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.9 ainda pode não corresponder ao que está online.
+O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.10 ainda pode não corresponder ao que está online.
 
 A publicação HTTPS permite testar num browser normal, mas não garante que resolva a ausência de áudio numa pré-visualização móvel. Toca em **Iniciar som** na página aberta diretamente no browser.
+
+## Alterações na v3.10
+- **Pops & bangs audíveis e com carácter por perfil.** O estalinho da v3.9 vinha do pico ≤0,22, envelopes de 55 ms, 3 vozes, e do limitador 12:1 do motor a esmagar os transientes. Na v3.10 cada um dos 22 perfis tem o seu `POP_PROFILES` (grave, crack, cauda, banda, burst, loudness, propensão, gate de rpm, bang na passagem).
+- Síntese nova: thump grave com queda de pitch (≈60–180 Hz), crack em passa-banda (~800–3000 Hz, sem hiss agudo) e cauda curta nos bangs; nos overruns, rajadas de 3–8 estalos em 0,3–1,2 s.
+- Bus próprio: pops → ganho → teto suave (−1 dB, 3,5:1) → destino — **não** passam pelo limitador 12:1 do motor. Intensidade até 100; o motor (osciladores, sub, flutter, escape, master ×0,48, limitador) e o fix do ruído da v3.9 ficam iguais.
+- Gatilhos GPS: queda ≥2 km/h na janela ~3 s acima de ~28 km/h, ou decel/blip/liftoff da caixa; cooldown ≥4 s entre rajadas. REV e levantar o acelerador na simulação disparam de forma clara. Continua proibido em perda de sinal, troca de modo, reinício, página oculta e troca de motor.
 
 ## Alterações na v3.9
 - **Só o chiado de admissão.** O sopro/estática contínuo vinha do ruído branco de admissão, que na v3.4/v3.8 ficava sempre ligado (`noiseIdle`), mesmo em cruzeiro. Na v3.9 esse ruído só aparece com procura real (acelerador/aceleração): em ralenti e cruzeiro o ganho vai a ~0; a plena carga o pico é o mesmo da v3.4. Ataque ≈80 ms, relaxamento ≈300 ms.
@@ -47,7 +53,7 @@ O seletor está dividido em **Inspirações de modelos** e **Arquiteturas de mot
 As inspirações não são gravações nem cópias autênticas. Limites de rotação, harmónicos, filtros e irregularidade são escolhas de design para distinguir os timbres — não fichas técnicas. O Mazda RX-7 usa uma cadência de ignição de motor rotativo de dois rotores (um pulso por revolução do veio excêntrico, por rotor), sem o rotular como I4 ou como um motor de quatro cilindros.
 
 ## Estalos e pops
-Efeito opcional, desligado por defeito, com intensidade ajustável. São ruídos curtos filtrados e um bate-estaca grave suave, sempre a passar pelo volume principal e pela cadeia final (filtros, compressor suave e saturação suave).
+Efeito opcional, desligado por defeito, com intensidade ajustável. São bangs com corpo grave, crack a meio espectro e cauda curta (v3.10), por perfil, no bus próprio dos pops (teto suave −1 dB), escalados pelo volume e pela intensidade.
 
 Disparam apenas quando o som já está a correr e numa destas situações:
 - desaceleração simulada com rotação suficientemente alta;
@@ -152,14 +158,15 @@ Executar `node test.cjs` (Node.js, sem dependências):
 - análise sintática de todo o JavaScript inline com `vm.Script`;
 - testes determinísticos de GPS (conversão, ausência, ruído, saltos, precisão, ordem temporal, aceleração implausível);
 - v3.7: Desportiva idêntica à v3.6 (mesmo código e mesmas saídas para as mesmas entradas); Conforto com GPS ruidoso a 1 Hz: 100→110 km/h em 9 s sem reduções; +10 km/h em 2,5 s reduz ≥1 marcha, segura enquanto acelera e volta à 7.ª depois de estabilizar; +10 km/h em 5 s no máximo 1 marcha (mais nos perfis vivos); levantar −2 km/h sem reduções; travagem 120→60 com reduções a acompanhar a velocidade, com blip e nenhuma antes de perder 5 km/h; simulação com a mesma lógica. Testes adaptados: 0,6 m/s² durante 4 s passa a ser "intermédio" no Conforto (no máximo 1 marcha, conforme o perfil) e mantém a expectativa original (≥1 marcha em ~1,5 s) na Desportiva; o mesmo no teste do SupraMotor 2JZ.
-- v3.9: código tonal byte a byte igual ao da v3.4/v3.8 (buildWave, pops, harmónicos, ignição; prefixo e flutter de buildAudio); ruído de admissão gated por `drive` e limitado HP150/LP2500; no AudioContext simulado, em cruzeiro o ganho de ruído ≈ 0 e a plena carga o pico ≤ v3.4; medição offline em V8/Supra/GT3 RS/V12 com ruído de cruzeiro >40 dB abaixo do tom.
+- v3.10: motor tonal idêntico à v3.9; `POP_PROFILES` distintos nos 22 perfis; bus de pops independente; rajadas GPS; envelopes com body+crack+tail; intensidade 5–100 (defeito 55).
+- v3.9: código tonal byte a byte igual ao da v3.4/v3.8; ruído de admissão gated por `drive` e limitado HP150/LP2500.
 - v3.8: o código de áudio ficou byte a byte igual ao da v3.4 (antes da correção cirúrgica do ruído na v3.9).
 - v3.4: SupraMotor 2JZ existe com esse nome no grupo das inspirações, ignição de I6, limites válidos, cruzeiro a 120 km/h em 7.ª entre 1 500 e 3 000 rpm, kick-down a 0,6/1,2 m/s², pops ao levantar com estalos ligados e nenhum com desligados, passagens exigentes como candidatas a pop; contagem de perfis passa de 21 para 22.
 - v3.3: personalidade de caixa para os 21 perfis (Desportiva por cima); 0,6 m/s² durante 4 s desde 120 km/h com GPS ruidoso a 1 Hz reduz ≥1 marcha em todos os perfis (≤1,5 s em ≥15 de 20 sementes, sempre ≤2,5 s); 1,2 m/s² reduz ≥2 marchas; 60 s de cruzeiro ruidoso sem trocas em todos os perfis e estilos; regresso à 7.ª depois da aceleração; desaceleração com reduções, blips e rotação limitada; acelerar e levantar com pops ligados estala nos desportivos, pouco ou nada nos suaves e nunca com pops desligados; regras de segurança do overrun e limite de rotação por perfil; simulação com alvo/resposta provoca kick-down.
 - v3.2: caixa virtual — 120 km/h constantes com ruído tipo GPS chega à 7.ª entre 1 800 e 3 000 rpm, sem oscilar e sem candidatos a pops; 60 s de cruzeiro ruidoso sem trocas; os 21 perfis em cruzeiro dentro de ralenti…máx×0,94; aceleração forte provoca kick-down e mais rotação/carga; desaceleração reduz sem subir e termina em 1.ª; parado = N; intervalo mínimo entre trocas; Desportiva com mais rotação do que Conforto; ligação da página ao seletor e aos pops.
 - v3.1: timestamps desviados −60 s, −1 h e +1 h continuam a dar velocidade válida (nativa e estimada); posições a mais de 1 Hz sem velocidade nativa; timestamps repetidos; formatação do desvio no diagnóstico; ausência da rejeição por idade do timestamp.
 - limites de RPM/carga para todos os perfis, mudanças virtuais e mapeamento seguro de uma chave desconhecida;
-- versão visível 3.9; pelo menos 22 assinaturas; agrupamento; notas curtas de carácter; honestidade sem repetir o aviso em cada opção;
+- versão visível 3.10; pelo menos 22 assinaturas; agrupamento; notas curtas de carácter; honestidade sem repetir o aviso em cada opção;
 - unicidade da afinação, incluindo as novas inspirações face às arquiteturas aparentadas;
 - o RX-7 é tratado como rotativo (2 rotores), não como um I4 de pistões;
 - estalos: desligados/mute/parado não disparam; perda de sinal, modo, reinício, página oculta e troca de perfil são eventos proibidos; desaceleração, largar o REV e mudança virtual têm condições e intervalo; propensão diferente entre perfis; amplitude e duração limitadas.

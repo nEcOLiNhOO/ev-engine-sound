@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pt-PT" data-version="3.9"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual v3.9</title>
+<html lang="pt-PT" data-version="3.10"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#0c1219"><title>Impulso · Motor virtual v3.10</title>
 <style>
 :root{color-scheme:dark;--bg:#0c1219;--panel:#141e28;--line:#293744;--text:#eef4f7;--muted:#a2b3c0;--accent:#c4f46c;--blue:#7bd9e7}*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 70% 0,#20303b,transparent 65%),var(--bg);font:16px system-ui,sans-serif;color:var(--text)}main{max-width:1220px;margin:auto;padding:28px}header{display:flex;justify-content:space-between;align-items:center;margin-bottom:25px}.brand{font-size:24px;letter-spacing:.2em;font-weight:800}.ver{font-size:11px;letter-spacing:.14em;color:var(--muted);font-weight:700;margin-left:8px;vertical-align:middle}.eyebrow{font-size:11px;letter-spacing:.18em;color:var(--muted);text-transform:uppercase;margin:8px 0}.badge{border:1px solid var(--line);border-radius:30px;padding:10px 15px;font-size:12px;color:var(--accent)}.layout{display:grid;grid-template-columns:1.25fr 1fr;gap:20px}.panel{background:linear-gradient(140deg,#18232e,#101922);border:1px solid var(--line);border-radius:24px;padding:25px}.modes{display:flex;gap:8px}button,select{font:inherit;color:inherit;background:#202d39;border:1px solid #3b4a58;border-radius:12px;min-height:48px;padding:10px 16px;cursor:pointer}button:focus-visible,select:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:3px}button.active{background:var(--accent);color:#14200a;border-color:var(--accent)}button:disabled{opacity:.4;cursor:not-allowed}.dial{height:260px;display:flex;flex-direction:column;align-items:center;justify-content:center;position:relative;margin:15px auto 0;max-width:380px}.dial:before{content:"";position:absolute;inset:5px 10px 0;border:12px solid #273641;border-bottom-color:transparent;border-radius:50% 50% 35% 35%;pointer-events:none}.dial:after{content:"";position:absolute;inset:5px 10px 0;border:12px solid transparent;border-left-color:var(--accent);border-radius:50% 50% 35% 35%;opacity:.7;pointer-events:none}.speed{font-size:88px;line-height:1.1;font-weight:250;font-variant-numeric:tabular-nums;z-index:1}.unit{color:var(--muted);font-size:13px}.source{margin-top:16px;font-size:12px;color:var(--blue);text-align:center;z-index:1}.rpmrow{display:flex;justify-content:space-between;color:var(--muted);font-size:13px;margin:8px 0}.track{height:10px;background:#2b3741;border-radius:8px;overflow:hidden}.fill{height:100%;width:0;background:linear-gradient(90deg,var(--accent),#ffd170,#fc806d);transition:width .12s}.stats{display:flex;justify-content:space-between;margin:22px 0;font-size:13px;color:var(--muted)}.stats b{display:block;font-size:20px;color:var(--text);margin-top:5px}.actions{display:flex;gap:12px}.actions button{flex:1;min-height:60px;font-weight:700}#start{background:var(--accent);color:#182312;border:0}#rev{touch-action:none;user-select:none;-webkit-user-select:none}#rev.held{background:var(--blue);color:#12212a}.controls h1{font-size:25px;margin:0 0 6px}.subtitle{color:var(--muted);font-size:14px;line-height:1.5}label{display:block;color:var(--muted);font-size:13px;margin-top:23px}.labelrow{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}.labelrow output{color:var(--text)}select{width:100%}input[type=range]{accent-color:var(--accent);width:100%;min-height:32px;margin:0;cursor:pointer}.note{font-size:12px;color:var(--muted);line-height:1.6}.honesty{margin-top:10px;font-size:12px;color:var(--muted);line-height:1.5}#profileHint{margin-top:10px;color:var(--text)}.notice{min-height:45px;padding:12px 0 0;color:var(--blue);font-size:13px;line-height:1.5}.gpsbox{border:1px solid var(--line);border-radius:12px;padding:12px;margin-top:18px}.gpsbox button{width:100%}.diag{margin-top:10px;font-size:12px;color:var(--muted)}.diag summary{cursor:pointer;color:var(--text);min-height:32px;padding-top:6px}.diag dl{display:grid;grid-template-columns:auto 1fr;gap:4px 12px;margin:8px 0 0}.diag dt{color:var(--muted)}.diag dd{margin:0;color:var(--text);font-variant-numeric:tabular-nums;word-break:break-word}.toggle{display:flex;align-items:center;gap:10px;margin-top:20px;color:var(--text);font-size:14px;cursor:pointer}.toggle input{width:22px;height:22px;accent-color:var(--accent);flex-shrink:0}.popsbox{margin-top:4px}.foot{margin:20px 2px;color:var(--muted);font-size:12px;line-height:1.6} [hidden]{display:none!important}@media(max-width:760px){main{padding:16px}.layout{grid-template-columns:1fr}.panel{padding:20px}header{margin-bottom:16px}.brand{font-size:20px}.dial{height:230px}.speed{font-size:76px}.badge{font-size:10px;padding:8px}.controls h1{font-size:23px}}@media(min-width:900px) and (max-height:800px){main{padding-top:18px}.dial{height:225px}label{margin-top:16px}}
 </style></head><body><main>
-<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.9</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
+<header><div><div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.10</span></div><div class="eyebrow">Laboratório de som automóvel</div></div><div class="badge" id="modeBadge">SIMULAÇÃO · PARADO</div></header>
 <div class="layout"><section class="panel" aria-label="Instrumentos e reprodução"><div class="modes" aria-label="Modo"><button id="simMode" class="active" aria-pressed="true">Simulação</button><button id="gpsMode" aria-pressed="false">GPS real</button></div>
 <div class="dial"><div class="speed" id="speed">0</div><div class="unit">km/h</div><div class="source" id="source">Velocidade simulada · sem ligação ao carro</div></div>
 <div class="rpmrow"><span id="rpm">800 rpm</span><span id="redline">6 800 máx.</span></div><div class="track" role="meter" aria-label="Rotações do motor" aria-valuemin="0" aria-valuemax="6800" aria-valuenow="800" id="rpmMeter"><div class="fill" id="rpmFill"></div></div>
@@ -46,18 +46,72 @@
 <div class="popsbox">
 <label class="toggle" for="popsEnable"><input id="popsEnable" type="checkbox"> Estalos e pops (opcional)</label>
 <div id="popsControls" hidden>
-<label for="popsIntensity"><span class="labelrow"><span>Intensidade dos estalos</span><output id="popsIntensityValue">40%</output></span></label>
-<input id="popsIntensity" type="range" min="5" max="80" value="40">
+<label for="popsIntensity"><span class="labelrow"><span>Intensidade dos estalos</span><output id="popsIntensityValue">55%</output></span></label>
+<input id="popsIntensity" type="range" min="5" max="100" value="55">
 <p class="note">Desligado por omissão. Só em desaceleração, ao largar o REV com rotação alta, ou numa mudança virtual / desaceleração GPS válida. Não lê o pedal e não dispara se o sinal se perder.</p>
 </div>
 </div>
-</section></div><footer class="foot">Impulso v3.9. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Saída pelos altifalantes do carro e o browser Tesla em movimento não estão validados. Síntese original, não oficial.</footer>
+</section></div><footer class="foot">Impulso v3.10. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Saída pelos altifalantes do carro e o browser Tesla em movimento não estão validados. Síntese original, não oficial.</footer>
 </main><script>
 'use strict';
 const Core=(()=>{
- const VERSION='3.9';
+ const VERSION='3.10';
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
- const POP_LIMITS={maxGain:.22,maxVoices:3,decelThresh:-.55,maxNodesPerEvent:2,crackleDur:.055,shiftDur:.09};
+ const POP_LIMITS={maxGain:.85,maxVoices:8,decelThresh:-.28,maxNodesPerEvent:3,crackleDur:.09,shiftDur:.14,burstCooldown:4,liftDv:2,liftWindow:2.5,minSpeed:28,popBus:.95,popCeil:-1};
+ // Per-profile pop & bang character (v3.10). Distinct from engine tone. Fallback via popProfileOf().
+ // bodyHz/bodyDrop: thump pitch + short drop; body/crack/tail mixes; crackHz/Q/LP band; decay s;
+ // bangRatio 0=popcorn … 1=single bang; burstMin/Max + burstSpan s; loud scale; overrunP propensity;
+ // upBang/upStr: upshift bang; rpmGate fraction of max (cruise lift-offs); feel label.
+ const PP=(bodyHz,bodyDrop,body,crack,tail,crackHz,crackQ,crackLp,decay,bangRatio,bMin,bMax,burstSpan,loud,overrunP,upBang,upStr,rpmGate,feel)=>({bodyHz,bodyDrop,body,crack,tail,crackHz,crackQ,crackLp,decay,bangRatio,burstMin:bMin,burstMax:bMax,burstSpan,loud,overrunP,upBang,upStr,rpmGate,feel});
+ const POP_PROFILES={
+  // Inspirations
+  gt3rs:    PP(145,55,.42,.78,.18,2100,1.35,3200,.07,.25,2,4,.45,1.05,1.15,true,.7,.26,'pista-aguda'),
+  gtr:      PP(95,40,.55,.7,.28,1400,.9,2600,.11,.55,3,6,.85,1.1,1.25,true,.85,.30,'turbo-abafado'),
+  lfa:      PP(160,40,.28,.55,.12,2400,1.5,3400,.06,.15,1,3,.35,.78,.7,true,.45,.32,'refinado'),
+  r8v10:    PP(130,50,.4,.72,.2,1950,1.2,3000,.08,.35,2,5,.55,1.0,1.05,true,.65,.28,'v10-casca'),
+  wrx:      PP(110,48,.38,.88,.15,1750,1.1,2800,.055,.12,5,8,.95,1.08,1.35,true,.75,.30,'popcorn-turbo'),
+  mustang:  PP(72,35,.85,.48,.4,900,.7,2000,.16,.82,2,4,.7,1.25,1.2,true,.55,.24,'muscle-grave'),
+  m3:       PP(125,45,.4,.7,.18,1850,1.15,2900,.075,.4,2,5,.55,1.0,1.0,true,.6,.28,'i6-nervoso'),
+  c63:      PP(78,38,.75,.82,.45,1100,.85,2300,.14,.7,4,7,1.05,1.3,1.45,true,.9,.22,'amg-crackle'),
+  rs3:      PP(105,42,.5,.8,.25,1600,1.0,2700,.09,.45,3,6,.8,1.12,1.25,true,.8,.27,'cinco-cheio'),
+  aventador:PP(120,55,.48,.75,.3,1700,1.1,2800,.1,.5,3,6,.75,1.15,1.2,true,.85,.26,'v12-teatral'),
+  f458:     PP(140,50,.35,.8,.2,2200,1.3,3300,.07,.3,3,6,.65,1.08,1.2,true,.75,.27,'v8-plano'),
+  rx7:      PP(155,60,.3,.92,.12,2300,1.4,3100,.045,.08,6,8,1.0,1.05,1.3,true,.7,.29,'rotativo-brappy'),
+  supra2jz: PP(88,42,.7,.85,.38,1250,.95,2400,.12,.6,4,7,1.1,1.22,1.4,true,1.0,.25,'turbo-2jz'),
+  // Architectures
+  i3:       PP(130,35,.3,.55,.08,1900,.9,2800,.05,.2,2,3,.4,.65,.45,false,0,.38,'subtil-i3'),
+  i4:       PP(120,40,.32,.7,.1,1800,1.0,2700,.055,.15,4,7,.85,.85,.8,true,.35,.34,'popcorn-i4'),
+  i5:       PP(112,42,.45,.65,.18,1550,.95,2600,.08,.4,2,5,.6,.9,.75,true,.5,.33,'cadencia-i5'),
+  i6:       PP(100,30,.35,.4,.1,1500,.8,2400,.07,.25,1,2,.3,.55,.35,false,0,.40,'suave-i6'),
+  v6:       PP(108,38,.45,.58,.15,1500,.9,2500,.08,.4,2,4,.5,.85,.7,true,.4,.34,'v6-moderado'),
+  flat6:    PP(150,50,.38,.72,.15,2050,1.25,3100,.065,.22,2,4,.5,.95,.9,true,.55,.30,'boxer'),
+  v8:       PP(80,36,.8,.55,.35,1000,.75,2100,.13,.75,2,5,.75,1.15,1.1,true,.5,.26,'v8-grave'),
+  v10:      PP(135,48,.4,.68,.18,2000,1.2,3000,.08,.35,2,4,.5,.95,.85,true,.55,.30,'v10'),
+  v12:      PP(115,35,.35,.42,.12,1700,.85,2600,.07,.2,1,3,.35,.6,.4,false,0,.38,'suave-v12')
+ };
+ function popFallback(e){
+  if(!e) return POP_PROFILES.v8;
+  if(e.kind==='rotary') return POP_PROFILES.rx7;
+  const c=e.cyl||8;
+  if(c<=3) return POP_PROFILES.i3;
+  if(c===4) return POP_PROFILES.i4;
+  if(c===5) return POP_PROFILES.rs3;
+  if(c===6) return e.tone>2200?POP_PROFILES.flat6:POP_PROFILES.i6;
+  if(c===8) return POP_PROFILES.v8;
+  if(c===10) return POP_PROFILES.v10;
+  return POP_PROFILES.v12;
+ }
+ function popProfileOf(e){
+  if(!e) return popFallback(e);
+  if(e.pop) return e.pop;
+  const id=Object.keys(engines).find(k=>engines[k]===e);
+  return (id&&POP_PROFILES[id])||popFallback(e);
+ }
+ function popFingerprint(pp){
+  if(!pp) return '';
+  return ['bodyHz','bodyDrop','body','crack','tail','crackHz','crackQ','crackLp','decay','bangRatio','burstMin','burstMax','burstSpan','loud','overrunP','upBang','upStr','rpmGate','feel'].map(k=>k+'='+pp[k]).join(';');
+ }
+
  const engines={
   gt3rs:{group:'inspiration',unofficial:true,kind:'piston',cyl:6,rotors:0,fireMul:3,idle:980,max:8800,tone:2750,exhaustQ:.98,intakeBase:720,intakeRatio:.38,intakeQ:1.05,noiseIdle:.01,noiseLoad:.068,rough:.065,pulse:.31,harmonicDecay:11,evenMix:1.22,oddMix:.82,rasp:.42,pulseGain:.158,pulseLoad:.128,subGain:.08,subDiv:145,flutterBase:10,crackle:.62,hint:'Boxer agudo, com admissão mais presente nas altas.'},
   gtr:{group:'inspiration',unofficial:true,kind:'piston',cyl:6,rotors:0,fireMul:3,idle:780,max:7100,tone:1550,exhaustQ:1.15,intakeBase:280,intakeRatio:.18,intakeQ:.45,noiseIdle:.016,noiseLoad:.078,rough:.085,pulse:.45,harmonicDecay:10,evenMix:1.05,oddMix:.92,rasp:.05,pulseGain:.162,pulseLoad:.118,subGain:.145,subDiv:110,flutterBase:7,crackle:.35,hint:'V6 mais abafado, com um sopro de admissão contínuo.'},
@@ -116,7 +170,7 @@ const Core=(()=>{
   i6:       P(1.05,.42,.80,1450,4.0,.030,.25,.60,.04,.44,6,'suave'),
   v12:      P(1.05,.44,.82,1450,4.0,.035,.26,.60,.05,.42,6,'suave')
  };
- for(const k of Object.keys(engines)) engines[k].persona=GEAR_PERSONA[k];
+ for(const k of Object.keys(engines)){engines[k].persona=GEAR_PERSONA[k];engines[k].pop=POP_PROFILES[k]||popFallback(engines[k]);}
  const GEARBOX_STYLES={
   comfort:{top:7,floorMul:1,floorMin:0,upLow:.32,kickMul:1,shiftAdd:0,shiftLoAdd:0,relaxMul:1,blipMul:1,decelAdd:0,popUpAdd:0,minGap:1.0,loadBias:0,kick:.55},
   sport:{top:6,floorMul:1.35,floorMin:2000,upLow:.5,kickMul:.85,shiftAdd:.03,shiftLoAdd:.08,relaxMul:1.5,blipMul:1.3,decelAdd:.06,popUpAdd:.10,minGap:.85,loadBias:.05,kick:.38}
@@ -397,10 +451,17 @@ const Core=(()=>{
  function popTriggers(gb,ctx){
   const out=[];
   if(!gb||!ctx||!ctx.valid||!ctx.prevValid) return out;
+  const cool=ctx.sinceDecelPop??9;
   if(gb.shift==='up'&&gb.popWorthy&&ctx.prevGear>=1) out.push({event:'upshift',rpm:ctx.rpm});
   if(gb.liftoff) out.push({event:'overrun',rpm:ctx.rpm});
   if(gb.blip) out.push({event:'overrun',rpm:Math.max(ctx.rpm,gb.rpm)});
-  if(!out.length&&gb.aEst<=POP_LIMITS.decelThresh&&(ctx.sinceDecelPop??9)>=.5) out.push({event:'decel',rpm:ctx.rpm,accel:gb.aEst});
+  // GPS/speed lift-off: ≥liftDv km/h lost in the ~3 s window while above minSpeed (1 Hz GPS friendly).
+  const speed=ctx.speed??0;
+  const dv=gb.dv3!=null?gb.dv3:(gb.dv9!=null?gb.dv9/3:null);
+  if(!out.length&&dv!=null&&dv<=-POP_LIMITS.liftDv&&speed>=POP_LIMITS.minSpeed&&cool>=POP_LIMITS.burstCooldown)
+    out.push({event:'overrun',rpm:ctx.rpm,accel:gb.aEst??dv/3.6});
+  if(!out.length&&gb.aEst<=POP_LIMITS.decelThresh&&cool>=.45)
+    out.push({event:'decel',rpm:ctx.rpm,accel:gb.aEst});
   return out;
  }
  // Stateless steady-state helper (legacy API): cruise gear for a given speed.
@@ -445,7 +506,7 @@ const Core=(()=>{
  }
  function firingHz(e,rpm){return Math.max(20,(rpm/60)*firingMul(e));}
  function evaluatePop(s){
-  const deny=reason=>({allow:false,kind:null,gain:0,count:0,minGap:0,reason});
+  const deny=reason=>({allow:false,kind:null,gain:0,count:0,minGap:0,reason,pp:null});
   if(!s||!s.enabled) return deny('off');
   if(!s.running) return deny('stopped');
   if(s.muted||!s.volume||s.volume<=0) return deny('muted');
@@ -456,37 +517,59 @@ const Core=(()=>{
   const intensity=clamp(Number(s.intensity)||0,0,100);
   if(intensity<=0) return deny('intensity');
   const profile=s.profile||{};
+  const pp=popProfileOf(profile);
   const maxRpm=s.maxRpm||profile.max||7000;
   const rpm=s.rpm||0;
-  const propensity=clamp(profile.crackle??.25,0,1);
-  // v3.3: overrun gate is profile-relative (persona.popRpm × max), so lift-off from ~3000–4000 rpm can crackle.
-  const popGate=Math.max((profile.idle||750)*1.8,clamp((profile.persona&&profile.persona.popRpm)||.38,.2,.6)*maxRpm);
+  const propensity=clamp((profile.crackle??.25)*pp.overrunP,0,1.5);
+  // v3.10: cruise lift-offs from ~2000–3000 rpm work for high-crackle cars; calm ones stay gated higher.
+  const popGate=Math.max((profile.idle||750)*1.35,clamp(pp.rpmGate,.18,.5)*maxRpm);
   if(s.event==='decel'){
    if(!(s.accel<=POP_LIMITS.decelThresh)) return deny('not-decel');
    if(rpm<popGate) return deny('rpm-low');
   }
   if(s.event==='overrun'&&rpm<popGate) return deny('rpm-low');
-  if(s.event==='rev-release'&&rpm<maxRpm*.55) return deny('rpm-low');
-  if(s.event==='upshift'&&rpm<1800) return deny('rpm-low');
+  // REV release is the parked test path — slightly easier gate, always fires (no roll).
+  if(s.event==='rev-release'&&rpm<Math.max(popGate,maxRpm*.4)) return deny('rpm-low');
+  if(s.event==='upshift'){
+   if(!pp.upBang) return deny('no-upshift-bang');
+   if(rpm<Math.max(1500,popGate*.85)) return deny('rpm-low');
+  }
   const now=s.now??0;
-  const minGap=.16+(1-intensity/100)*.22+(1-propensity)*.18;
+  const burst=s.event==='decel'||s.event==='overrun'||s.event==='rev-release';
+  const minGap=burst?POP_LIMITS.burstCooldown:(.9+(1-intensity/100)*.5);
   if(s.lastPopAt!=null&&(now-s.lastPopAt)<minGap) return deny('cooldown');
   if((s.activeVoices||0)>=POP_LIMITS.maxVoices) return deny('voice-cap');
   const rnd=typeof s.random==='function'?s.random():1;
-  // v3.3: convex propensity curve so calm profiles rarely crackle on a long lift-off while sporty ones still do.
-  const p=Math.pow(propensity,1.6)*(.35+.65*(intensity/100));
+  // Milder than v3.3 ^1.6 so sporty cars crackle reliably; calm ones still often miss.
+  const p=Math.pow(clamp(propensity,0,1),1.15)*(.4+.6*(intensity/100));
   if((s.event==='decel'||s.event==='overrun')&&rnd>p) return deny('roll');
-  const kind=s.event==='upshift'?'shift-pop':'crackle';
-  const count=kind==='shift-pop'?1:Math.min(3,1+Math.floor((intensity/100)*propensity*2.2));
-  const gain=Math.min(POP_LIMITS.maxGain,.045+propensity*.09*(intensity/100)+(kind==='shift-pop'?.04:0));
-  return {allow:true,kind,gain,count,minGap,reason:null,propensity};
+  const kind=s.event==='upshift'?'shift-pop':(pp.bangRatio>=.65?'bang':'crackle');
+  let count;
+  if(kind==='shift-pop') count=1;
+  else if(burst){
+   const span=pp.burstMin+Math.floor((pp.burstMax-pp.burstMin)*clamp(intensity/100,0,1)*clamp(propensity,0,1));
+   count=clamp(span,pp.burstMin,pp.burstMax);
+  } else count=1;
+  const inten=intensity/100;
+  const base=.22+pp.loud*.55*inten+(kind==='shift-pop'?pp.upStr*.18:0)+(kind==='bang'?.08:0);
+  const gain=Math.min(POP_LIMITS.maxGain,base);
+  return {allow:true,kind,gain,count,minGap,reason:null,propensity,pp,intensity:inten};
  }
  function popEnvelope(decision){
-  if(!decision||!decision.allow) return {peak:0,dur:0,thumpPeak:0,nodes:0};
+  if(!decision||!decision.allow) return {peak:0,dur:0,thumpPeak:0,crackPeak:0,tailPeak:0,nodes:0,spacing:0,burstSpan:0};
+  const pp=decision.pp||popFallback(null);
   const peak=Math.min(POP_LIMITS.maxGain,decision.gain);
-  const dur=decision.kind==='shift-pop'?POP_LIMITS.shiftDur:POP_LIMITS.crackleDur;
-  const nodes=Math.min(decision.count*POP_LIMITS.maxNodesPerEvent,POP_LIMITS.maxVoices*POP_LIMITS.maxNodesPerEvent);
-  return {peak,dur,thumpPeak:peak*.45,nodes};
+  const isShift=decision.kind==='shift-pop';
+  const isBang=decision.kind==='bang'||isShift;
+  const dur=isBang?Math.max(pp.decay,POP_LIMITS.shiftDur)* (isShift?1.15:1.25) : Math.max(pp.decay*.9,POP_LIMITS.crackleDur);
+  const thumpPeak=peak*clamp(pp.body*(isBang?.95:.7),0,1);
+  const crackPeak=peak*clamp(pp.crack*(isBang?.75:1),0,1);
+  const tailPeak=isBang?peak*clamp(pp.tail,0,.7):peak*clamp(pp.tail*.45,0,.35);
+  const count=Math.max(1,decision.count||1);
+  const burstSpan=count>1?pp.burstSpan:dur;
+  const spacing=count>1?burstSpan/Math.max(1,count-1):0;
+  const nodes=Math.min(count*POP_LIMITS.maxNodesPerEvent,POP_LIMITS.maxVoices*POP_LIMITS.maxNodesPerEvent);
+  return {peak,dur,thumpPeak,crackPeak,tailPeak,nodes,spacing,burstSpan,bodyHz:pp.bodyHz,bodyDrop:pp.bodyDrop,crackHz:pp.crackHz,crackQ:pp.crackQ,crackLp:pp.crackLp,count};
  }
 
  // pos.timestamp is unreliable on some browsers (clock offsets of minutes or hours).
@@ -536,7 +619,7 @@ const Core=(()=>{
   r.accel=accelFrom(base,r);
   return {track:{baseline:r.point,last:r.point,lastRawTs:p.rawTs??null},result:r};
  }
- return {VERSION,CF,lsTrend,comfortKickDv,comfortDecelRpm,gearboxComfort,gearboxV36,clamp,engines,mapping,gearbox,gearRpm,cruiseGear,demandFromAccel,popTriggers,kickThresholds,GEAR_PERSONA,KICK_LEVELS,GEAR_RATIOS,GEARBOX_STYLES,distance,gpsSample,gpsFix,gpsStep,formatOffset,harmonicPartial,profileFingerprint,firingMul,firingHz,evaluatePop,popEnvelope,POP_LIMITS};
+ return {VERSION,CF,lsTrend,comfortKickDv,comfortDecelRpm,gearboxComfort,gearboxV36,clamp,engines,mapping,gearbox,gearRpm,cruiseGear,demandFromAccel,popTriggers,kickThresholds,GEAR_PERSONA,KICK_LEVELS,GEAR_RATIOS,GEARBOX_STYLES,distance,gpsSample,gpsFix,gpsStep,formatOffset,harmonicPartial,profileFingerprint,firingMul,firingHz,evaluatePop,popEnvelope,POP_LIMITS,POP_PROFILES,popProfileOf,popFallback,popFingerprint};
 })();
 const $=id=>document.getElementById(id),{clamp,engines,mapping,gpsSample}=Core;
 let gbState=null,sinceDecelPop=9,gpsTrack=null,gpsStats={ok:0,bad:0,dup:0},gpsLastOffset=null,gpsLastAcc=null,gpsLastNative=null,gpsLastSource='—',gpsLastReason='—',gpsLastError='—',gpsPerm='—',diagTimer=0,mode='sim',speed=0,rpm=800,load=0,drive=0,gear=0,rev=false,running=false,audio=null,watch=null,previous=null,lastFix=0,gpsSpeed=null,gpsAcceleration=0,lastFrame=performance.now(),frame=0,hiddenPause=false,prevGear=0,prevValid=false,popSuppress=false,lastPopAt=null;
@@ -563,38 +646,62 @@ function releaseRev(origin='cancel'){
 }
 function spawnPop(a,decision){
  const env=Core.popEnvelope(decision);
- if(!env.peak||!a.noiseBuffer) return;
+ if(!env.peak||!a.noiseBuffer||!a.popsInput) return;
  const t0=a.ctx.currentTime;
  a.popNodes=a.popNodes.filter(n=>n.stopAt>t0);
  const events=a.popNodes.filter(n=>n.role==='event').length;
- const can=Math.min(decision.count,Math.max(0,Core.POP_LIMITS.maxVoices-events));
- for(let i=0;i<can;i++){
-  const start=t0+i*.048,dur=env.dur;
+ const count=Math.min(env.count||decision.count||1,Math.max(0,Core.POP_LIMITS.maxVoices-events));
+ if(count<=0) return;
+ const isBang=decision.kind==='bang'||decision.kind==='shift-pop';
+ for(let i=0;i<count;i++){
+  // Irregular crackle spacing across the burst window; single bangs fire immediately.
+  const jitter=(Math.random()-.5)*Math.min(.04, (env.spacing||0)*.25);
+  const start=t0+(count===1?0:i*(env.spacing||.08)+jitter);
+  const hitScale=count===1?1:(1-.18*i/count); // later pops in a burst a touch quieter
+  const dur=env.dur*(isBang?1:.75+Math.random()*.35);
+  const tailDur=isBang?Math.max(dur*1.4,.12+Math.random()*.05):dur*.6;
+  // --- mid crack: band-limited noise (no hiss above crackLp) ---
   const src=a.ctx.createBufferSource();
   src.buffer=a.noiseBuffer;
-  const hp=a.ctx.createBiquadFilter();
-  hp.type=decision.kind==='shift-pop'?'bandpass':'highpass';
-  hp.frequency.value=decision.kind==='shift-pop'?880:1700;
-  hp.Q.value=decision.kind==='shift-pop'?1:.65;
-  const lp=a.ctx.createBiquadFilter();
-  lp.type='lowpass';lp.frequency.value=decision.kind==='shift-pop'?2200:4200;
+  const bp=a.ctx.createBiquadFilter();bp.type='bandpass';bp.frequency.value=env.crackHz;bp.Q.value=env.crackQ;
+  const lp=a.ctx.createBiquadFilter();lp.type='lowpass';lp.frequency.value=env.crackLp;lp.Q.value=.7;
+  const hp=a.ctx.createBiquadFilter();hp.type='highpass';hp.frequency.value=550;hp.Q.value=.7;
   const gN=a.ctx.createGain();
+  const crackPk=Math.max(.0001,env.crackPeak*hitScale);
   gN.gain.setValueAtTime(0,start);
-  gN.gain.linearRampToValueAtTime(env.peak,start+.004);
+  gN.gain.linearRampToValueAtTime(crackPk,start+.003);
   gN.gain.exponentialRampToValueAtTime(.0001,start+dur);
-  src.connect(hp).connect(lp).connect(gN).connect(a.popsInput);
-  src.start(start);src.stop(start+dur+.03);
+  src.connect(bp).connect(hp).connect(lp).connect(gN).connect(a.popsInput);
+  src.start(start);src.stop(start+dur+.04);
+  // --- low body thump with short pitch drop ---
   const th=a.ctx.createOscillator();
-  th.type='sine';th.frequency.value=decision.kind==='shift-pop'?90:125;
+  th.type='sine';
+  const f0=env.bodyHz, f1=Math.max(45,env.bodyHz-env.bodyDrop);
+  th.frequency.setValueAtTime(f0,start);
+  th.frequency.exponentialRampToValueAtTime(f1,start+Math.min(.08,dur*.7));
   const gT=a.ctx.createGain();
+  const thumpPk=Math.max(.0001,env.thumpPeak*hitScale);
   gT.gain.setValueAtTime(0,start);
-  gT.gain.linearRampToValueAtTime(env.thumpPeak,start+.003);
-  gT.gain.exponentialRampToValueAtTime(.0001,start+dur*.75);
+  gT.gain.linearRampToValueAtTime(thumpPk,start+.004);
+  gT.gain.exponentialRampToValueAtTime(.0001,start+dur*.9);
   th.connect(gT).connect(a.popsInput);
-  th.start(start);th.stop(start+dur+.03);
-  const stopAt=start+dur+.05;
-  a.popNodes.push({role:'event',gain:gN,src,stopAt});
-  a.popNodes.push({role:'node',gain:gT,src:th,stopAt});
+  th.start(start);th.stop(start+dur+.05);
+  a.popNodes.push({role:'event',gain:gN,src,stopAt:start+dur+.06});
+  a.popNodes.push({role:'node',gain:gT,src:th,stopAt:start+dur+.06});
+  // --- bang tail: quieter longer body + soft crack ---
+  if(env.tailPeak>0.01&&(isBang||i===0)){
+   const tail=a.ctx.createOscillator();
+   tail.type='triangle';
+   tail.frequency.setValueAtTime(Math.max(50,f1*.85),start+dur*.15);
+   const gTail=a.ctx.createGain();
+   const tPk=Math.max(.0001,env.tailPeak*hitScale*.7);
+   gTail.gain.setValueAtTime(0,start+dur*.1);
+   gTail.gain.linearRampToValueAtTime(tPk,start+dur*.2);
+   gTail.gain.exponentialRampToValueAtTime(.0001,start+tailDur);
+   tail.connect(gTail).connect(a.popsInput);
+   tail.start(start+dur*.1);tail.stop(start+tailDur+.05);
+   a.popNodes.push({role:'node',gain:gTail,src:tail,stopAt:start+tailDur+.06});
+  }
  }
 }
 function maybePop(event,extra){
@@ -628,7 +735,13 @@ function buildAudio(){
  const limiter=ctx.createDynamicsCompressor();
  limiter.threshold.value=-16;limiter.knee.value=8;limiter.ratio.value=12;limiter.attack.value=.003;limiter.release.value=.15;
  master.connect(limiter).connect(ctx.destination);
- const popsInput=ctx.createGain();popsInput.gain.value=1;popsInput.connect(master);
+ // Engine chain: master → 12:1 limiter → destination (unchanged).
+ // Pop bus (v3.10): popsInput → popsGain → soft ceiling → destination — bypasses the engine limiter so bangs punch through.
+ const popsInput=ctx.createGain();popsInput.gain.value=1;
+ const popsGain=ctx.createGain();popsGain.gain.value=0;
+ const popsLim=ctx.createDynamicsCompressor();
+ popsLim.threshold.value=-1;popsLim.knee.value=6;popsLim.ratio.value=3.5;popsLim.attack.value=.002;popsLim.release.value=.12;
+ popsInput.connect(popsGain).connect(popsLim).connect(ctx.destination);
  function voice(){
   const osc=ctx.createOscillator(),exhaust=ctx.createBiquadFilter(),pulseGain=ctx.createGain();
   exhaust.type='lowpass';exhaust.frequency.value=1200;exhaust.Q.value=.8;
@@ -664,7 +777,7 @@ function buildAudio(){
   if(running&&ctx.state==='suspended') message('Áudio suspenso pelo browser. Toca em Retomar som.');
   if(ctx.state!=='running'&&running) $('start').textContent='↻ Retomar som';
  };
- return {ctx,master,voices,active:0,lastKey:null,sub,subGain,noise,noiseHP,intake,noiseLP,noiseGain,flutter,flutterGain,popsInput,popNodes:[],noiseBuffer:buffer};
+ return {ctx,master,voices,active:0,lastKey:null,sub,subGain,noise,noiseHP,intake,noiseLP,noiseGain,flutter,flutterGain,popsInput,popsGain,popsLim,popNodes:[],noiseBuffer:buffer};
 }
 function updateAudio(){
  if(!audio||!running) return;
@@ -709,6 +822,8 @@ function updateAudio(){
  const rising=noiseTarget>a.noiseGain.gain.value;
  a.noiseGain.gain.setTargetAtTime(noiseTarget,t,rising?.027:.1);
  set(a.master.gain,+$('volume').value/100*.48);
+ // Pop bus level tracks the volume slider but is independent of the engine limiter.
+ if(a.popsGain) set(a.popsGain.gain,+$('volume').value/100*Core.POP_LIMITS.popBus,.05);
 }
 async function start(){
  try{
@@ -846,8 +961,8 @@ function tick(now){
   // Pop candidates (hard upshift, lift-off overrun, rev-matched decel downshift, sustained decel) come from the
   // gearbox via Core.popTriggers; evaluatePop still applies toggle, mute, rpm gate, roll, cooldown and voice cap.
   sinceDecelPop+=dt;
-  for(const ev of Core.popTriggers(gb,{valid,prevValid,prevGear,rpm,sinceDecelPop})){
-   if(ev.event==='decel') sinceDecelPop=0;
+  for(const ev of Core.popTriggers(gb,{valid,prevValid,prevGear,rpm,sinceDecelPop,speed})){
+   if(ev.event==='decel'||ev.event==='overrun') sinceDecelPop=0;
    maybePop(ev.event,{validMotion:true,rpm:ev.rpm,accel:ev.accel??(gb?gb.aEst:accel)});
   }
  }

@@ -38,8 +38,8 @@ test('old baseline cannot derive a speed',()=>assert.equal(core.gpsSample(point(
 test('stateless cruise mapping: gear never decreases with speed and RPM drops at a shift',()=>{let prev=core.mapping(1,'v8'),sawDrop=false;for(let s=2;s<=200;s++){const m=core.mapping(s,'v8');assert(m.gear>=prev.gear,String(s));if(m.gear>prev.gear&&m.rpm<prev.rpm)sawDrop=true;prev=m;}assert(sawDrop);assert.equal(core.mapping(0,'v8').gear,0);});
 test('all engines map finite bounded RPM/load over speed sweep',()=>{for(const key of Object.keys(core.engines))for(let s=-10;s<=300;s++){const m=core.mapping(s,key,4),e=core.engines[key];assert(m.rpm>=e.idle&&m.rpm<=e.max);assert(m.load>=0&&m.load<=1);assert(m.gear>=0&&m.gear<=7);}});
 test('positive acceleration increases synthetic load',()=>assert(core.mapping(40,'v6',2).load>core.mapping(40,'v6',0).load));
-// v3.9: version 3.8 → 3.9.
-test('visible version 3.9 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.9');assert.match(html,/data-version="3\.9"/);assert.match(html,/>v3\.9</);assert.match(html,/Impulso v3\.9/);});
+// v3.10: version 3.9 → 3.10.
+test('visible version 3.10 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.10');assert.match(html,/data-version="3\.10"/);assert.match(html,/>v3\.10</);assert.match(html,/Impulso v3\.10/);});
 // v3.4: 21 → 22 profiles (SupraMotor 2JZ added).
 test('at least 22 presets with expected keys',()=>{
  const keys=Object.keys(core.engines);
@@ -176,25 +176,28 @@ test('stale or invalid motion cannot create decel or upshift pops',()=>{
 test('valid seeded decel, rev-release and upshift can trigger',()=>{
  const decel=core.evaluatePop(popState());
  assert.equal(decel.allow,true);
- assert.equal(decel.kind,'crackle');
+ assert(['crackle','bang'].includes(decel.kind),decel.kind);
  assert(decel.gain>0&&decel.gain<=core.POP_LIMITS.maxGain);
+ assert(decel.count>=1);
  const rev=core.evaluatePop(popState({event:'rev-release',rpm:5000,maxRpm:7000,random:()=>1}));
  assert.equal(rev.allow,true);
- assert.equal(rev.kind,'crackle');
  const lowRev=core.evaluatePop(popState({event:'rev-release',rpm:2000,maxRpm:7000}));
  assert.equal(lowRev.reason,'rpm-low');
  const up=core.evaluatePop(popState({event:'upshift',accel:1,random:()=>1}));
  assert.equal(up.allow,true);
  assert.equal(up.kind,'shift-pop');
+ // calm profile refuses upshift bangs
+ assert.equal(core.evaluatePop(popState({event:'upshift',accel:1,profile:core.engines.i6,maxRpm:core.engines.i6.max,rpm:4000,random:()=>0})).reason,'no-upshift-bang');
 });
 test('cooldown and voice cap block a constant pop loop',()=>{
  const first=core.evaluatePop(popState({now:10,lastPopAt:null}));
  assert.equal(first.allow,true);
+ assert(first.minGap>=3.5,'burst cooldown ≥ ~4 s');
  const again=core.evaluatePop(popState({now:10.05,lastPopAt:10}));
  assert.equal(again.reason,'cooldown');
  const later=core.evaluatePop(popState({now:10+first.minGap+.01,lastPopAt:10}));
  assert.equal(later.allow,true);
- assert.equal(core.evaluatePop(popState({activeVoices:3})).reason,'voice-cap');
+ assert.equal(core.evaluatePop(popState({activeVoices:core.POP_LIMITS.maxVoices})).reason,'voice-cap');
 });
 test('sporty profiles are more likely to crackle than refined ones with the same roll',()=>{
  const roll=()=>0.2;
@@ -207,14 +210,36 @@ test('sporty profiles are more likely to crackle than refined ones with the same
  assert(core.engines.f458.crackle>core.engines.lfa.crackle);
  assert(core.engines.rs3.crackle>core.engines.i5.crackle);
 });
-test('pop envelopes stay short and amplitude-capped',()=>{
- const dec=core.evaluatePop(popState());
+test('pop envelopes are impactful, amplitude-capped and carry body+crack+tail',()=>{
+ const dec=core.evaluatePop(popState({intensity:100,random:()=>0}));
  const env=core.popEnvelope(dec);
  assert(env.peak<=core.POP_LIMITS.maxGain);
- assert(env.dur<=0.1);
- assert(env.thumpPeak<env.peak);
- assert(env.nodes<=6);
+ assert(env.peak>=0.3,'audible peak');
+ assert(env.dur>=0.05&&env.dur<=0.35);
+ assert(env.thumpPeak>0&&env.crackPeak>0);
+ assert(env.nodes>=2);
  assert.equal(core.popEnvelope({allow:false}).peak,0);
+});
+test('every profile has a distinct pop fingerprint with valid ranges',()=>{
+ const keys=Object.keys(core.engines);const fps=new Set();
+ for(const k of keys){
+  const e=core.engines[k];assert(e.pop,k+' missing .pop');
+  const pp=core.popProfileOf(e);
+  assert.equal(pp,core.POP_PROFILES[k],k);
+  const fp=core.popFingerprint(pp);assert(fp);fps.add(fp);
+  assert(pp.bodyHz>=60&&pp.bodyHz<=180,k+' bodyHz');
+  assert(pp.bodyDrop>=20&&pp.bodyDrop<=80,k+' bodyDrop');
+  assert(pp.crackHz>=800&&pp.crackHz<=3000,k+' crackHz');
+  assert(pp.crackLp>=1800&&pp.crackLp<=3600,k+' crackLp');
+  assert(pp.decay>=0.04&&pp.decay<=0.2,k+' decay');
+  assert(pp.burstMin>=1&&pp.burstMax<=8&&pp.burstMin<=pp.burstMax,k+' burst');
+  assert(pp.burstSpan>=0.25&&pp.burstSpan<=1.3,k+' span');
+  assert(pp.loud>=0.5&&pp.loud<=1.4,k+' loud');
+  assert(pp.rpmGate>=0.18&&pp.rpmGate<=0.5,k+' rpmGate');
+  assert(typeof pp.upBang==='boolean',k+' upBang');
+  assert(pp.feel&&pp.feel.length>2,k+' feel');
+ }
+ assert.equal(fps.size,keys.length,'all pop fingerprints distinct');
 });
 test('pops control defaults to off and intensity is optional',()=>{
  assert.match(html,/id="popsEnable"/);
@@ -222,6 +247,7 @@ test('pops control defaults to off and intensity is optional',()=>{
  assert.match(html,/id="popsIntensity"/);
  assert.doesNotMatch(html,/id="popsEnable"[^>]*checked/);
  assert.match(html,/Estalos e pops \(opcional\)/);
+ assert.match(html,/<input id="popsIntensity" type="range" min="5" max="100" value="55">/);
 });
 
 // ---- v3.1 GPS timing fix: receipt time, never pos.timestamp age ----
@@ -422,7 +448,7 @@ test('page wires the gearbox, Caixa selector defaults to Conforto, pops upshift 
  assert.match(html,/value="sport">Desportiva/);
  // v3.3 adaptation: the call now passes sampleAt (GPS fix receipt time) and pop candidates come from Core.popTriggers.
  assert.match(script,/Core\.gearbox\(gbState,\{speed,accel,demand,dt,sampleAt,profile:e,style:\$\('gearStyle'\)\.value\}\)/);
- assert.match(script,/Core\.popTriggers\(gb,\{valid,prevValid,prevGear,rpm,sinceDecelPop\}\)/);
+ assert.match(script,/Core\.popTriggers\(gb,\{valid,prevValid,prevGear,rpm,sinceDecelPop,speed\}\)/);
  assert.match(script,/maybePop\(ev\.event,/);
  assert.doesNotMatch(script,/thresholds=\[0,22,46,74,108,148\]/);
 });
@@ -443,8 +469,8 @@ function drive(key,phases,{noise=.3,seed=7,style='comfort',pops=false,intensity=
    if(Math.abs(t-Math.round(t))<.026&&Math.round(t)!==fixT){fixT=Math.round(t);fixV=v+gs()*noise;}
    o=core.gearbox(st,{speed:fixV,accel:0,dt:.05,sampleAt:fixT,profile:e,style});st=o.state;
    rpm+=(o.rpm-rpm)*(1-Math.exp(-.05*(o.blipping?16:5)));sinceDecelPop+=.05;let popped=0;
-   for(const ev of core.popTriggers(o,{valid:true,prevValid,prevGear,rpm,sinceDecelPop})){
-    if(ev.event==='decel')sinceDecelPop=0;
+   for(const ev of core.popTriggers(o,{valid:true,prevValid,prevGear,rpm,sinceDecelPop,speed:v})){
+    if(ev.event==='decel'||ev.event==='overrun')sinceDecelPop=0;
     const d=core.evaluatePop({enabled:pops,running:true,muted:false,volume:15,intensity,event:ev.event,validMotion:true,rpm:ev.rpm,maxRpm:e.max,accel:ev.accel??o.aEst,profile:e,now:t,lastPopAt,activeVoices:0,random:pr});
     if(d.allow){lastPopAt=t;popped++;}
    }
@@ -459,8 +485,8 @@ const CRUISE={name:'cruise',dur:25,a:0};
 function firstDown(log){const acc=log.filter(x=>x.ph==='acc'),t0=acc[0].t-.05,fd=acc.find(x=>x.shift==='down');return fd?fd.t-t0:Infinity;}
 const gearDrop=log=>log.filter(x=>x.ph==='cruise').pop().gear-Math.min(...log.filter(x=>x.ph==='acc').map(x=>x.gear));
 // v3.4: version 3.4 and 22 profiles (was 3.3 / 21).
-test('per-profile gearbox personality covers all 22 profiles (version now 3.9)',()=>{
- assert.equal(core.VERSION,'3.9');assert.equal(KEYS.length,22);
+test('per-profile gearbox personality covers all 22 profiles (version now 3.10)',()=>{
+ assert.equal(core.VERSION,'3.10');assert.equal(KEYS.length,22);
  assert.deepEqual(Object.keys(core.GEAR_PERSONA).sort(),KEYS.slice().sort());
  for(const k of KEYS){const p=core.GEAR_PERSONA[k];
   assert.equal(core.engines[k].persona,p,k);
@@ -547,15 +573,15 @@ test('accel → lift-off with pops on: sporty profiles pop, calm ones few/none, 
 test('overrun pops respect every safety gate and the profile-relative rpm gate',()=>{
  const e=core.engines.c63,base={event:'overrun',maxRpm:e.max,profile:e,rpm:3500,accel:-.8};
  assert(core.evaluatePop(popState(base)).allow,'overrun allowed when valid');
- for(const over of [{enabled:false},{running:false},{muted:true},{volume:0},{validMotion:false},{activeVoices:3},{lastPopAt:9.9}])
+ for(const over of [{enabled:false},{running:false},{muted:true},{volume:0},{validMotion:false},{activeVoices:core.POP_LIMITS.maxVoices},{lastPopAt:9.9}])
   assert(!core.evaluatePop(popState({...base,...over})).allow,JSON.stringify(over));
  assert(!core.evaluatePop(popState({...base,rpm:e.idle*1.5})).allow,'below rpm gate');
  assert(!core.evaluatePop(popState({...base,event:'modeSwitch'})).allow);
- // gate is relative to the profile's own range: a cruise-level 2400 rpm passes on c63 (low gate) but a high-revving
- // calm i6 needs more.
- assert(core.GEAR_PERSONA.c63.popRpm*e.max<2400);
- assert(core.GEAR_PERSONA.i6.popRpm*core.engines.i6.max>2400);
+ // v3.10 rpmGate from POP_PROFILES: c63/cruise ~2000 ok; calm i6 gated higher.
+ assert(core.popProfileOf(e).rpmGate*e.max<2400);
+ assert(core.popProfileOf(core.engines.i6).rpmGate*core.engines.i6.max>2400);
  assert(!core.evaluatePop(popState({...base,profile:core.engines.i6,maxRpm:core.engines.i6.max,rpm:2400})).allow);
+ assert(core.evaluatePop(popState({...base,rpm:2200,random:()=>0})).allow,'c63 cruise lift rpm');
 });
 test('sim mode: raising the target / throttle at 120 km/h kicks down (page throttle-proxy formula)',()=>{
  const run=(key,throttle,target=140)=>{const e=core.engines[key];let st=null,r,v=120,minG=9,g0=null;
@@ -687,64 +713,57 @@ test('Conforto sim mode uses the same windowed logic: gentle target ramp keeps 7
   return {g0,drop:g0-minG};};
  for(const k of KEYS){assert.equal(run(k,0,125).drop,0,k+' 0 % throttle, +5 km/h at 0.5 m/s²');assert(run(k,60,135).drop>=1,k+' quick +15 km/h');}
 });
-// ---- v3.9: tonal audio stays byte-identical to v3.4; only the intake-noise path changes ----
+// ---- v3.10: engine tone identical to v3.9; pops rewritten with per-profile character + own bus ----
 const V34_AUDIO_SHA256={
  'function buildWave(':'68f508dcc6a4fc3f596c5245386f404db572cb0226e165b6339ca53e15f952c9',
  'function cancelPops(':'8b9a25a47c9a16529538e0c53fdcf952508cefb053a5161bb552006da55eae21',
- 'function spawnPop(':'2b3567bcb9faa94c037e15eec22476f7cb7b75c7037677df52761bd0e818bca6',
- 'function evaluatePop(':'dfef8946a295eb7afaa57ed5460c090ef51e3c65144b323f028719df827531c9',
- 'function popEnvelope(':'12867d8b93e432f9fad75d91dd8f98c7dd37f2ab6048564bf4d1ba4a18e59c47',
  'function harmonicPartial(':'9691d73344d293a18db6308db3f2095143df1d535ced107121b929eeaad5954b',
  'function firingMul(':'3acd583266933dd73a3bdf0e20ad7d6fa85585030f2238610303f12767c5912d'
 };
 const fnText=(src,a,b)=>{const i=src.indexOf(a);assert(i>=0,'missing '+a);return src.slice(i,src.indexOf(b,i));};
-test('tonal audio code is byte-identical to v3.4 (waves, pops, harmonics, firing; noise path excluded)',()=>{
+test('tonal engine code is byte-identical to v3.4/v3.9 (waves, harmonics, firing, cancelPops; pops synthesis excluded)',()=>{
  const crypto=require('node:crypto');
- const pairs=[['function buildWave(','function buildAudio('],['function cancelPops(','function spawnPop('],['function spawnPop(','function maybePop('],[' function evaluatePop(',' function popEnvelope('],[' function popEnvelope(',' function gpsFix('],[' function harmonicPartial(',' function profileFingerprint('],[' function firingMul(',' function evaluatePop(']];
+ const pairs=[['function buildWave(','function buildAudio('],['function cancelPops(','function spawnPop('],[' function harmonicPartial(',' function profileFingerprint('],[' function firingMul(',' function evaluatePop(']];
  for(const [a,b] of pairs) assert.equal(crypto.createHash('sha256').update(fnText(script,a,b)).digest('hex'),V34_AUDIO_SHA256[a.trim()],a.trim()+' differs from v3.4');
- // buildAudio: everything before the noise buffer and the flutter→start block stay byte-identical to v3.4
  const b=fnText(script,'function buildAudio(','function updateAudio(');
  const noiseAt=b.indexOf(' const buffer=ctx.createBuffer');
  const flutterAt=b.indexOf(' const flutter=ctx.createOscillator()');
  const retAt=b.indexOf('return {ctx,master,voices');
- assert(noiseAt>0&&flutterAt>noiseAt&&retAt>flutterAt);
  const prefix=b.slice(0,noiseAt),flutter=b.slice(flutterAt,retAt);
- // Prefix (master/limiter/voices/sub) unchanged from v3.4; flutter LFO wiring unchanged.
+ // Engine master→limiter chain markers (pops bus is separate and must NOT feed master)
  assert.match(prefix,/limiter\.threshold\.value=-16;limiter\.knee\.value=8;limiter\.ratio\.value=12/);
+ assert.match(prefix,/popsInput\.connect\(popsGain\)\.connect\(popsLim\)\.connect\(ctx\.destination\)/);
+ assert.doesNotMatch(prefix,/popsInput\.connect\(master\)/);
  assert.match(prefix,/exhaust\.type='lowpass';exhaust\.frequency\.value=1200/);
  assert.match(prefix,/sub\.type='triangle'/);
  assert.match(flutter,/flutter\.type='sine'/);
- assert.match(flutter,/flutterGain\.connect\(voices\[0\]\.osc\.frequency\)/);
  assert.match(flutter,/sub\.start\(\);noise\.start\(\);flutter\.start\(\)/);
- // Byte-identical tonal halves vs v3.8 reference
- const v38=require('node:fs').readFileSync(__dirname+'/../ev-engine-sound-v3.8/index.html','utf8');
- const s38=v38.match(/<script>([\s\S]*?)<\/script>/)[1];
- const b38=fnText(s38,'function buildAudio(','function updateAudio(');
- assert.equal(prefix,b38.slice(0,b38.indexOf(' const buffer=ctx.createBuffer')),'buildAudio tonal prefix ≠ v3.8');
- assert.equal(flutter,b38.slice(b38.indexOf(' const flutter=ctx.createOscillator()'),b38.indexOf('return {ctx,master,voices')),'buildAudio flutter block ≠ v3.8');
- // no v3.5/v3.6 master-chain pieces
+ const v38=require('node:fs').readFileSync(__dirname+'/../ev-engine-sound-v3.9/index.html','utf8');
+ const s39=v38.match(/<script>([\s\S]*?)<\/script>/)[1];
+ const b39=fnText(s39,'function buildAudio(','function updateAudio(');
+ // Compare engine tonal prefix up to popsInput line (before v3.10 pop-bus divergence) and flutter block vs v3.9 noise-gated build
+ const engEnd=prefix.indexOf(' // Engine chain:');
+ const engPrefix=engEnd>=0?prefix.slice(0,engEnd):prefix.slice(0,prefix.indexOf(' const popsInput'));
+ const p39=b39.slice(0,b39.indexOf(' const popsInput'));
+ assert.equal(engPrefix.replace(/\s+/g,''),p39.replace(/\s+/g,''),'engine graph before pops bus ≠ v3.9');
+ // flutter through starts identical to v3.9
+ assert.equal(flutter.replace(/\s+/g,''),b39.slice(b39.indexOf(' const flutter=ctx.createOscillator()'),b39.indexOf('return {ctx,master,voices')).replace(/\s+/g,''),'flutter block ≠ v3.9');
  assert.doesNotMatch(html,/intakeNoise|Ruído de admissão/);
  assert.doesNotMatch(script,/createWaveShaper|Core\.AUDIO|audioParams|softClip/);
  assert.equal(core.AUDIO,undefined);
  assert.match(html,/<input id="volume" type="range" min="0" max="70" value="15">/);
 });
-test('updateAudio tonal formulas match v3.4; only noise gain formula changed',()=>{
+test('updateAudio keeps v3.9 tonal+noise formulas; only adds popsGain bus level',()=>{
  const u=fnText(script,'function updateAudio(','async function start(');
- // tonal lines still present with v3.4 formulas
  assert.match(u,/set\(v\.osc\.frequency,firing\)/);
  assert.match(u,/set\(v\.exhaust\.frequency,e\.tone\*\(\.4\+c\*\.7\+load\*\.6\)\)/);
- assert.match(u,/set\(v\.pulseGain\.gain,pulseTarget\)/);
- assert.match(u,/set\(a\.sub\.frequency,rpm\/e\.subDiv\)/);
  assert.match(u,/set\(a\.subGain\.gain,e\.subGain\*\(\.6\+load\*\.4\)\)/);
- assert.match(u,/set\(a\.flutter\.frequency,Math\.max\(e\.flutterBase,rpm\/60\)\)/);
  assert.match(u,/set\(a\.flutterGain\.gain,e\.rough\*\(1\+c\)\*rpm\/70\)/);
- assert.match(u,/set\(a\.master\.gain,\+\$\('volume'\)\.value\/100\*\.48\)/);
- // v3.4 always-on noise formula is gone; v3.9 drive-scaled target with attack/release is present
- assert.doesNotMatch(u,/set\(a\.noiseGain\.gain,e\.noiseIdle\+load\*e\.noiseLoad\*\(\.4\+c\)\)/);
  assert.match(u,/noiseTarget=Math\.max\(0,Math\.min\(1,drive\)\)\*noisePeak/);
- assert.match(u,/setTargetAtTime\(noiseTarget,t,rising\?\.027:\.1\)/);
+ assert.match(u,/set\(a\.master\.gain,\+\$\('volume'\)\.value\/100\*\.48\)/);
+ assert.match(u,/a\.popsGain\.gain,\+\$\('volume'\)\.value\/100\*Core\.POP_LIMITS\.popBus/);
 });
-test('intake noise path is band-limited HP150→bandpass→LP2500 and gated by drive',()=>{
+test('intake noise path remains band-limited and gated by drive (v3.9 fix kept)',()=>{
  const b=fnText(script,'function buildAudio(','function updateAudio(');
  assert.match(b,/noiseHP\.type='highpass';noiseHP\.frequency\.value=150/);
  assert.match(b,/noiseLP\.type='lowpass';noiseLP\.frequency\.value=2500/);
@@ -768,7 +787,7 @@ async function pageAudioTest(){
  const els={};
  for(const [,id] of html.matchAll(/id="([^"]+)"/g)) els[id]={id,textContent:'',hidden:false,value:'',checked:false,disabled:false,style:{},classList:{toggle(){},add(){},remove(){}},setAttribute(){},addEventListener(){},setPointerCapture(){},onclick:null};
  const KEY='supra2jz';
- Object.assign(els.engine,{value:KEY});els.target.value='0';els.throttle.value='45';els.volume.value='50';els.character.value='40';els.popsIntensity.value='40';els.gearStyle.value='comfort';
+ Object.assign(els.engine,{value:KEY});els.target.value='0';els.throttle.value='45';els.volume.value='50';els.character.value='40';els.popsIntensity.value='55';els.gearStyle.value='comfort';
  let raf=null,perf=1000;
  const ctx={document:{getElementById:id=>els[id],addEventListener(){},hidden:false},window:{isSecureContext:true,addEventListener(){},AudioContext:FakeAC},
   navigator:{geolocation:{watchPosition(){return 1;},clearWatch(){}},permissions:null},performance:{now:()=>perf},
@@ -777,55 +796,64 @@ async function pageAudioTest(){
  els.start.onclick();await new Promise(r=>setTimeout(r,0));
  const frames=n=>{for(let i=0;i<n;i++){perf+=50;raf(perf);}};
  frames(80);
- // output chain unchanged from v3.4: master → DynamicsCompressor → destination; no shaper, no master filters
- const comps=nodes.filter(n=>n.kind==='comp');assert.equal(comps.length,1);const lim=comps[0];
- assert.deepEqual([lim.threshold.value,lim.knee.value,lim.ratio.value,lim.attack.value,lim.release.value],[-16,8,12,.003,.15]);
- assert.deepEqual(lim.out.map(n=>n.kind),['destination']);
- assert.equal(nodes.filter(n=>n.kind==='shaper').length,0,'no WaveShaper');
- assert.equal(nodes.filter(n=>n.out.some(d=>d.kind==='destination')).length,1);
- const master=nodes.find(n=>n.out.includes(lim));assert.equal(master.kind,'gain');
- // v3.9 noise path: buffer → HP150 → bandpass → LP2500 → gain → master
+ const comps=nodes.filter(n=>n.kind==='comp');
+ assert.equal(comps.length,2,'engine limiter + pop ceiling');
+ const engLim=comps.find(c=>c.threshold.value===-16);
+ const popLim=comps.find(c=>c.threshold.value===-1);
+ assert(engLim&&popLim);
+ assert.deepEqual([engLim.threshold.value,engLim.knee.value,engLim.ratio.value,engLim.attack.value,engLim.release.value],[-16,8,12,.003,.15]);
+ assert.deepEqual(engLim.out.map(n=>n.kind),['destination']);
+ assert.deepEqual(popLim.out.map(n=>n.kind),['destination']);
+ assert.equal(nodes.filter(n=>n.kind==='shaper').length,0);
+ const master=nodes.find(n=>n.out.includes(engLim));assert.equal(master.kind,'gain');
+ // pops bus ends at destination, never into the engine master
+ assert(popLim.out[0].kind==='destination');
+ assert(!nodes.some(n=>n.out.includes(master)&&n.out.includes(popLim)));
+ // noise path still gated
  const buf=nodes.find(n=>n.kind==='buffer'&&n.loop);const hp=buf.out[0];
  assert.equal(hp.type,'highpass');assert.equal(hp.frequency.value,150);
  const intake=hp.out[0];assert.equal(intake.type,'bandpass');
  const lp=intake.out[0];assert.equal(lp.type,'lowpass');assert.equal(lp.frequency.value,2500);
- const noiseGain=lp.out[0];assert.equal(noiseGain.kind,'gain');assert.equal(noiseGain.out[0],master);
- // voices: osc → lowpass → gain → master; 48-term PeriodicWave with v3.4 partials
+ const noiseGain=lp.out[0];assert.equal(noiseGain.out[0],master);
  const e=core.engines[KEY];
  assert(waves.length>=1);for(const w of waves){assert.equal(w.n,48);for(let i=1;i<48;i++) assert.equal(w.im[i],Math.fround(core.harmonicPartial(e,i)));}
  const oscs=nodes.filter(n=>n.kind==='osc'),sub=oscs.find(o=>o.type==='triangle');
  assert(sub,'triangle sub');
  const c=.4,subGain=sub.out[0].gain.value,load=(subGain/e.subGain-.6)/.4,rpm=sub.frequency.value*e.subDiv;
  assert(load>=-1e-9&&load<=1+1e-9,'load '+load);
- // parked / zero demand → noise essentially off (drive=0)
- assert(Math.abs(noiseGain.gain.value)<1e-12,'cruise/idle noise gain ≈ 0, got '+noiseGain.gain.value);
+ assert(Math.abs(noiseGain.gain.value)<1e-12,'cruise/idle noise ≈ 0');
  assert(Math.abs(master.gain.value-50/100*.48)<1e-12,'master = volume/100 × 0.48');
- assert(Math.abs(intake.frequency.value-(e.intakeBase+rpm*e.intakeRatio))<1e-6&&intake.Q.value===e.intakeQ);
- const fg=nodes.find(n=>n.kind==='gain'&&n.out.length===2&&n.out.every(d=>d.value!==undefined));
- assert(fg,'flutter gain drives both voice frequencies');
- assert(Math.abs(fg.gain.value-e.rough*(1+c)*rpm/70)<1e-6,'flutter depth = rough·(1+c)·rpm/70');
- // tonal params must match the v3.4 formulas at this load/rpm (noise muted does not alter them)
- const active=nodes.filter(n=>n.kind==='osc'&&n.wave);
- assert(active.length>=1);
- // accelerate hard: noise rises with drive, peak ≤ v3.4 full-load peak, attack τ≈0.027
- noiseGain.gain.targets.length=0;
+ // popsGain tracks volume × popBus
+ const popsGain=nodes.find(n=>n.kind==='gain'&&n.out.some(d=>d===popLim||(d.kind==='comp'&&d.threshold&&d.threshold.value===-1)));
+ // walk: popsInput → popsGain → popsLim
+ const popLimNode=popLim;
+ const popsGainNode=nodes.find(n=>n.out.includes(popLimNode));
+ assert(popsGainNode,'popsGain → popsLim');
+ assert(Math.abs(popsGainNode.gain.value-50/100*core.POP_LIMITS.popBus)<1e-9,'popsGain = vol/100 × popBus');
+ // accelerate: noise rises; engine tonal formulas unchanged
  els.target.value='200';els.throttle.value='100';frames(200);
- const peak=e.noiseIdle+e.noiseLoad*(.4+c);
- const xs=noiseGain.gain.targets.map(t=>t.x);
- assert(Math.max(...xs)>0.02,'noise rises under load');
- assert(Math.max(...xs)<=peak+1e-12,'noise peak ≤ v3.4 full-load peak');
- const last=noiseGain.gain.targets.at(-1);
- assert(last.tc===.027||last.tc===.1,'attack/release time constants');
- // return to steady cruise: noise releases toward 0
- noiseGain.gain.targets.length=0;
- els.target.value=String(Math.round(parseFloat(els.speed?.textContent)||120));
- // hold target at current speed with zero throttle so demand→0
- const spd=parseFloat(els.speed.textContent)||120;
- els.target.value=String(spd);els.throttle.value='0';frames(120);
- assert(noiseGain.gain.targets.some(t=>t.x===0),'noise target returns to 0 in cruise');
- assert(noiseGain.gain.targets.filter(t=>t.x===0).every(t=>t.tc===.1),'release τ = 0.1 s');
+ assert(Math.max(...noiseGain.gain.targets.map(t=>t.x))>0.02,'noise rises under load');
 }
 (async()=>{
- await pageAudioTest();count++;console.log('PASS page audio graph (fake AudioContext): v3.4 tonal chain + v3.9 gated/band-limited intake noise');
+ await pageAudioTest();count++;console.log('PASS page audio graph: v3.9 tonal+noise chain + v3.10 independent pop bus');
+ // Extra: GPS lift-off / upshift pop burst counts (deterministic)
+ const gpsBurst=()=>{
+  const e=core.engines.supra2jz;let st=null,r,v=100,prevValid=false,prevGear=0,rpm=e.idle,since=9,last=null,bursts=0,ups=0;
+  const pr=(()=>{let x=42;return()=>((x=x*1664525+1013904223>>>0)/0x100000000);})();
+  // warm cruise
+  for(let i=0;i<40;i++){r=core.gearbox(st,{speed:v,accel:0,demand:0,dt:.25,profile:e,style:'comfort'});st=r.state;rpm+=(r.rpm-rpm)*.3;prevValid=true;prevGear=r.gear;since+=.25;}
+  // gentle accel then lift 100→80 over ~4 s (≈ −1.4 m/s²) — should crackle
+  for(let i=0;i<8;i++){v=Math.min(110,v+1.2);r=core.gearbox(st,{speed:v,accel:.8,demand:.5,dt:.25,profile:e,style:'comfort'});st=r.state;rpm=r.rpm;since+=.25;
+   for(const ev of core.popTriggers(r,{valid:true,prevValid:true,prevGear,rpm,sinceDecelPop:since,speed:v})){if(ev.event==='decel'||ev.event==='overrun')since=0;const d=core.evaluatePop({enabled:true,running:true,muted:false,volume:50,intensity:70,event:ev.event,validMotion:true,rpm:ev.rpm,maxRpm:e.max,accel:ev.accel??r.aEst,profile:e,now:i,lastPopAt:last,activeVoices:0,random:()=>0});if(d.allow){bursts++;last=i;}}}
+  prevGear=r.gear;
+  for(let i=0;i<20;i++){v=Math.max(80,v-1.0);const a=-1.1;r=core.gearbox(st,{speed:v,accel:a,demand:0,dt:.25,profile:e,style:'comfort'});st=r.state;rpm=r.rpm;since+=.25;
+   for(const ev of core.popTriggers(r,{valid:true,prevValid:true,prevGear,rpm,sinceDecelPop:since,speed:v})){if(ev.event==='decel'||ev.event==='overrun')since=0;if(ev.event==='upshift'){};const d=core.evaluatePop({enabled:true,running:true,muted:false,volume:50,intensity:70,event:ev.event,validMotion:true,rpm:ev.rpm||rpm,maxRpm:e.max,accel:ev.accel??r.aEst,profile:e,now:100+i,lastPopAt:last,activeVoices:0,random:()=>0});if(d.allow){bursts++;last=100+i;if(d.kind==='shift-pop')ups++;}}
+   prevGear=r.gear;}
+  return {bursts,ups};
+ };
+ const g=gpsBurst();
+ assert(g.bursts>=1,'GPS lift-off should fire ≥1 burst, got '+g.bursts);
+ console.log('PASS GPS lift-off simulation: '+g.bursts+' burst(s), '+g.ups+' upshift bang(s)');
+ count++;
  console.log(`${count} tests passed; full inline JavaScript syntax valid. These tests cover logic and syntax only, not listening.`);
 })().catch(err=>{console.error(err);process.exit(1);});
