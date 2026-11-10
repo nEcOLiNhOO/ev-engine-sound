@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-PT" data-version="3.18"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b10"><title>Impulso · Motor virtual v3.18</title>
+<html lang="pt-PT" data-version="3.19"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b10"><title>Impulso · Motor virtual v3.19</title>
 <style>
 
 :root{color-scheme:dark;--bg:#070b10;--panel:#121a22;--panel2:#18232e;--line:#2c3a48;--text:#f2f6f8;--muted:#9aafbf;--accent:#c4f46c;--blue:#7bd9e7;--warn:#ffd170;--bad:#fc806d;--ok:#6fe3a1;--touch:64px;--tile:76px;--gap:12px;--radius:18px}
@@ -114,7 +114,7 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
 </style></head><body>
 <div class="app" role="application" aria-label="Impulso condução">
 <header class="topbar">
- <div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.18</span></div>
+ <div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.19</span></div>
  <div class="pill off" id="gpsPill" role="status" aria-live="polite" aria-label="Estado GPS: Simulação"><span class="dot" aria-hidden="true"></span><span id="gpsPillText">Simulação</span></div>
  <button type="button" class="iconbtn" id="openSettings" aria-label="Abrir definições e avançado">⚙</button>
 </header>
@@ -269,7 +269,7 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
    <input id="character" type="range" min="0" max="100" value="40" aria-label="Caráter do som">
 
    <p class="honesty">Síntese original, não oficial — não é uma gravação nem uma cópia autêntica.</p>
-   <p class="footnote">Impulso v3.18. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Interface pensada para o browser do Tesla em landscape. Síntese original, não oficial.</p>
+   <p class="footnote">Impulso v3.19. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Interface pensada para o browser do Tesla em landscape. Síntese original, não oficial.</p>
   </div>
  </div>
 </div>
@@ -277,9 +277,10 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
 <script>
 'use strict';
 const Core=(()=>{
- const VERSION='3.18';
+ const VERSION='3.19';
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
- const POP_LIMITS={maxGain:.38,maxVoices:8,decelThresh:-.28,maxNodesPerEvent:3,crackleDur:.09,shiftDur:.14,burstCooldown:4,liftDv:2,liftWindow:2.5,minSpeed:28,popBus:.65,popCeil:-3,duckDepth:.22,duckMs:.028};
+ const POP_LIMITS={maxGain:.64,burstMaxGain:.38,lfShift:2.5,lfBurst:.5,maxVoices:8,decelThresh:-.28,maxNodesPerEvent:3,crackleDur:.09,shiftDur:.14,burstCooldown:4,liftDv:2,liftWindow:2.5,minSpeed:28,popBus:.65,popCeil:-3,duckDepth:.22,duckMs:.028,shiftDuckDepth:.06,shiftDuckMs:.062,shiftDuckHold:.55,hotShiftGap:.7};
+ // v3.19: maxGain .64 is only reachable by shift-pops at high rpm+load (level-follow); cruise/overrun/decel stay ≤ burstMaxGain .38 (v3.11 cap).
  // Per-profile pop & bang character (v3.10+). bodyHz is a bias; v3.11 blends it with firingHz so pops sit in the engine.
  // bodyHz/bodyDrop: thump pitch + short drop; body/crack/tail mixes; crackHz/Q/LP band; decay s;
  // bangRatio 0=popcorn … 1=single bang; burstMin/Max + burstSpan s; loud scale; overrunP propensity;
@@ -884,7 +885,10 @@ const Core=(()=>{
   }
   const now=s.now??0;
   const burst=s.event==='decel'||s.event==='overrun'||s.event==='rev-release';
-  const minGap=burst?POP_LIMITS.burstCooldown:(.9+(1-intensity/100)*.5);
+  // v3.19: hot shift-pops (screaming WOT upshifts) may follow each other after ≥0.7 s so quick low-gear shifts
+  // are not skipped; bursts keep the 4 s cooldown and calm/cool upshifts keep the v3.18 gap.
+  const lfGap=s.event==='upshift'?popLevelFollow(profile,rpm,s.load,'shift-pop').hot:0;
+  const minGap=burst?POP_LIMITS.burstCooldown:(lfGap>=.5?POP_LIMITS.hotShiftGap:(.9+(1-intensity/100)*.5));
   if(s.lastPopAt!=null&&(now-s.lastPopAt)<minGap) return deny('cooldown');
   if((s.activeVoices||0)>=POP_LIMITS.maxVoices) return deny('voice-cap');
   const rnd=typeof s.random==='function'?s.random():1;
@@ -901,8 +905,35 @@ const Core=(()=>{
   const inten=intensity/100;
   // v3.11: quieter — aim ≈+3…+8 dB vs engine RMS at intensity 100 (was +13…+22).
   const base=.055+pp.loud*.13*inten+(kind==='shift-pop'?pp.upStr*.055:0)+(kind==='bang'?.03:0);
-  const gain=Math.min(POP_LIMITS.maxGain,base);
-  return {allow:true,kind,gain,count,minGap,reason:null,propensity,pp,intensity:inten,rpm,profile,event:s.event};
+  // v3.19 level-follow: the pop grows with how loud the engine is right now (rpm/load), so a WOT shift-pop
+  // stands out of the screaming engine while cruise pops keep the v3.18 level. Same profile character.
+  const lf=popLevelFollow(profile,rpm,s.load,kind);
+  const gain=Math.min(kind==='shift-pop'?POP_LIMITS.maxGain:POP_LIMITS.burstMaxGain,base*lf.scale);
+  return {allow:true,kind,gain,baseGain:Math.min(POP_LIMITS.burstMaxGain,base),hot:lf.hot,levelScale:lf.scale,count,minGap,reason:null,propensity,pp,intensity:inten,rpm,load:lf.load,profile,event:s.event};
+ }
+ // v3.19: how "hot" the engine is (0 cruise … 1 screaming at WOT) → pop gain scale. Shift-pops follow rpm×load
+ // (up to ×3.5 ≈ +10.9 dB, capped at maxGain); overrun/decel/bang follow rpm only, mildly (≤×1.5) and stay under the v3.11 cap.
+ function popLevelFollow(e,rpm,load,kind){
+  const idle=(e&&e.idle)||750,max=(e&&e.max)||7000;
+  const rpmN=clamp(((Number(rpm)||0)-idle)/Math.max(1,max-idle),0,1);
+  const L=Number.isFinite(load)?clamp(load,0,1):0;
+  if(kind==='shift-pop'){
+   const hot=clamp((L-.4)/.45,0,1)*clamp((rpmN-.3)/.4,0,1);
+   return {hot,scale:1+POP_LIMITS.lfShift*hot,load:L,rpmN};
+  }
+  const hot=clamp((rpmN-.45)/.35,0,1);
+  return {hot,scale:1+POP_LIMITS.lfBurst*hot,load:L,rpmN};
+ }
+ // v3.19: engine "misfire hole" for a pop. Shift-pops at high rpm/load get a deeper, longer hole (the cut/shift
+ // moment) so the pop takes the engine's place instead of fighting it; everything else keeps the v3.11 duck.
+ function popDuck(decision){
+  const def={depth:POP_LIMITS.duckDepth,ms:POP_LIMITS.duckMs,hold:0,subFloor:.35};
+  if(!decision||!decision.allow) return null;
+  if(decision.kind!=='shift-pop') return def;
+  const h=clamp(decision.hot||0,0,1);
+  if(h<=0) return def;
+  return {depth:POP_LIMITS.duckDepth+(POP_LIMITS.shiftDuckDepth-POP_LIMITS.duckDepth)*h,
+   ms:POP_LIMITS.duckMs+(POP_LIMITS.shiftDuckMs-POP_LIMITS.duckMs)*h,hold:POP_LIMITS.shiftDuckHold*h,subFloor:.35-.15*h};
  }
  function popEnvelope(decision){
   if(!decision||!decision.allow) return {peak:0,dur:0,thumpPeak:0,crackPeak:0,tailPeak:0,nodes:0,spacing:0,burstSpan:0};
@@ -994,7 +1025,7 @@ const Core=(()=>{
   const rpmN=clamp(((Number(rpm)||e.idle)-e.idle)/Math.max(1,e.max-e.idle),0,1);
   return e.whineGain*clamp(Number(load)||0,0,1)*rpmN*(.35+.65*clamp(Number(drive)||0,0,1));
  }
- return {VERSION,CF,lsTrend,comfortKickDv,comfortDecelRpm,gearboxComfort,gearboxV36,clamp,engines,mapping,gearbox,gearRpm,cruiseGear,demandFromAccel,popTriggers,kickThresholds,GEAR_PERSONA,KICK_LEVELS,GEAR_RATIOS,GEARBOX_STYLES,distance,gpsSample,gpsFix,gpsStep,formatOffset,harmonicPartial,profileFingerprint,firingMul,firingHz,bodySubHz,bodySubGain,bodyPulse,bodyExhaustTone,vtecAmount,whineHz,whineGainAt,evaluatePop,popEnvelope,POP_LIMITS,POP_PROFILES,popProfileOf,popFallback,popFingerprint};
+ return {VERSION,CF,lsTrend,comfortKickDv,comfortDecelRpm,gearboxComfort,gearboxV36,clamp,engines,mapping,gearbox,gearRpm,cruiseGear,demandFromAccel,popTriggers,kickThresholds,GEAR_PERSONA,KICK_LEVELS,GEAR_RATIOS,GEARBOX_STYLES,distance,gpsSample,gpsFix,gpsStep,formatOffset,harmonicPartial,profileFingerprint,firingMul,firingHz,bodySubHz,bodySubGain,bodyPulse,bodyExhaustTone,vtecAmount,whineHz,whineGainAt,evaluatePop,popEnvelope,POP_LIMITS,popLevelFollow,popDuck,POP_PROFILES,popProfileOf,popFallback,popFingerprint};
 })();
 const $=id=>document.getElementById(id),{clamp,engines,mapping,gpsSample}=Core;
 
@@ -1278,6 +1309,9 @@ function spawnPop(a,decision){
  const fire0=Math.max(30,env.firingHz||100);
  const fire1=Math.max(30,Core.firingHz(decision.profile||{},env.rpmEnd||env.rpm||3000));
  let cursor=t0+(Math.random()*0.4+0.1)/fire0; // sit just after a pulse
+ // v3.19: Desportiva WOT cut already open → put the shift-pop inside that hole (not on top of the restore).
+ const inCut=decision.kind==='shift-pop'&&a.shiftCutUntil>t0&&a.shiftCutFrom>0;
+ if(inCut) cursor=Math.max(cursor,t0+.008);
  const starts=[];
  for(let i=0;i<count;i++){
   const frac=count===1?0:i/(count-1);
@@ -1291,19 +1325,35 @@ function spawnPop(a,decision){
  a.popDuckUntil=burstEnd;
  // Engine misfire feel: brief amplitude dips + roughness on each pop, then restore.
  const voice=a.voices[a.active];
- const duck=Core.POP_LIMITS.duckDepth, duckMs=Core.POP_LIMITS.duckMs;
+ // v3.19: depth/length from Core.popDuck (duckDepth/duckMs for normal pops; deeper+longer for hot shift-pops).
+ const dk=Core.popDuck(decision);
+ const duck=dk.depth, duckMs=dk.ms, holdTo=dk.hold>0?duckMs*dk.hold:0;
  for(const {start} of starts){
   try{
-   const pg=voice.pulseGain.gain, cur=Math.max(.001,pg.value);
-   pg.cancelScheduledValues(start);
-   pg.setValueAtTime(cur,start);
-   pg.linearRampToValueAtTime(cur*duck,start+.006);
-   pg.linearRampToValueAtTime(cur,start+duckMs);
+   const pg=voice.pulseGain.gain;
+   if(inCut){
+    // Ride the existing 40 ms ignition cut: keep its dip, deepen it, release after both the cut and the pop hole.
+    const cur=a.shiftCutFrom, rel=Math.max(start+duckMs,a.shiftCutUntil);
+    pg.cancelScheduledValues(t0);
+    pg.setValueAtTime(cur,t0);
+    pg.linearRampToValueAtTime(cur*Math.min(duck,.12),start);
+    pg.setValueAtTime(cur*Math.min(duck,.12),Math.max(start,rel-(duckMs-holdTo)));
+    pg.linearRampToValueAtTime(cur,rel);
+    a.shiftCutUntil=rel;
+   }else{
+    const cur=Math.max(.001,pg.value);
+    pg.cancelScheduledValues(start);
+    pg.setValueAtTime(cur,start);
+    pg.linearRampToValueAtTime(cur*duck,start+.006);
+    if(holdTo>.006) pg.setValueAtTime(cur*duck,start+holdTo);
+    pg.linearRampToValueAtTime(cur,start+duckMs);
+   }
    if(a.subGain){
     const sg=a.subGain.gain, sc=Math.max(.0001,sg.value);
     sg.cancelScheduledValues(start);
     sg.setValueAtTime(sc,start);
-    sg.linearRampToValueAtTime(sc*Math.max(.35,duck+.15),start+.005);
+    sg.linearRampToValueAtTime(sc*Math.max(dk.subFloor,duck+.15),start+.005);
+    if(holdTo>.005) sg.setValueAtTime(sc*Math.max(dk.subFloor,duck+.15),start+holdTo);
     sg.linearRampToValueAtTime(sc,start+duckMs);
    }
    if(a.flutterGain){
@@ -1377,7 +1427,7 @@ function maybePop(event,extra){
  const decision=Core.evaluatePop({
   enabled:$('popsEnable').checked,running,muted:vol<=0,volume:vol,
   intensity:+$('popsIntensity').value,event,validMotion:!!extra.validMotion,
-  rpm:extra.rpm??rpm,maxRpm:e.max,accel:extra.accel??0,profile:e,
+  rpm:extra.rpm??rpm,load:extra.load??load,maxRpm:e.max,accel:extra.accel??0,profile:e,
   now,lastPopAt,activeVoices:active,random:Math.random
  });
  if(!decision.allow) return;
@@ -1721,6 +1771,7 @@ function tick(now){
    audio.shiftCutUntil=tA+.04;
    try{
     const pg=audio.voices[audio.active].pulseGain.gain, cur=Math.max(.001,pg.value);
+    audio.shiftCutFrom=cur;
     pg.cancelScheduledValues(tA);
     pg.setValueAtTime(cur,tA);
     pg.linearRampToValueAtTime(cur*.12,tA+.008);
@@ -1733,7 +1784,7 @@ function tick(now){
   sinceDecelPop+=dt;
   for(const ev of Core.popTriggers(gb,{valid,prevValid,prevGear,rpm,sinceDecelPop,speed})){
    if(ev.event==='decel'||ev.event==='overrun') sinceDecelPop=0;
-   maybePop(ev.event,{validMotion:true,rpm:ev.rpm,accel:ev.accel??(gb?gb.aEst:accel)});
+   maybePop(ev.event,{validMotion:true,rpm:ev.rpm,load:Math.max(load,gb?gb.load:0),accel:ev.accel??(gb?gb.aEst:accel)});
   }
  }
  prevValid=valid;prevGear=nextGear;gear=nextGear;

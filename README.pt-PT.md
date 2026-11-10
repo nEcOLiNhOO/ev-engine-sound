@@ -1,12 +1,18 @@
-# Impulso · Motor virtual v3.18
+# Impulso · Motor virtual v3.19
 
 Aplicação original, num único `index.html`, sem bibliotecas, fontes, gravações ou pedidos de rede (exceto o serviço de localização do próprio browser, se autorizado).
 
-Esta pasta é a entrega autónoma v3.18 (Conforto sobe de mudança quando a velocidade estabiliza; sons iguais à v3.16): cinquenta assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação.
+Esta pasta é a entrega autónoma v3.19 (pops audíveis nas passagens de caixa a fundo, integrados no escape; som do motor igual à v3.18): cinquenta assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação.
 
-O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.18 ainda pode não corresponder ao que está online.
+O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.19 ainda pode não corresponder ao que está online.
 
 A publicação HTTPS permite testar num browser normal, mas não garante que resolva a ausência de áudio numa pré-visualização móvel. Toca em **Iniciar som** na página aberta diretamente no browser.
+
+## Alterações na v3.19
+- **Pops que se ouvem quando o motor grita.** O nível do pop segue o motor: numa passagem de caixa a fundo (rotação e carga altas) o shift-pop sobe até ~×3,5 (≈ +10 dB face à v3.18, limite `maxGain` .64); em cruzeiro/rotação baixa fica exatamente como na v3.18. Estalos de levantar o pé ficam com o teto da v3.11 (.38), só um pouco mais fortes em rotação alta.
+- **Em harmonia, não por cima.** Durante um shift-pop quente o motor abre um «buraco» mais fundo e um pouco mais longo (~6 % durante ~62 ms, antes 22 % / 28 ms) — o pop ocupa o momento da passagem em vez de lutar com o motor. Na Desportiva o pop entra dentro do corte de ignição de 40 ms (já não o anula). O pop continua a passar pelo mesmo escape (filtro do escape do motor → tubo curto → teto −3 dB), com o corpo afinado à frequência de explosão e o carácter de cada carro (`POP_PROFILES`) igual.
+- Passagens rápidas a fundo: shift-pops quentes podem repetir-se a cada ≥0,7 s (antes 1,15 s com intensidade 50) para não saltar a 2.ª→3.ª. Perfis calmos (I3, I6, V12…) continuam sem pops a subir; o arrefecimento de 4 s dos estalos, e os bloqueios (perda de sinal, mudança de modo/motor, reinício, página escondida) mantêm-se.
+- **Som do motor intacto:** com pops desligados nada muda (sem buraco); todo o script é igual à v3.18 fora da lógica dos pops (testado: `fixtures/v318-pops-masked.json`, `v316-fingerprints.json`, `v317-conforto-presteady.json`).
 
 ## Alterações na v3.18
 - **Conforto: velocidade estável → mudanças acima.** Depois de uma redução a fundo (ou de travar com reduções), quando o GPS mostra a velocidade a manter-se (janela de 2 s plana durante ≥1,2 s, tolerante ao ruído de 1 Hz) a caixa deixa de esperar o «relax» e sobe uma mudança por segundo até à de cruzeiro. Do momento em que estabiliza até à mudança de cruzeiro: ~3–4 s (antes ~6–7 s).

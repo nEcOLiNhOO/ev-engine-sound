@@ -1,0 +1,9 @@
+{
+ "__note": "v3.18 script sha256 with only the pop logic masked (POP_LIMITS line, evaluatePop, spawnPop+maybePop, the v3.19 load/shiftCutFrom plumbing) and VERSION normalised. v3.19 changes only those.",
+ "scriptPopsMaskedSha": "6f9d888c9b1f6270a3bbbf3ce50dae57b323f9ff1535a531c7faaa7c4ae24f35",
+ "gearboxComfortSha": "df7faf428575b0b95c7bc76c438d33e936ef6f2144db95b2fdb589d081f40982",
+ "gearboxV36Sha": "84669b219e82331017d9fbad8781157d52b4aec5eba9ec3c6d801696e7c86621",
+ "popEnvelopeSha": "7c174048e4227dc8a644b0ae442234f03a59ad3397afcebf99e0ad54531001d3",
+ "updateAudioSha": "456d6580142ad9e88f44f2a532b408cd1e68d7084171c5622dda91ce01187472",
+ "buildAudioSha": "2ffc10323f79771492b99f7e102e7ec024520d436e6ade1dbe290afb1fecbd73"
+}

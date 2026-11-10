@@ -46,7 +46,7 @@ test('stateless cruise mapping: gear never decreases with speed and RPM drops at
 test('all engines map finite bounded RPM/load over speed sweep',()=>{for(const key of Object.keys(core.engines))for(let s=-10;s<=300;s++){const m=core.mapping(s,key,4),e=core.engines[key];assert(m.rpm>=e.idle&&m.rpm<=e.max);assert(m.load>=0&&m.load<=1);assert(m.gear>=0&&m.gear<=7);}});
 test('positive acceleration increases synthetic load',()=>assert(core.mapping(40,'v6',2).load>core.mapping(40,'v6',0).load));
 // v3.14: UI redesign; Core audio unchanged from 3.13 aside from VERSION.
-test('visible version 3.18 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.18');assert.match(html,/data-version="3\.18"/);assert.match(html,/>v3\.18</);assert.match(html,/Impulso v3\.18/);});
+test('visible version 3.19 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.19');assert.match(html,/data-version="3\.19"/);assert.match(html,/>v3\.19</);assert.match(html,/Impulso v3\.19\./);assert.match(html,/<title>Impulso · Motor virtual v3\.19<\/title>/);});
 test('50 presets: 30 legacy + 20 new inspirations',()=>{
  const keys=Object.keys(core.engines);
  assert.equal(keys.length,50);
@@ -515,8 +515,8 @@ const SEEDS=Array.from({length:20},(_,i)=>100+i*17);
 const CRUISE={name:'cruise',dur:25,a:0};
 function firstDown(log){const acc=log.filter(x=>x.ph==='acc'),t0=acc[0].t-.05,fd=acc.find(x=>x.shift==='down');return fd?fd.t-t0:Infinity;}
 const gearDrop=log=>log.filter(x=>x.ph==='cruise').pop().gear-Math.min(...log.filter(x=>x.ph==='acc').map(x=>x.gear));
-test('per-profile gearbox personality covers all 50 profiles (version now 3.18)',()=>{
- assert.equal(core.VERSION,'3.18');assert.equal(KEYS.length,50);
+test('per-profile gearbox personality covers all 50 profiles (version now 3.19)',()=>{
+ assert.equal(core.VERSION,'3.19');assert.equal(KEYS.length,50);
  assert.deepEqual(Object.keys(core.GEAR_PERSONA).sort(),KEYS.slice().sort());
  for(const k of KEYS){const p=core.GEAR_PERSONA[k];
   assert.equal(core.engines[k].persona,p,k);
@@ -826,7 +826,11 @@ test('pop onsets are quantised to firing periods and engine is ducked during bur
  assert.match(script,/popDuckUntil/);
  assert.match(script,/duckDepth/);
  assert.match(script,/linearRampToValueAtTime\(cur\*duck/);
- assert(core.POP_LIMITS.popBus<=.7&&core.POP_LIMITS.maxGain<=.4,'integrated levels (below v3.10)');
+ // v3.19 adaptation: maxGain rose .38→.64, but only hot shift-pops (high rpm×load, level-follow) can reach it, and they
+ // sit in a deeper engine hole; cruise/overrun/decel/rev pops keep the v3.11 cap (burstMaxGain .38). Still below v3.10.
+ assert(core.POP_LIMITS.popBus<=.7&&core.POP_LIMITS.burstMaxGain<=.4&&core.POP_LIMITS.maxGain<=.65,'integrated levels (below v3.10)');
+ // v3.10 c63 shift-pop at intensity 50 reached .74×popBus .95 ≈ .70 on the bus at any rpm; v3.19's hottest is ≤ .64×.65 ≈ .42 (≈−4.5 dB), only at WOT.
+ assert(core.POP_LIMITS.maxGain*core.POP_LIMITS.popBus<=.6*.85*.95,'hot shift-pop bus ceiling ≥4 dB under v3.10');
 });
 
 test('v3.13: legacy 22 fingerprints and synth params identical to v3.12 snapshot',()=>{
@@ -989,11 +993,26 @@ function maskComfort(src){
  return out.slice(0,i)+' /*gearboxComfort*/'+out.slice(j+3);
 }
 const V317M=JSON.parse(fs.readFileSync(__dirname+'/fixtures/v317-core-masked.json','utf8'));
-test('v3.18: Core source byte-identical to v3.17 (=v3.16) apart from VERSION, CF and gearboxComfort',()=>{
- const src=maskComfort(source).replace(/const VERSION='[\d.]+';/,"const VERSION='X';");
- assert.equal(require('node:crypto').createHash('sha256').update(src).digest('hex'),V317M.coreMaskedSha);
- const i=source.indexOf(' function gearboxComfort('),j=source.indexOf('\n }\n',i);
- assert.notEqual(require('node:crypto').createHash('sha256').update(source.slice(i,j+3)).digest('hex'),V317M.gearboxComfortV317Sha,'gearboxComfort is the v3.18 one');
+const V318P=JSON.parse(fs.readFileSync(__dirname+'/fixtures/v318-pops-masked.json','utf8'));
+function maskPops(src){
+ const cut=(s,a,b,tag)=>{const i=s.indexOf(a);assert(i>=0,'mask '+a);const j=s.indexOf(b,i);assert(j>i,'mask '+b);return s.slice(0,i)+tag+s.slice(j);};
+ let out=cut(src,' const POP_LIMITS=',' // Per-profile pop & bang character',' /*POP_LIMITS*/\n');
+ out=cut(out,' function evaluatePop(',' function popEnvelope(',' /*evaluatePop*/\n');
+ out=cut(out,'function spawnPop(','function spawnShiftThump(','/*spawnPop+maybePop*/\n');
+ out=out.replace(',popLevelFollow,popDuck,',',').replace('    audio.shiftCutFrom=cur;\n','').replace('rpm:ev.rpm,load:Math.max(load,gb?gb.load:0),accel:','rpm:ev.rpm,accel:');
+ return out.replace(/const VERSION='[\d.]+';/,"const VERSION='X';");
+}
+const sha256=x=>require('node:crypto').createHash('sha256').update(x).digest('hex');
+const fnBody=(src,a)=>{const i=src.indexOf(a),j=src.indexOf('\n }\n',i);return src.slice(i,j+3);};
+// v3.19 adaptation: the v3.18 "identical to v3.17 apart from CF+gearboxComfort" pins now chain through the v3.18 file:
+// the whole script is byte-identical to v3.18 (which passed them) apart from the pop logic masked here.
+test('v3.19: whole script byte-identical to v3.18 apart from pop logic (POP_LIMITS, evaluatePop, spawnPop/maybePop, load+cut plumbing)',()=>{
+ assert.equal(sha256(maskPops(script)),V318P.scriptPopsMaskedSha);
+ assert.equal(sha256(fnBody(script,' function gearboxComfort(')),V318P.gearboxComfortSha,'gearboxComfort = v3.18');
+ assert.equal(sha256(fnBody(script,' function gearboxV36(')),V318P.gearboxV36Sha,'Desportiva gearboxV36 = v3.18');
+ assert.equal(sha256(fnBody(script,' function popEnvelope(')),V318P.popEnvelopeSha,'pop envelope/character = v3.18');
+ assert.equal(sha256(fnText(script,'function updateAudio(','async function start(')),V318P.updateAudioSha,'updateAudio = v3.18');
+ assert.equal(sha256(fnText(script,'function buildAudio(','function updateAudio(')),V318P.buildAudioSha,'buildAudio graph = v3.18');
 });
 test('v3.17: engine picker by sound style; every profile in exactly one style',()=>{
  assert.match(script,/const ENGINE_STYLE=/);
@@ -1026,13 +1045,10 @@ test('v3.17: engine picker by sound style; every profile in exactly one style',(
  assert.match(html,/--tile:76px/);
  assert.match(html,/\.filters button\{min-height:64px/);
 });
-test('v3.18: whole script outside the engine-picker UI block identical to v3.17 apart from CF + gearboxComfort (audio, GPS, Desportiva, pops, UI)',()=>{
+test('v3.19: engine-picker UI block unchanged since v3.17',()=>{
  const a=script.indexOf('/* ---- v3.14/v3.15 in-car UI wiring'),b=script.indexOf('function openSheet(');
  assert(a>0&&b>a);
- const rest=maskComfort(script.slice(0,a)+script.slice(b)).replace(/const VERSION='[\d.]+';/,'');
- assert.equal(require('node:crypto').createHash('sha256').update(rest).digest('hex'),V317M.restMaskedSha);
- // the engine-picker UI block itself is unchanged too
- assert.equal(require('node:crypto').createHash('sha256').update(script.slice(a,b)).digest('hex'),V317M.uiBlockSha);
+ assert.equal(sha256(script.slice(a,b)),V317M.uiBlockSha);
 });
 test('v3.15 page builds tiles/chips and syncs favorites key',()=>{
  assert.match(script,/buildEngineTiles/);
@@ -1177,6 +1193,105 @@ test('v3.18 Conforto: steady detector constants, and it never fires while the sp
 });
 test('v3.18 Desportiva unaffected: gearbox(style=sport) never exposes the Conforto steady flag',()=>{
  const o=core.gearbox(null,{speed:90,dt:.05,profile:core.engines.v8,style:'sport'});assert.equal(o.steady,undefined);assert.equal(o.state.steadyT,undefined);
+});
+
+// ---- v3.19: pops audible over a screaming engine (level-follow + deeper hole), same integration path ----
+const V18_BASE=(e,kind,inten)=>{const pp=core.popProfileOf(e);return Math.min(.38,.055+pp.loud*.13*inten+(kind==='shift-pop'?pp.upStr*.055:0)+(kind==='bang'?.03:0));};
+const POPS_SPORTY=['c63','supra2jz','gt3rs','wrx','mustang','ftype','rb26','f458','evo','huracan'];
+const upAt=(k,rpm,load,over={})=>{const e=core.engines[k];return core.evaluatePop(popState({event:'upshift',accel:2,profile:e,maxRpm:e.max,rpm,load,intensity:50,random:()=>0,...over}));};
+test('v3.19 level-follow: at intensity 50 a WOT shift-pop is much louder than a low-rpm cruise one (same profile)',()=>{
+ for(const k of POPS_SPORTY){const e=core.engines[k];
+  const wot=upAt(k,.8*e.max,.95),cru=upAt(k,Math.max(2500,.35*e.max),.3);
+  assert(wot.allow&&cru.allow,k);
+  assert(wot.gain>=cru.gain*2.5,k+' wot '+wot.gain+' vs cruise '+cru.gain);
+  assert(wot.gain<=core.POP_LIMITS.maxGain,k);
+  assert(Math.abs(cru.gain-V18_BASE(e,'shift-pop',.5))<1e-12,k+' cruise shift-pop = v3.18 level');
+  const ew=core.popEnvelope(wot),ec=core.popEnvelope(cru);
+  assert(ew.peak>ec.peak*2.5&&ew.thumpPeak>ec.thumpPeak&&ew.crackPeak>ec.crackPeak,k+' envelope');
+  assert.equal(wot.pp,cru.pp,k+' same POP_PROFILES character');assert.equal(ew.tubeMs,ec.tubeMs);assert.equal(ew.crackQ,ec.crackQ);
+  const dB=20*Math.log10(wot.gain/cru.gain);assert(dB>=8&&dB<=11.5,k+' +'+dB.toFixed(1)+' dB');
+ }
+ // missing load (old callers) → no level-follow
+ const e=core.engines.c63;assert.equal(upAt('c63',.8*e.max,undefined).gain,V18_BASE(e,'shift-pop',.5));
+});
+test('v3.19 level-follow: cruise lift-off/decel pops keep the v3.18 level; high-rpm overrun mildly louder but under the v3.11 cap',()=>{
+ for(const k of POPS_SPORTY){const e=core.engines[k];
+  for(const ev of ['overrun','decel']){
+   const lo=core.evaluatePop(popState({event:ev,profile:e,maxRpm:e.max,rpm:2300,load:.2,intensity:50,random:()=>0}));
+   if(lo.allow) assert(Math.abs(lo.gain-V18_BASE(e,lo.kind,.5))<1e-12,k+' '+ev+' cruise = v3.18');
+   const hi=core.evaluatePop(popState({event:ev,profile:e,maxRpm:e.max,rpm:.85*e.max,load:.1,intensity:50,random:()=>0}));
+   assert(hi.allow,k+ev);assert(hi.gain>=V18_BASE(e,hi.kind,.5)-1e-12&&hi.gain<=core.POP_LIMITS.burstMaxGain,k+' '+ev+' hi');
+  }}
+ for(const ev of ['overrun','decel','rev-release']) for(const k of Object.keys(core.engines)){const e=core.engines[k];
+  const d=core.evaluatePop(popState({event:ev,profile:e,maxRpm:e.max,rpm:.95*e.max,load:1,intensity:100,random:()=>0}));
+  if(d.allow) assert(d.gain<=core.POP_LIMITS.burstMaxGain&&core.popEnvelope(d).peak<=.38,k+' '+ev+' capped');}
+});
+test('v3.19 engine hole: hot shift-pops duck deeper and longer; other pops keep the v3.11 duck; nothing when pops are denied/off',()=>{
+ const L=core.POP_LIMITS;
+ assert.equal(core.popDuck(core.evaluatePop(popState({enabled:false}))),null,'pops off → no duck');
+ assert.equal(core.popDuck({allow:false}),null);
+ const ov=core.popDuck(core.evaluatePop(popState({event:'overrun',rpm:6500,load:.1})));
+ assert.deepEqual([ov.depth,ov.ms,ov.hold],[L.duckDepth,L.duckMs,0]);
+ const e=core.engines.c63,hot=core.popDuck(upAt('c63',.8*e.max,.95)),cool=core.popDuck(upAt('c63',2500,.3));
+ assert(hot.depth<=.08&&hot.ms>=.055&&hot.ms<=.08&&hot.hold>0,'deep, slightly longer hole '+JSON.stringify(hot));
+ assert.deepEqual([cool.depth,cool.ms,cool.hold],[L.duckDepth,L.duckMs,0],'cool shift-pop = v3.18 duck');
+ // the hole is still short: never longer than the Desportiva bass hold (200 ms) and never a full mute
+ assert(hot.ms<.2&&hot.depth>0);
+});
+test('v3.19 page: pops still route exhaust LP → tube comb → popsGain → ceiling; duck from Core.popDuck; shift-pop rides the Desportiva cut',()=>{
+ const sp=fnText(script,'function spawnPop(','function maybePop(');
+ assert.match(sp,/a\.popExhaust\.frequency\.setValueAtTime\(env\.exhaustTone/);
+ assert.match(sp,/a\.popDelay\.delayTime\.setValueAtTime\(env\.tubeMs/);
+ assert.equal((sp.match(/\.connect\(a\.popsInput\)/g)||[]).length,3,'crack, thump, tail → popsInput');
+ assert.doesNotMatch(sp,/connect\(a\.master\)|connect\(master\)|ctx\.destination/);
+ assert.match(sp,/Core\.popDuck\(decision\)/);
+ assert.match(sp,/inCut=decision\.kind==='shift-pop'&&a\.shiftCutUntil>t0/);
+ assert.match(sp,/Math\.max\(start\+duckMs,a\.shiftCutUntil\)/);
+ const mp=fnText(script,'function maybePop(','function spawnShiftThump(');
+ assert.match(mp,/if\(!decision\.allow\) return;[\s\S]*spawnPop\(audio,decision\)/,'spawn only after an allowed decision');
+ assert.match(mp,/enabled:\$\('popsEnable'\)\.checked/);
+ assert.match(mp,/load:extra\.load\?\?load/);
+ assert.equal((script.match(/spawnPop\(/g)||[]).length,2,'defined once, called once (maybePop)');
+ assert.match(script,/audio\.shiftCutUntil=tA\+\.04;/,'Desportiva 40 ms WOT cut unchanged');
+ assert.match(script,/audio\.shiftCutFrom=cur;/);
+});
+function upshiftRun(key,style,{a=2.6,noise=.5,seed=211,popSeed=987654321}={}){
+ const e=core.engines[key],rnd=lcg(seed),gs=()=>{let t=0;for(let i=0;i<6;i++)t+=rnd();return t-3;},pr=lcg(popSeed);
+ let st=null,o,v=60,fixV=60,fixT=0,t=0,prevGear=0,prevValid=false,rpm=e.idle,load=0,lastPopAt=null,since=9;const out=[];
+ for(const ph of [{d:20,a:0},{d:9,a}]) for(let i=0;i<ph.d/.05;i++){v+=ph.a*3.6*.05;t+=.05;
+  if(Math.abs(t-Math.round(t))<.026&&Math.round(t)!==fixT){fixT=Math.round(t);fixV=v+gs()*noise;}
+  o=core.gearbox(st,{speed:fixV,accel:0,dt:.05,sampleAt:fixT,profile:e,style});st=o.state;
+  rpm+=(o.rpm-rpm)*(1-Math.exp(-.05*5));load+=(o.load-load)*(1-Math.exp(-.05*4));since+=.05;
+  for(const ev of core.popTriggers(o,{valid:true,prevValid,prevGear,rpm,sinceDecelPop:since,speed:v})){
+   if(ev.event==='decel'||ev.event==='overrun')since=0;
+   const d=core.evaluatePop({enabled:true,running:true,muted:false,volume:15,intensity:50,event:ev.event,validMotion:true,rpm:ev.rpm,load:Math.max(load,o.load),maxRpm:e.max,accel:ev.accel??o.aEst,profile:e,now:t,lastPopAt,activeVoices:0,random:pr});
+   if(d.allow){lastPopAt=t;out.push(d);}}
+  prevValid=true;prevGear=o.gear;}
+ return out;
+}
+test('v3.19: hard accel upshifts (Conforto and Desportiva, noisy GPS) fire hot shift-pops for sporty/turbo/muscle profiles; calm ones never',()=>{
+ for(const k of POPS_SPORTY) for(const style of ['comfort','sport']) for(const seed of [211,307]){
+  const ups=upshiftRun(k,style,{seed}).filter(d=>d.kind==='shift-pop');
+  assert(ups.length>=1,k+' '+style+' seed '+seed+': no shift-pop');
+  for(const d of ups){assert(d.hot>=.8,k+' hot '+d.hot);assert(d.gain>=2.5*V18_BASE(core.engines[k],'shift-pop',.5),k+' level-follow');}
+ }
+ for(const k of ['i3','i6','v12']) for(const style of ['comfort','sport']) assert.equal(upshiftRun(k,style).filter(d=>d.kind==='shift-pop').length,0,k+' '+style);
+ assert.equal(upshiftRun('i4','comfort').filter(d=>d.kind==='shift-pop').length,0,'i4 Conforto');
+ for(const k of ['i3','i6','v12']) assert.equal(upAt(k,.8*core.engines[k].max,.95).reason,'no-upshift-bang');
+});
+test('v3.19: gates unchanged — forbidden events, 4 s burst cooldown, upshift minGap, invalid motion',()=>{
+ for(const event of ['signal-loss','mode-switch','audio-restart','hidden','engine-change','none','']) assert.equal(core.evaluatePop(popState({event,load:1,rpm:6500})).allow,false,event);
+ assert.equal(core.POP_LIMITS.burstCooldown,4);
+ assert.equal(core.evaluatePop(popState({event:'overrun',now:13.9,lastPopAt:10,load:1})).reason,'cooldown');
+ assert.equal(core.evaluatePop(popState({event:'overrun',now:14.01,lastPopAt:10,load:1})).allow,true);
+ const e=core.engines.c63;
+ assert.equal(upAt('c63',.8*e.max,.95,{now:10.5,lastPopAt:10}).reason,'cooldown');
+ assert.equal(upAt('c63',.8*e.max,.95,{now:10.75,lastPopAt:10}).allow,true,'hot WOT shift-pops ≥0.7 s apart');
+ assert.equal(upAt('c63',.8*e.max,.95,{now:10.75,lastPopAt:10}).minGap,core.POP_LIMITS.hotShiftGap);
+ assert.equal(upAt('c63',3000,.3,{now:10.75,lastPopAt:10}).reason,'cooldown','cool upshift keeps the v3.18 gap');
+ assert.equal(upAt('c63',3000,.3).minGap,.9+.5*.5);
+ assert.equal(core.evaluatePop(popState({event:'overrun',now:12,lastPopAt:10,load:1,rpm:6500})).reason,'cooldown','hot overrun still 4 s');
+ assert.equal(upAt('c63',.8*e.max,.95,{validMotion:false}).reason,'invalid');
 });
 (async()=>{
  await pageAudioTest();count++;console.log('PASS page audio graph: engine chain unchanged + coloured pop bus with tube');
