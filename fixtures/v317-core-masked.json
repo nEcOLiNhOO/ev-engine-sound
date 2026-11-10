@@ -1,0 +1,7 @@
+{
+ "__note": "v3.17 Core/script sha256 with the Conforto CF constant and gearboxComfort masked (v3.18 changes only those)",
+ "coreMaskedSha": "ba1f4bf6a40ef8a5e34b9c6122dd1cae7d715b2c8e0056062bda5e2c0cad21ed",
+ "restMaskedSha": "a6e6d01d6540041e662afccf83fdf5e06fc5fa20ec0b33e758768962518d0c9b",
+ "gearboxComfortV317Sha": "ab63d7b6df218b27aff0c1b5fc5504a081919bdbead99ffa1f71b06b6ebaaf3c",
+ "uiBlockSha": "5d34a66043f1107295de14b416807e38fff0e816828ee4aa21c2e4b46a5da33e"
+}

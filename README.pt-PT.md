@@ -1,12 +1,17 @@
-# Impulso · Motor virtual v3.17
+# Impulso · Motor virtual v3.18
 
 Aplicação original, num único `index.html`, sem bibliotecas, fontes, gravações ou pedidos de rede (exceto o serviço de localização do próprio browser, se autorizado).
 
-Esta pasta é a entrega autónoma v3.17 (motores organizados por estilo de som; sons iguais à v3.16): cinquenta assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação.
+Esta pasta é a entrega autónoma v3.18 (Conforto sobe de mudança quando a velocidade estabiliza; sons iguais à v3.16): cinquenta assinaturas sintéticas e estalos opcionais. Não é, por si só, uma publicação.
 
-O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.17 ainda pode não corresponder ao que está online.
+O projeto público existente é https://github.com/nEcOLiNhOO/ev-engine-sound e o endereço HTTPS habitual é https://necolinhoo.github.io/ev-engine-sound/ — esta pasta v3.18 ainda pode não corresponder ao que está online.
 
 A publicação HTTPS permite testar num browser normal, mas não garante que resolva a ausência de áudio numa pré-visualização móvel. Toca em **Iniciar som** na página aberta diretamente no browser.
+
+## Alterações na v3.18
+- **Conforto: velocidade estável → mudanças acima.** Depois de uma redução a fundo (ou de travar com reduções), quando o GPS mostra a velocidade a manter-se (janela de 2 s plana durante ≥1,2 s, tolerante ao ruído de 1 Hz) a caixa deixa de esperar o «relax» e sobe uma mudança por segundo até à de cruzeiro. Do momento em que estabiliza até à mudança de cruzeiro: ~3–4 s (antes ~6–7 s).
+- **Igual ao que era:** reduções a fundo enquanto acelera (e manter a mudança baixa enquanto a velocidade sobe), reduções com blip enquanto trava, pops, todo o som e os 50 perfis. **Desportiva** sem qualquer alteração.
+- Testado contra traços da v3.17 (`fixtures/v317-conforto-presteady.json`) e as fingerprints `fixtures/v316-fingerprints.json`.
 
 ## Alterações na v3.17
 - **Motores por estilo de som** em vez de marca: Suave · Cruzeiro, Grave · V8 Muscle, Agudo · Alta rotação, V10 · V12 Supercarro, Turbo · Rally, Rotativo. Seis chips grandes (64 px) visíveis de uma vez; mosaicos ≥76 px; escolha em 1–2 toques.

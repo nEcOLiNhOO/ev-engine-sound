@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-PT" data-version="3.17"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b10"><title>Impulso · Motor virtual v3.17</title>
+<html lang="pt-PT" data-version="3.18"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#070b10"><title>Impulso · Motor virtual v3.18</title>
 <style>
 
 :root{color-scheme:dark;--bg:#070b10;--panel:#121a22;--panel2:#18232e;--line:#2c3a48;--text:#f2f6f8;--muted:#9aafbf;--accent:#c4f46c;--blue:#7bd9e7;--warn:#ffd170;--bad:#fc806d;--ok:#6fe3a1;--touch:64px;--tile:76px;--gap:12px;--radius:18px}
@@ -114,7 +114,7 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
 </style></head><body>
 <div class="app" role="application" aria-label="Impulso condução">
 <header class="topbar">
- <div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.17</span></div>
+ <div class="brand">IMPULSO<span style="color:var(--accent)">.</span><span class="ver">v3.18</span></div>
  <div class="pill off" id="gpsPill" role="status" aria-live="polite" aria-label="Estado GPS: Simulação"><span class="dot" aria-hidden="true"></span><span id="gpsPillText">Simulação</span></div>
  <button type="button" class="iconbtn" id="openSettings" aria-label="Abrir definições e avançado">⚙</button>
 </header>
@@ -269,7 +269,7 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
    <input id="character" type="range" min="0" max="100" value="40" aria-label="Caráter do som">
 
    <p class="honesty">Síntese original, não oficial — não é uma gravação nem uma cópia autêntica.</p>
-   <p class="footnote">Impulso v3.17. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Interface pensada para o browser do Tesla em landscape. Síntese original, não oficial.</p>
+   <p class="footnote">Impulso v3.18. Configura estacionado; em viagem, só um passageiro deve mexer na interface. O GPS mede velocidade, não o pedal. Requer HTTPS (ou localhost). Interface pensada para o browser do Tesla em landscape. Síntese original, não oficial.</p>
   </div>
  </div>
 </div>
@@ -277,7 +277,7 @@ input[type=range]{accent-color:var(--accent);width:100%;min-height:44px;margin:0
 <script>
 'use strict';
 const Core=(()=>{
- const VERSION='3.17';
+ const VERSION='3.18';
  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
  const POP_LIMITS={maxGain:.38,maxVoices:8,decelThresh:-.28,maxNodesPerEvent:3,crackleDur:.09,shiftDur:.14,burstCooldown:4,liftDv:2,liftWindow:2.5,minSpeed:28,popBus:.65,popCeil:-3,duckDepth:.22,duckMs:.028};
  // Per-profile pop & bang character (v3.10+). bodyHz is a bias; v3.11 blends it with firingHz so pops sit in the engine.
@@ -633,7 +633,8 @@ const Core=(()=>{
  }
 
  // ---- v3.7 Conforto: decisions from speed gained/lost over the last seconds (windowed Δv), not single-fix jumps ----
- const CF={HIST:12,W_SHORT:3,W_LONG:9,MIN_SPACING:.25,KICK_DV:[7,10.5,19],HOLD_DV:2,DROP_GATE:5,DECEL_DV:-2,NOISE_K:3.5,WARM_SPAN:2};
+ const CF={HIST:12,W_SHORT:3,W_LONG:9,MIN_SPACING:.25,KICK_DV:[7,10.5,19],HOLD_DV:2,DROP_GATE:5,DECEL_DV:-2,NOISE_K:3.5,WARM_SPAN:2,
+ W_STEADY:2,STEADY_DV:1.2,STEADY_K:2,STEADY_MAX:2.4,STEADY_T:1.2}; // v3.18: GPS-steady detector (2 s window flat for ≥1.2 s) → leave high rpm quickly
  // Least-squares speed trend over the last `span` seconds of history: slope (km/h per s), fitted speed now, sample count, Σ(t−t̄)².
  function lsTrend(hist,span){
   const n0=hist.length;if(n0<2) return null;
@@ -657,7 +658,7 @@ const Core=(()=>{
   const st={gear:s0.gear??0,sinceShift:s0.sinceShift??99,cruiseTime:s0.cruiseTime??0,shifts:s0.shifts??0,t:s0.t??0,
    whist:s0.whist?s0.whist.slice():[],lastSampleAt:s0.lastSampleAt??null,samples:s0.samples??0,
    phase:s0.phase??'cruise',kickApplied:s0.kickApplied??0,phaseGear0:s0.phaseGear0??0,peakDemand:s0.peakDemand??0,
-   holdT:s0.holdT??0,blipT:s0.blipT??0,blipRpm:s0.blipRpm??0,aEst:s0.aEst??0,noiseVar:s0.noiseVar??.09,noiseN:s0.noiseN??0};
+   holdT:s0.holdT??0,blipT:s0.blipT??0,blipRpm:s0.blipRpm??0,aEst:s0.aEst??0,noiseVar:s0.noiseVar??.09,noiseN:s0.noiseN??0,steadyT:s0.steadyT??0};
   const none={gear:0,rpm:800,load:0,shift:null,popWorthy:false,liftoff:false,blip:false,blipping:false,demand:0,aEst:0,state:st};
   if(!e) return none;
   const pz=personaOf(e);
@@ -694,6 +695,14 @@ const Core=(()=>{
   const holdDv=Math.max(CF.HOLD_DV,1.5*sigDv3);
   // decel: only after speed has really dropped (≥5 km/h over 3 s, or a slow coast losing ≥8 km/h over 9 s)
   const decelling=warm&&dv3<=CF.DECEL_DV&&(-dv3>=CF.DROP_GATE||-dv9>=CF.DROP_GATE*1.6);
+  // v3.18 GPS-steady: speed flat over the last 2 s (≥3 fixes, beyond the noise of that window) for ≥1.2 s and no sim throttle.
+  const s2=lsTrend(st.whist,CF.W_STEADY);
+  const dv2=s2?s2.slope*CF.W_STEADY:dv3,sig2=s2&&s2.sxx>0?sigV*CF.W_STEADY/Math.sqrt(s2.sxx):0;
+  // One marginal GPS fix (|Δv2| up to 2× the threshold) pauses the timer instead of restarting it; clear motion resets it.
+  const thr2=clamp(CF.STEADY_K*sig2,CF.STEADY_DV,CF.STEADY_MAX),ok2=warm&&!!s2&&s2.n>=3&&(dIn===null||dIn<.1);
+  const steadyNow=ok2&&Math.abs(dv2)<thr2,marginal=ok2&&!steadyNow&&Math.abs(dv2)<2*thr2;
+  if(steadyNow) st.steadyT+=dt; else if(!marginal) st.steadyT=0;
+  const steady=(steadyNow||marginal)&&st.steadyT>=CF.STEADY_T,steadyStrict=steadyNow&&st.steadyT>=CF.STEADY_T;
   // --- phase machine
   let liftoff=false;
   if(st.phase!=='accel'&&level>=1){st.phase='accel';st.phaseGear0=st.gear;st.kickApplied=0;st.peakDemand=0;}
@@ -703,8 +712,8 @@ const Core=(()=>{
    if(level===0&&dv3<holdDv&&(dIn===null||dIn<.1)){liftoff=st.peakDemand>=.2;st.phase='hold';st.holdT=pz.relax*style.relaxMul;st.kickApplied=0;}
   }
   if(decelling&&st.phase!=='accel') st.phase='decel';
-  if(st.phase==='decel'&&!decelling&&dv3>-holdDv){st.phase='hold';st.holdT=pz.relax*style.relaxMul;}
-  if(st.phase==='hold'){st.holdT-=dt;if(Math.abs(dv3)>=holdDv*1.5&&!decelling) st.holdT=Math.max(st.holdT,.5);if(st.holdT<=0) st.phase='cruise';}
+  if(st.phase==='decel'&&(steadyStrict||!decelling&&dv3>-holdDv)){st.phase='hold';st.holdT=pz.relax*style.relaxMul;}
+  if(st.phase==='hold'){st.holdT-=dt;if(Math.abs(dv3)>=holdDv*1.5&&!decelling) st.holdT=Math.max(st.holdT,.5);if(steady) st.holdT=0;if(st.holdT<=0) st.phase='cruise';}
   if(Math.abs(dv3)<holdDv&&demand<.2) st.cruiseTime+=dt; else st.cruiseTime=0;
   // --- shift decisions
   const floor=gearFloor(e,style),top=topGear(e,style),gap=style.minGap;
@@ -732,7 +741,7 @@ const Core=(()=>{
    }
    else{
     const upAt=style.upLow*e.max+(shiftPt-style.upLow)*e.max*Math.pow(demand,1.1);
-    if(g<top&&st.phase==='cruise'&&st.sinceShift>=gap&&R(g+1)>=floor&&(rpmNow>upAt||st.cruiseTime>=1.6)){
+    if(g<top&&st.phase==='cruise'&&st.sinceShift>=gap&&R(g+1)>=floor&&(rpmNow>upAt||st.cruiseTime>=1.6||steady)){
      fromRpm=rpmNow;g++;shift='up';
      if(st.cruiseTime>=1.6) st.cruiseTime=.8;
     }
@@ -749,7 +758,7 @@ const Core=(()=>{
   const load=g===0?.08:clamp(decel?.08+.04*speed/120:.14+.06*Math.min(1,speed/120)+.72*demand+style.loadBias,0,1);
   const popUpAff=clamp(pz.popUp+style.popUpAdd,0,1);
   const popWorthy=shift==='up'&&popUpAff>=.15&&demand>=1.05-popUpAff*.9&&fromRpm>=.55*e.max;
-  return {gear:g,rpm,load,shift,popWorthy,liftoff:liftoff&&g>0,blip,blipping,demand,aEst,level,phase:st.phase,dv3,dv9,state:st};
+  return {gear:g,rpm,load,shift,popWorthy,liftoff:liftoff&&g>0,blip,blipping,demand,aEst,level,phase:st.phase,dv3,dv9,dv2,steady,state:st};
  }
  // Conforto → windowed-Δv gearbox (v3.7); Desportiva → v3.6 gearbox, unchanged.
  function gearbox(state,input){

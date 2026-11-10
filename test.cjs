@@ -46,7 +46,7 @@ test('stateless cruise mapping: gear never decreases with speed and RPM drops at
 test('all engines map finite bounded RPM/load over speed sweep',()=>{for(const key of Object.keys(core.engines))for(let s=-10;s<=300;s++){const m=core.mapping(s,key,4),e=core.engines[key];assert(m.rpm>=e.idle&&m.rpm<=e.max);assert(m.load>=0&&m.load<=1);assert(m.gear>=0&&m.gear<=7);}});
 test('positive acceleration increases synthetic load',()=>assert(core.mapping(40,'v6',2).load>core.mapping(40,'v6',0).load));
 // v3.14: UI redesign; Core audio unchanged from 3.13 aside from VERSION.
-test('visible version 3.17 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.17');assert.match(html,/data-version="3\.17"/);assert.match(html,/>v3\.17</);assert.match(html,/Impulso v3\.17/);});
+test('visible version 3.18 is exposed in Core and HTML',()=>{assert.equal(core.VERSION,'3.18');assert.match(html,/data-version="3\.18"/);assert.match(html,/>v3\.18</);assert.match(html,/Impulso v3\.18/);});
 test('50 presets: 30 legacy + 20 new inspirations',()=>{
  const keys=Object.keys(core.engines);
  assert.equal(keys.length,50);
@@ -515,8 +515,8 @@ const SEEDS=Array.from({length:20},(_,i)=>100+i*17);
 const CRUISE={name:'cruise',dur:25,a:0};
 function firstDown(log){const acc=log.filter(x=>x.ph==='acc'),t0=acc[0].t-.05,fd=acc.find(x=>x.shift==='down');return fd?fd.t-t0:Infinity;}
 const gearDrop=log=>log.filter(x=>x.ph==='cruise').pop().gear-Math.min(...log.filter(x=>x.ph==='acc').map(x=>x.gear));
-test('per-profile gearbox personality covers all 50 profiles (version now 3.17)',()=>{
- assert.equal(core.VERSION,'3.17');assert.equal(KEYS.length,50);
+test('per-profile gearbox personality covers all 50 profiles (version now 3.18)',()=>{
+ assert.equal(core.VERSION,'3.18');assert.equal(KEYS.length,50);
  assert.deepEqual(Object.keys(core.GEAR_PERSONA).sort(),KEYS.slice().sort());
  for(const k of KEYS){const p=core.GEAR_PERSONA[k];
   assert.equal(core.engines[k].persona,p,k);
@@ -980,10 +980,20 @@ test('v3.17: all 50 profiles identical to v3.16 snapshot (fp, pop, synth, gear, 
   assert.equal(e.whineGain||0,snap[k].whine,k+' whine');
  }
 });
-test('v3.17: Core source byte-identical to v3.16 apart from VERSION',()=>{
- const snap=JSON.parse(fs.readFileSync(__dirname+'/fixtures/v316-fingerprints.json','utf8'));
- const src=source.replace(/const VERSION='[\d.]+';/,"const VERSION='X';");
- assert.equal(require('node:crypto').createHash('sha256').update(src).digest('hex'),snap.__coreSha);
+// v3.18 adaptation: Conforto's gearboxComfort and its CF constant changed (GPS-steady upshift), so these two
+// byte-identity checks now mask exactly those two pieces and compare against the v3.17 snapshot (same masking).
+function maskComfort(src){
+ const a=src.indexOf(' const CF={'),b=src.indexOf('\n',src.indexOf('};',a));
+ let out=src.slice(0,a)+' /*CF*/'+src.slice(b);
+ const i=out.indexOf(' function gearboxComfort('),j=out.indexOf('\n }\n',i);
+ return out.slice(0,i)+' /*gearboxComfort*/'+out.slice(j+3);
+}
+const V317M=JSON.parse(fs.readFileSync(__dirname+'/fixtures/v317-core-masked.json','utf8'));
+test('v3.18: Core source byte-identical to v3.17 (=v3.16) apart from VERSION, CF and gearboxComfort',()=>{
+ const src=maskComfort(source).replace(/const VERSION='[\d.]+';/,"const VERSION='X';");
+ assert.equal(require('node:crypto').createHash('sha256').update(src).digest('hex'),V317M.coreMaskedSha);
+ const i=source.indexOf(' function gearboxComfort('),j=source.indexOf('\n }\n',i);
+ assert.notEqual(require('node:crypto').createHash('sha256').update(source.slice(i,j+3)).digest('hex'),V317M.gearboxComfortV317Sha,'gearboxComfort is the v3.18 one');
 });
 test('v3.17: engine picker by sound style; every profile in exactly one style',()=>{
  assert.match(script,/const ENGINE_STYLE=/);
@@ -1016,12 +1026,13 @@ test('v3.17: engine picker by sound style; every profile in exactly one style',(
  assert.match(html,/--tile:76px/);
  assert.match(html,/\.filters button\{min-height:64px/);
 });
-test('v3.17: whole script outside the engine-picker UI block byte-identical to v3.16 (audio, GPS, gearbox, pops)',()=>{
- const snap=JSON.parse(fs.readFileSync(__dirname+'/fixtures/v316-fingerprints.json','utf8'));
+test('v3.18: whole script outside the engine-picker UI block identical to v3.17 apart from CF + gearboxComfort (audio, GPS, Desportiva, pops, UI)',()=>{
  const a=script.indexOf('/* ---- v3.14/v3.15 in-car UI wiring'),b=script.indexOf('function openSheet(');
  assert(a>0&&b>a);
- const rest=(script.slice(0,a)+script.slice(b)).replace(/const VERSION='[\d.]+';/,'');
- assert.equal(require('node:crypto').createHash('sha256').update(rest).digest('hex'),snap.__restSha);
+ const rest=maskComfort(script.slice(0,a)+script.slice(b)).replace(/const VERSION='[\d.]+';/,'');
+ assert.equal(require('node:crypto').createHash('sha256').update(rest).digest('hex'),V317M.restMaskedSha);
+ // the engine-picker UI block itself is unchanged too
+ assert.equal(require('node:crypto').createHash('sha256').update(script.slice(a,b)).digest('hex'),V317M.uiBlockSha);
 });
 test('v3.15 page builds tiles/chips and syncs favorites key',()=>{
  assert.match(script,/buildEngineTiles/);
@@ -1094,6 +1105,79 @@ async function pageAudioTest(){
  assert(popsGainNode);
  assert(Math.abs(popsGainNode.gain.value-50/100*core.POP_LIMITS.popBus)<1e-9);
 }
+// ---- v3.18: Conforto GPS-steady upshift (speed holding → leave the high rpm quickly) ----
+const STEADY_SCEN={
+ kickHard:[{name:'cruise',dur:25,a:0},{name:'acc',dur:4,a:2.0},{name:'steady',dur:36,a:0}],
+ kick12:[{name:'cruise',dur:25,a:0},{name:'acc',dur:4,a:1.2},{name:'steady',dur:36,a:0}],
+ brake70:[{name:'cruise',dur:25,a:0},{name:'acc',dur:50/3.6/1.5,a:-1.5},{name:'steady',dur:36,a:0}],
+ lift:[{name:'cruise',dur:25,a:0},{name:'acc',dur:5,a:1.2},{name:'lift',dur:8,a:-.9},{name:'steady',dur:6,a:0}]
+};
+function preSteadyTrace(k){const r={};
+ for(const [sn,ph] of Object.entries(STEADY_SCEN)) for(const seed of [101,118]) for(const noise of [.3,.8]){
+  const log=drive(k,ph,{seed,noise,pops:true,popSeed:987654321});
+  const tr=log.filter(x=>x.ph!=='steady').map(x=>x.gear+(x.shift?x.shift[0]:'')+(x.blip?'b':'')+(x.popped?'p':'')).join(',');
+  r[sn+'/'+seed+'/'+noise]=require('node:crypto').createHash('sha256').update(tr).digest('hex').slice(0,24);}
+ return r;
+}
+const steadyStart=log=>log.find(x=>x.ph==='steady');
+function backToCruise(k,log){const e=core.engines[k],s=steadyStart(log),cg=core.cruiseGear(e,log[log.length-1].v,'comfort');
+ const b=log.find(x=>x.ph==='steady'&&x.gear>=cg);return {cg,b,tb:b?b.t-s.t+.05:Infinity,s};}
+test('v3.18 Conforto: while speed is still changing, gear/shift/blip/pop traces are identical to v3.17 (kick-down, hold, decel blips, lift-off pops)',()=>{
+ const snap=JSON.parse(fs.readFileSync(__dirname+'/fixtures/v317-conforto-presteady.json','utf8')).runs;
+ assert.equal(Object.keys(snap).length,50);
+ for(const k of KEYS){const now=preSteadyTrace(k);
+  for(const run of Object.keys(snap[k])) assert.equal(now[run],snap[k][run],k+' '+run+' differs from v3.17 before the speed settles');}
+});
+test('v3.18 Conforto (a): cruise 120 in 7th, hard kick-down, then steady speed → back to the cruise gear ≤6 s after stabilising, calm rpm',()=>{
+ for(const k of KEYS){const e=core.engines[k];
+  for(const seed of SEEDS.slice(0,4)) for(const noise of [.3,.5,.8]) for(const sc of ['kickHard','kick12']){
+   const log=drive(k,STEADY_SCEN[sc],{seed,noise});
+   assert.equal(log.filter(x=>x.ph==='cruise').pop().gear,7,k+' cruise gear');
+   assert(gearDrop(log)>=2,k+' '+sc+' kick-down');
+   const {cg,b,tb}=backToCruise(k,log);
+   assert(tb<=6,k+' '+sc+' seed '+seed+' noise '+noise+': back to gear '+cg+' after '+tb.toFixed(2)+' s');
+   const after=log.filter(x=>x.ph==='steady'&&x.t>=b.t+.5);
+   for(const x of after) assert(x.rpm<=Math.max(3000,core.gearRpm(e,x.speed,cg)*1.03)&&x.rpm<.5*e.max,k+' cruise rpm '+x.rpm.toFixed(0));
+   assert(!log.some(x=>x.ph==='steady'&&x.shift==='down'),k+' no downshift once steady');
+  }}
+});
+test('v3.18 Conforto (b)+(c): brake 120→70 with blipped downshifts, hold 70 → cruise gear ≤6 s, then 30 s with 0 further shifts',()=>{
+ for(const k of KEYS) for(const seed of SEEDS.slice(0,4)) for(const noise of [.3,.5]){
+  const log=drive(k,STEADY_SCEN.brake70,{seed,noise});
+  const downs=log.filter(x=>x.ph==='acc'&&x.shift==='down');
+  assert(downs.length>=1&&downs.every(x=>x.blip),k+' decel downshifts with blips');
+  const {cg,b,tb}=backToCruise(k,log);
+  assert(tb<=6,k+' seed '+seed+' noise '+noise+': cruise gear '+cg+' after '+tb.toFixed(2)+' s');
+  const later=log.filter(x=>x.ph==='steady'&&x.t>b.t+.01&&x.shift);
+  assert.equal(later.length,0,k+' seed '+seed+' noise '+noise+' shifts after reaching cruise gear: '+later.map(x=>x.shift+x.gear));
+ }
+ // after the kick-down too: 30 s of steady speed once back in 7th → 0 shifts
+ for(const k of KEYS) for(const seed of SEEDS.slice(0,3)){const log=drive(k,STEADY_SCEN.kickHard,{seed,noise:.5});const {b}=backToCruise(k,log);
+  assert(log[log.length-1].t-b.t>=30);assert.equal(log.filter(x=>x.t>b.t+.01&&x.shift).length,0,k+' seed '+seed);}
+ // noisier GPS (0.8 km/h): never hunts (no downshift after reaching the cruise gear)
+ for(const k of KEYS) for(const seed of SEEDS.slice(0,3)){const log=drive(k,STEADY_SCEN.brake70,{seed,noise:.8});const {b,tb}=backToCruise(k,log);
+  assert(tb<=6,k);assert(!log.some(x=>x.t>b.t&&x.shift==='down'),k+' hunting at noise .8');}
+});
+// (noise 0.8 is not used here: a few eager profiles already took a noise-induced 1-gear kick at that level in v3.17;
+//  that pre-steady behaviour is pinned unchanged by the v3.17 trace test above)
+test('v3.18 Conforto (d): slow steady climb 100→110 km/h in 9 s → still no downshift and no shift at all (more seeds)',()=>{
+ for(const k of KEYS) for(const seed of SEEDS.slice(6,12)) for(const noise of [.3,.5]){
+  const log=drive(k,FROM100('acc',9,10/3.6/9),{seed,noise,v0:100});
+  assert.equal(log.filter(x=>x.ph!=='cruise'&&x.shift).length,0,k+' seed '+seed+' noise '+noise);
+ }
+});
+test('v3.18 Conforto: steady detector constants, and it never fires while the speed is clearly rising or falling',()=>{
+ assert.equal(core.CF.W_STEADY,2);assert(core.CF.STEADY_T>=1&&core.CF.STEADY_T<=1.5);assert(core.CF.STEADY_DV<=1.5);
+ // direct check on the flag with a 1 Hz ramp
+ for(const a of [.4,-.4,1,-1]){let st=null,o,v=100,seen=false;
+  for(let i=0;i<400;i++){if(i>=200)v+=a*3.6*.05;o=core.gearbox(st,{speed:v,dt:.05,sampleAt:Math.floor(i/20),profile:core.engines.v8});st=o.state;if(i>=260&&o.steady)seen=true;}
+  assert(!seen,'steady flagged during a '+a+' m/s² ramp');}
+ // and it does fire on a flat speed
+ {let st=null,o;for(let i=0;i<200;i++){o=core.gearbox(st,{speed:90,dt:.05,sampleAt:Math.floor(i/20),profile:core.engines.v8});st=o.state;}assert(o.steady);}
+});
+test('v3.18 Desportiva unaffected: gearbox(style=sport) never exposes the Conforto steady flag',()=>{
+ const o=core.gearbox(null,{speed:90,dt:.05,profile:core.engines.v8,style:'sport'});assert.equal(o.steady,undefined);assert.equal(o.state.steadyT,undefined);
+});
 (async()=>{
  await pageAudioTest();count++;console.log('PASS page audio graph: engine chain unchanged + coloured pop bus with tube');
  console.log(`${count} tests passed; full inline JavaScript syntax valid. These tests cover logic and syntax only, not listening.`);
